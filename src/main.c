@@ -25,16 +25,16 @@
 
 // Define here all the selectors you wish to support.
 
-static const uint8_t APPROVE_PROXY[SELECTOR_SIZE] = {0xdd, 0xd8, 0x1f, 0x82};
-static const uint8_t OPENSEA_CANCELORDER_[SELECTOR_SIZE] = {0xa8, 0xa4, 0x1c, 0x70};
+static const uint8_t OPENSEA_APPROVE_PROXY[SELECTOR_SIZE] = {0xdd, 0xd8, 0x1f, 0x82};
+static const uint8_t OPENSEA_CANCEL_ORDER_[SELECTOR_SIZE] = {0xa8, 0xa4, 0x1c, 0x70};
 
 // static const uint8_t [SELECTOR_SIZE] = {0xdd, 0xd8, 0x1F, 0x82};
 
 // Array of all the different opensea selectors. Make sure this follows the same order as the
 // enum defined in `opensea_plugin.h`
 const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS] = {
-    APPROVE_PROXY,
-    OPENSEA_CANCELORDER_,
+    OPENSEA_APPROVE_PROXY,
+    OPENSEA_CANCEL_ORDER_,
 };
 
 // Function to dispatch calls from the ethereum app.
@@ -44,7 +44,7 @@ void dispatch_plugin_calls(int message, void *parameters)
     switch (message)
     {
     case ETH_PLUGIN_INIT_CONTRACT:
-        PRINTF("INIT CONTRACT\n");
+        PRINTF("GPIRIOU INIT CONTRACT\n");
         handle_init_contract(parameters);
         break;
     case ETH_PLUGIN_PROVIDE_PARAMETER:

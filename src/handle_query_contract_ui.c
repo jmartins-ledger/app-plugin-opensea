@@ -33,45 +33,9 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
 {
     switch (context->selectorIndex)
     {
-    case ADD_LIQUIDITY_ETH:
-        PRINTF("tokenA: %s\n", context->ticker_token_a);
-        strncpy(msg->title, "Liquidity Pool:", msg->titleLength);
-        snprintf(msg->msg, msg->msgLength, "%s / %s", "ETH", context->ticker_token_b);
-        break;
-    case ADD_LIQUIDITY:
-    case REMOVE_LIQUIDITY:
-    case REMOVE_LIQUIDITY_PERMIT:
-    case REMOVE_LIQUIDITY_ETH:
-    case REMOVE_LIQUIDITY_ETH_PERMIT:
-    case REMOVE_LIQUIDITY_ETH_FEE:
-    case REMOVE_LIQUIDITY_ETH_PERMIT_FEE:
-        PRINTF("tokenB: %s\n", context->ticker_token_b);
-        strncpy(msg->title, "Liquidity Pool:", msg->titleLength);
-        snprintf(msg->msg,
-                 msg->msgLength,
-                 "%s / %s",
-                 context->ticker_token_a,
-                 context->ticker_token_b);
-        break;
-    case SWAP_ETH_FOR_EXACT_TOKENS:
-    case SWAP_EXACT_ETH_FOR_TOKENS:
-    case SWAP_EXACT_ETH_FOR_TOKENS_FEE:
-        strncpy(msg->title, "Swap:", msg->titleLength);
-        snprintf(msg->msg, msg->msgLength, "%s / %s", "ETH", context->ticker_token_b);
-        break;
-    case SWAP_EXACT_TOKENS_FOR_ETH:
-    case SWAP_EXACT_TOKENS_FOR_ETH_FEE:
-    case SWAP_EXACT_TOKENS_FOR_TOKENS:
-    case SWAP_EXACT_TOKENS_FOR_TOKENS_FEE:
-    case SWAP_TOKENS_FOR_EXACT_ETH:
-    case SWAP_TOKENS_FOR_EXACT_TOKENS:
-        PRINTF("tokenA: %s\n", context->ticker_token_a);
-        strncpy(msg->title, "Swap:", msg->titleLength);
-        snprintf(msg->msg,
-                 msg->msgLength,
-                 "%s for %s",
-                 context->ticker_token_a,
-                 context->ticker_token_b);
+    case APPROVE_PROXY:
+        strncpy(msg->title, "Unlock wallet", msg->titleLength);
+        strncpy(msg->msg, "Would you like to unlock the wallet", msg->msgLength);
         break;
     }
 }
@@ -91,100 +55,25 @@ static void set_token_b_warning_ui(ethQueryContractUI_t *msg,
     strncpy(msg->msg, "! token B", msg->msgLength);
 }
 
-static void set_amount_eth_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
-{
-    switch (context->selectorIndex)
-    {
-    case ADD_LIQUIDITY_ETH:
-        strncpy(msg->title, "Deposit:", msg->titleLength);
-        break;
-    case SWAP_EXACT_ETH_FOR_TOKENS:
-    case SWAP_EXACT_ETH_FOR_TOKENS_FEE:
-        strncpy(msg->title, "Swap:", msg->titleLength);
-        break;
-    }
-    amountToString((uint8_t *)msg->pluginSharedRO->txContent->value.value,
-                   msg->pluginSharedRO->txContent->value.length,
-                   WEI_TO_ETHER,
-                   "ETH ",
-                   msg->msg,
-                   msg->msgLength);
-}
-
-static void set_amount_token_a_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
-{
-    switch (context->selectorIndex)
-    {
-    case ADD_LIQUIDITY:
-        strncpy(msg->title, "Deposit:", msg->titleLength);
-        break;
-    case REMOVE_LIQUIDITY:
-    case REMOVE_LIQUIDITY_PERMIT:
-    case REMOVE_LIQUIDITY_ETH:
-    case REMOVE_LIQUIDITY_ETH_PERMIT:
-    case REMOVE_LIQUIDITY_ETH_FEE:
-    case REMOVE_LIQUIDITY_ETH_PERMIT_FEE:
-        strncpy(msg->title, "Remove:", msg->titleLength);
-        break;
-    case SWAP_EXACT_TOKENS_FOR_ETH_FEE:
-    case SWAP_EXACT_TOKENS_FOR_TOKENS:
-    case SWAP_EXACT_TOKENS_FOR_TOKENS_FEE:
-    case SWAP_TOKENS_FOR_EXACT_ETH:
-    case SWAP_TOKENS_FOR_EXACT_TOKENS:
-        strncpy(msg->title, "Swap:", msg->titleLength);
-        break;
-    default:
-        PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
-        msg->result = ETH_PLUGIN_RESULT_ERROR;
-        return;
-    }
-    amountToString(context->token_a_amount_sent,
-                   sizeof(context->token_a_amount_sent),
-                   context->decimals_token_a,
-                   context->ticker_token_a,
-                   msg->msg,
-                   msg->msgLength);
-    PRINTF("GPIRIOU msgLeength: %d\n", msg->msgLength);
-}
-
-static void set_amount_token_b_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
-{
-    switch (context->selectorIndex)
-    {
-    case ADD_LIQUIDITY_ETH:
-    case ADD_LIQUIDITY:
-        strncpy(msg->title, "Deposit:", msg->titleLength);
-        break;
-    case REMOVE_LIQUIDITY:
-    case REMOVE_LIQUIDITY_PERMIT:
-    case REMOVE_LIQUIDITY_ETH:
-    case REMOVE_LIQUIDITY_ETH_PERMIT:
-    case REMOVE_LIQUIDITY_ETH_FEE:
-    case REMOVE_LIQUIDITY_ETH_PERMIT_FEE:
-        strncpy(msg->title, "Remove:", msg->titleLength);
-        break;
-    case SWAP_EXACT_TOKENS_FOR_ETH_FEE:
-    case SWAP_ETH_FOR_EXACT_TOKENS:
-    case SWAP_EXACT_ETH_FOR_TOKENS_FEE:
-    case SWAP_EXACT_ETH_FOR_TOKENS:
-    case SWAP_EXACT_TOKENS_FOR_TOKENS:
-    case SWAP_EXACT_TOKENS_FOR_TOKENS_FEE:
-    case SWAP_TOKENS_FOR_EXACT_ETH:
-    case SWAP_TOKENS_FOR_EXACT_TOKENS:
-        strncpy(msg->title, "Swap:", msg->titleLength);
-        break;
-    default:
-        PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
-        msg->result = ETH_PLUGIN_RESULT_ERROR;
-        return;
-    }
-    amountToString(context->token_b_amount_sent,
-                   sizeof(context->token_b_amount_sent),
-                   context->decimals_token_b,
-                   context->ticker_token_b,
-                   msg->msg,
-                   msg->msgLength);
-}
+//static void set_amount_eth_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
+//{
+//    switch (context->selectorIndex)
+//    {
+//    case ADD_LIQUIDITY_ETH:
+//        strncpy(msg->title, "Deposit:", msg->titleLength);
+//        break;
+//    case SWAP_EXACT_ETH_FOR_TOKENS:
+//    case SWAP_EXACT_ETH_FOR_TOKENS_FEE:
+//        strncpy(msg->title, "Swap:", msg->titleLength);
+//        break;
+//    }
+//    amountToString((uint8_t *)msg->pluginSharedRO->txContent->value.value,
+//                   msg->pluginSharedRO->txContent->value.length,
+//                   WEI_TO_ETHER,
+//                   "ETH ",
+//                   msg->msg,
+//                   msg->msgLength);
+//}
 
 static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
                                        opensea_parameters_t *context __attribute__((unused)))
@@ -199,11 +88,11 @@ static void set_beneficiary_ui(ethQueryContractUI_t *msg, opensea_parameters_t *
     strncpy(msg->title, "Beneficiary:", msg->titleLength);
     msg->msg[0] = '0';
     msg->msg[1] = 'x';
-    chain_config_t chainConfig = {0};
+    // chain_config_t chainConfig = {0};
     getEthAddressStringFromBinary((uint8_t *)context->beneficiary,
                                   (uint8_t *)msg->msg + 2,
                                   msg->pluginSharedRW->sha3,
-                                  &chainConfig);
+                                  0);
 }
 
 // Not used if last bit in screen array isn't 1
@@ -287,45 +176,45 @@ void handle_query_contract_ui(void *parameters)
         PRINTF("GPIRIOU TX_TYPE\n");
         set_tx_type_ui(msg, context);
         break;
-    case WARNING_TOKEN_A_UI:
-        PRINTF("GPIRIOU WARNING A\n");
-        set_token_a_warning_ui(msg, context);
-        break;
-    case AMOUNT_TOKEN_A_UI:
-        PRINTF("GPIRIOU AMOUNT A\n");
-        switch (context->selectorIndex)
-        {
-        case ADD_LIQUIDITY_ETH:
-        case SWAP_ETH_FOR_EXACT_TOKENS:
-        case SWAP_EXACT_ETH_FOR_TOKENS_FEE:
-        case SWAP_EXACT_ETH_FOR_TOKENS:
-            set_amount_eth_ui(msg, context);
-            break;
-        default:
-            set_amount_token_a_ui(msg, context);
-            break;
-        }
-        break;
-    case WARNING_TOKEN_B_UI:
-        PRINTF("GPIRIOU WARNING B\n");
-        set_token_b_warning_ui(msg, context);
-        break;
-    case AMOUNT_TOKEN_B_UI:
-        PRINTF("GPIRIOU AMOUNT B\n");
-        set_amount_token_b_ui(msg, context);
-        break;
-    case WARNING_ADDRESS_UI:
-        PRINTF("GPIRIOU WARNING ADDRESS\n");
-        set_beneficiary_warning_ui(msg, context);
-        break;
-    case ADDRESS_UI:
-        PRINTF("GPIRIOU BENEFICIARY\n");
-        set_beneficiary_ui(msg, context);
-        break;
-    case LAST_UI:
-        PRINTF("GPIRIOU LAST UI\n");
-        set_last_ui(msg, context);
-        break;
+    //case WARNING_TOKEN_A_UI:
+    //    PRINTF("GPIRIOU WARNING A\n");
+    //    set_token_a_warning_ui(msg, context);
+    //    break;
+    //case AMOUNT_TOKEN_A_UI:
+    //    PRINTF("GPIRIOU AMOUNT A\n");
+    //    switch (context->selectorIndex)
+    //    {
+    //    case ADD_LIQUIDITY_ETH:
+    //    case SWAP_ETH_FOR_EXACT_TOKENS:
+    //    case SWAP_EXACT_ETH_FOR_TOKENS_FEE:
+    //    case SWAP_EXACT_ETH_FOR_TOKENS:
+    //        set_amount_eth_ui(msg, context);
+    //        break;
+    //    default:
+    //        set_amount_token_a_ui(msg, context);
+    //        break;
+    //    }
+    //    break;
+    //case WARNING_TOKEN_B_UI:
+    //    PRINTF("GPIRIOU WARNING B\n");
+    //    set_token_b_warning_ui(msg, context);
+    //    break;
+    //case AMOUNT_TOKEN_B_UI:
+    //    PRINTF("GPIRIOU AMOUNT B\n");
+    //    set_amount_token_b_ui(msg, context);
+    //    break;
+    //case WARNING_ADDRESS_UI:
+    //    PRINTF("GPIRIOU WARNING ADDRESS\n");
+    //    set_beneficiary_warning_ui(msg, context);
+    //    break;
+    //case ADDRESS_UI:
+    //    PRINTF("GPIRIOU BENEFICIARY\n");
+    //    set_beneficiary_ui(msg, context);
+    //    break;
+    //case LAST_UI:
+    //    PRINTF("GPIRIOU LAST UI\n");
+    //    set_last_ui(msg, context);
+    //    break;
     default:
         PRINTF("GPIRIOU ERROR\n");
         break;

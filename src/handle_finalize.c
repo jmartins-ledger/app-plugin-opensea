@@ -19,18 +19,18 @@ void handle_finalize(void *parameters)
     context->screen_array |= TX_TYPE_UI;
     // context->screen_array |= AMOUNT_TOKEN_A_UI;
     // context->screen_array |= AMOUNT_TOKEN_B_UI;
-    context->screen_array |= ADDRESS_UI;
+    // context->screen_array |= ADDRESS_UI;
 
     if (context->valid)
     {
         msg->uiType = ETH_UI_TYPE_GENERIC;
         context->plugin_screen_index = TX_TYPE_UI;
-        msg->numScreens = 2;
+        msg->numScreens = 1;
 
-        check_beneficiary_warning(msg, context);
+        // check_beneficiary_warning(msg, context);
 
-        msg->tokenLookup1 = context->token_a_address; // TODO: CHECK THIS
-        msg->tokenLookup2 = context->token_b_address; // TODO: CHECK THIS
+        //msg->tokenLookup1 = context->token_a_address; // TODO: CHECK THIS
+        //msg->tokenLookup2 = context->token_b_address; // TODO: CHECK THIS
         msg->result = ETH_PLUGIN_RESULT_OK;
     }
     else

@@ -20,7 +20,7 @@
 #define PLUGIN_NAME "OpenSea"
 
 // Number of selectors defined in this plugin.
-#define NUM_OPENSEA_SELECTORS 17
+#define NUM_OPENSEA_SELECTORS 2
 
 // Enumeration of the different selectors possible.
 // Should follow the array declared in main.c
@@ -30,7 +30,7 @@ typedef enum
     CANCEL_ORDER_,
 } openseaSelector_t;
 
-extern const uint8_t *const OPENSA_SELECTORS[NUM_OPENSEA_SELECTORS];
+extern const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS];
 
 // screeen array correspondance
 #define TX_TYPE_UI 1
