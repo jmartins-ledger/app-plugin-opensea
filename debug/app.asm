@@ -117,7 +117,7 @@ c0d00078:	e7f3      	b.n	c0d00062 <main+0x62>
     END_TRY;
 c0d0007a:	f000 fa31 	bl	c0d004e0 <os_longjmp>
 c0d0007e:	46c0      	nop			; (mov r8, r8)
-c0d00080:	00003ba3 	.word	0x00003ba3
+c0d00080:	00003b83 	.word	0x00003b83
 
 c0d00084 <semihosted_printf>:
         "svc      0xab\n" ::"r"(buf)
@@ -360,7 +360,7 @@ c0d0019a:	e05e      	b.n	c0d0025a <handle_init_contract+0xea>
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 c0d0019c:	68e5      	ldr	r5, [r4, #12]
 
-    PRINTF("GPIRIOU PROUTAFOND 2\n");
+    PRINTF("GPIRIOU PROUTAFOND 1\n");
 c0d0019e:	4833      	ldr	r0, [pc, #204]	; (c0d0026c <handle_init_contract+0xfc>)
 c0d001a0:	4478      	add	r0, pc
 c0d001a2:	f7ff ff6f 	bl	c0d00084 <semihosted_printf>
@@ -497,15 +497,15 @@ c0d0025e:	bdf0      	pop	{r4, r5, r6, r7, pc}
 c0d00260:	000037fc 	.word	0x000037fc
 c0d00264:	000037fc 	.word	0x000037fc
 c0d00268:	00003804 	.word	0x00003804
-c0d0026c:	00003831 	.word	0x00003831
-c0d00270:	0000382f 	.word	0x0000382f
-c0d00274:	000039ae 	.word	0x000039ae
-c0d00278:	00003835 	.word	0x00003835
-c0d0027c:	000037ed 	.word	0x000037ed
-c0d00280:	00003805 	.word	0x00003805
-c0d00284:	000037fb 	.word	0x000037fb
-c0d00288:	00003807 	.word	0x00003807
-c0d0028c:	00003815 	.word	0x00003815
+c0d0026c:	000037e2 	.word	0x000037e2
+c0d00270:	00003819 	.word	0x00003819
+c0d00274:	0000398e 	.word	0x0000398e
+c0d00278:	0000381f 	.word	0x0000381f
+c0d0027c:	000037d7 	.word	0x000037d7
+c0d00280:	000037ef 	.word	0x000037ef
+c0d00284:	000037e5 	.word	0x000037e5
+c0d00288:	000037f1 	.word	0x000037f1
+c0d0028c:	000037ff 	.word	0x000037ff
 
 c0d00290 <handle_provide_parameter>:
         break;
@@ -554,9 +554,9 @@ c0d002c0:	7520      	strb	r0, [r4, #20]
         break;
     }
 c0d002c2:	bd70      	pop	{r4, r5, r6, pc}
-c0d002c4:	000037da 	.word	0x000037da
-c0d002c8:	00003800 	.word	0x00003800
-c0d002cc:	000037e9 	.word	0x000037e9
+c0d002c4:	000037c4 	.word	0x000037c4
+c0d002c8:	000037ea 	.word	0x000037ea
+c0d002cc:	000037d3 	.word	0x000037d3
 
 c0d002d0 <handle_provide_token>:
 #include "opensea_plugin.h"
@@ -582,7 +582,7 @@ c0d002e2:	7560      	strb	r0, [r4, #21]
     msg->result = ETH_PLUGIN_RESULT_OK;
 c0d002e4:	bd10      	pop	{r4, pc}
 c0d002e6:	46c0      	nop			; (mov r8, r8)
-c0d002e8:	000037f3 	.word	0x000037f3
+c0d002e8:	000037dd 	.word	0x000037dd
 
 c0d002ec <handle_query_contract_id>:
 #include "opensea_plugin.h"
@@ -633,9 +633,9 @@ c0d0031e:	2004      	movs	r0, #4
     msg->result = ETH_PLUGIN_RESULT_OK;
 c0d00320:	7720      	strb	r0, [r4, #28]
 c0d00322:	bdb0      	pop	{r4, r5, r7, pc}
-c0d00324:	000037f7 	.word	0x000037f7
-c0d00328:	000037df 	.word	0x000037df
-c0d0032c:	000037fd 	.word	0x000037fd
+c0d00324:	000037e1 	.word	0x000037e1
+c0d00328:	000037c9 	.word	0x000037c9
+c0d0032c:	000037e7 	.word	0x000037e7
 
 c0d00330 <handle_query_contract_ui>:
         context->plugin_screen_index >>= 1;
@@ -764,17 +764,17 @@ c0d003dc:	6962      	ldr	r2, [r4, #20]
 c0d003de:	4906      	ldr	r1, [pc, #24]	; (c0d003f8 <handle_query_contract_ui+0xc8>)
 c0d003e0:	4479      	add	r1, pc
 c0d003e2:	f003 fa55 	bl	c0d03890 <strncpy>
-        strncpy(msg->msg, "Would you like to unlock the wallet", msg->msgLength);
+        strncpy(msg->msg, "Sign to unlock wallet ?", msg->msgLength);
 c0d003e6:	69a0      	ldr	r0, [r4, #24]
 c0d003e8:	69e2      	ldr	r2, [r4, #28]
 c0d003ea:	4904      	ldr	r1, [pc, #16]	; (c0d003fc <handle_query_contract_ui+0xcc>)
 c0d003ec:	4479      	add	r1, pc
 c0d003ee:	f003 fa4f 	bl	c0d03890 <strncpy>
 c0d003f2:	bdb0      	pop	{r4, r5, r7, pc}
-c0d003f4:	00003765 	.word	0x00003765
-c0d003f8:	00003717 	.word	0x00003717
-c0d003fc:	0000375b 	.word	0x0000375b
-c0d00400:	00003766 	.word	0x00003766
+c0d003f4:	0000374f 	.word	0x0000374f
+c0d003f8:	00003701 	.word	0x00003701
+c0d003fc:	00003745 	.word	0x00003745
+c0d00400:	00003750 	.word	0x00003750
 
 c0d00404 <dispatch_plugin_calls>:
 {
@@ -875,14 +875,14 @@ c0d004ac:	f7ff fdea 	bl	c0d00084 <semihosted_printf>
 }
 c0d004b0:	bdb0      	pop	{r4, r5, r7, pc}
 c0d004b2:	46c0      	nop			; (mov r8, r8)
-c0d004b4:	00003770 	.word	0x00003770
-c0d004b8:	0000378a 	.word	0x0000378a
-c0d004bc:	00003790 	.word	0x00003790
-c0d004c0:	0000372a 	.word	0x0000372a
-c0d004c4:	00003731 	.word	0x00003731
-c0d004c8:	0000373e 	.word	0x0000373e
-c0d004cc:	0000373d 	.word	0x0000373d
-c0d004d0:	00003753 	.word	0x00003753
+c0d004b4:	00003750 	.word	0x00003750
+c0d004b8:	0000376a 	.word	0x0000376a
+c0d004bc:	00003770 	.word	0x00003770
+c0d004c0:	0000370a 	.word	0x0000370a
+c0d004c4:	00003711 	.word	0x00003711
+c0d004c8:	0000371e 	.word	0x0000371e
+c0d004cc:	0000371d 	.word	0x0000371d
+c0d004d0:	00003733 	.word	0x00003733
 
 c0d004d4 <os_boot>:
 
@@ -925,7 +925,7 @@ c0d004ea:	f7ff fdcb 	bl	c0d00084 <semihosted_printf>
 c0d004ee:	f001 f889 	bl	c0d01604 <try_context_get>
 c0d004f2:	4621      	mov	r1, r4
 c0d004f4:	f003 f9be 	bl	c0d03874 <longjmp>
-c0d004f8:	00003734 	.word	0x00003734
+c0d004f8:	00003714 	.word	0x00003714
 
 c0d004fc <pic>:
 // only apply PIC conversion if link_address is in linked code (over 0xC0D00000 in our example)
@@ -948,7 +948,7 @@ c0d0050a:	f000 f805 	bl	c0d00518 <pic_internal>
   return link_address;
 c0d0050e:	bd80      	pop	{r7, pc}
 c0d00510:	c0d00000 	.word	0xc0d00000
-c0d00514:	c0d03cc0 	.word	0xc0d03cc0
+c0d00514:	c0d03c80 	.word	0xc0d03c80
 
 c0d00518 <pic_internal>:
 #pragma GCC diagnostic push
@@ -2558,11 +2558,11 @@ c0d00f90:	7fefffff 	.word	0x7fefffff
 c0d00f94:	41cdcd65 	.word	0x41cdcd65
 c0d00f98:	c1cdcd65 	.word	0xc1cdcd65
 c0d00f9c:	3fe00000 	.word	0x3fe00000
-c0d00fa0:	00003054 	.word	0x00003054
-c0d00fa4:	00003070 	.word	0x00003070
-c0d00fa8:	00002eff 	.word	0x00002eff
-c0d00fac:	00003016 	.word	0x00003016
-c0d00fb0:	00002f04 	.word	0x00002f04
+c0d00fa0:	00003034 	.word	0x00003034
+c0d00fa4:	00003050 	.word	0x00003050
+c0d00fa8:	00002edf 	.word	0x00002edf
+c0d00fac:	00002ff6 	.word	0x00002ff6
+c0d00fb0:	00002ee4 	.word	0x00002ee4
 
 c0d00fb4 <_etoa>:
                     unsigned int flags) {
@@ -7950,60 +7950,58 @@ c0d039a7:	656d 6574 7372 7320 7274 6375 7574 6572     meters structure
 c0d039b7:	6920 2073 6962 6767 7265 7420 6168 206e      is bigger than 
 c0d039c7:	6c61 6f6c 6577 2064 6973 657a 000a 5047     allowed size..GP
 c0d039d7:	5249 4f49 2055 5250 554f 4154 4f46 444e     IRIOU PROUTAFOND
-c0d039e7:	3220 000a 5047 5249 4f49 2055 5250 554f      2..GPIRIOU PROU
-c0d039f7:	4154 4f46 444e 3220 3220 000a 4f4c 4b4f     TAFOND 2 2..LOOK
-c0d03a07:	4e49 2047 6f66 2072 6573 656c 7463 726f     ING for selector
-c0d03a17:	2520 0064 5047 5249 4f49 2055 5250 554f      %d.GPIRIOU PROU
-c0d03a27:	4154 4f46 444e 3320 000a 5047 5249 4f49     TAFOND 3..GPIRIO
-c0d03a37:	2055 5250 554f 4154 4f46 444e 3420 000a     U PROUTAFOND 4..
-c0d03a47:	4e49 5449 435f 4e4f 5254 4341 2054 6573     INIT_CONTRACT se
-c0d03a57:	656c 7463 726f 203a 7525 000a 694d 7373     lector: %u..Miss
-c0d03a67:	6e69 2067 6573 656c 7463 726f 6e49 6564     ing selectorInde
-c0d03a77:	0a78 5000 4f52 4956 4544 5020 5241 4d41     x..PROVIDE PARAM
-c0d03a87:	5445 5245 202c 6573 656c 7463 726f 203a     ETER, selector: 
-c0d03a97:	6425 000a 6553 656c 7463 726f 4920 646e     %d..Selector Ind
-c0d03aa7:	7865 2520 2064 6f6e 2074 7573 7070 726f     ex %d not suppor
-c0d03ab7:	6574 0a64 5000 7261 6d61 6e20 746f 7320     ted..Param not s
-c0d03ac7:	7075 6f70 7472 6465 000a 6c70 6775 6e69     upported..plugin
-c0d03ad7:	7020 6f72 6976 6564 7420 6b6f 6e65 203a      provide token: 
-c0d03ae7:	7830 7025 202c 7830 7025 000a 704f 6e65     0x%p, 0x%p..Open
-c0d03af7:	6553 0061 6e55 6f6c 6b63 7720 6c61 656c     Sea.Unlock walle
-c0d03b07:	0074 6553 656c 7463 726f 4920 646e 7865     t.Selector Index
-c0d03b17:	3a20 6425 6e20 746f 7320 7075 6f70 7472      :%d not support
-c0d03b27:	6465 000a 5047 5249 4f49 2055 5854 545f     ed..GPIRIOU TX_T
-c0d03b37:	5059 0a45 4700 4950 4952 554f 4520 5252     YPE..GPIRIOU ERR
-c0d03b47:	524f 000a 6f57 6c75 2064 6f79 2075 696c     OR..Would you li
-c0d03b57:	656b 7420 206f 6e75 6f6c 6b63 7420 6568     ke to unlock the
-c0d03b67:	7720 6c61 656c 0074                          wallet.
+c0d039e7:	3220 3220 000a 4f4c 4b4f 4e49 2047 6f66      2 2..LOOKING fo
+c0d039f7:	2072 6573 656c 7463 726f 2520 0064 5047     r selector %d.GP
+c0d03a07:	5249 4f49 2055 5250 554f 4154 4f46 444e     IRIOU PROUTAFOND
+c0d03a17:	3320 000a 5047 5249 4f49 2055 5250 554f      3..GPIRIOU PROU
+c0d03a27:	4154 4f46 444e 3420 000a 4e49 5449 435f     TAFOND 4..INIT_C
+c0d03a37:	4e4f 5254 4341 2054 6573 656c 7463 726f     ONTRACT selector
+c0d03a47:	203a 7525 000a 694d 7373 6e69 2067 6573     : %u..Missing se
+c0d03a57:	656c 7463 726f 6e49 6564 0a78 5000 4f52     lectorIndex..PRO
+c0d03a67:	4956 4544 5020 5241 4d41 5445 5245 202c     VIDE PARAMETER, 
+c0d03a77:	6573 656c 7463 726f 203a 6425 000a 6553     selector: %d..Se
+c0d03a87:	656c 7463 726f 4920 646e 7865 2520 2064     lector Index %d 
+c0d03a97:	6f6e 2074 7573 7070 726f 6574 0a64 5000     not supported..P
+c0d03aa7:	7261 6d61 6e20 746f 7320 7075 6f70 7472     aram not support
+c0d03ab7:	6465 000a 6c70 6775 6e69 7020 6f72 6976     ed..plugin provi
+c0d03ac7:	6564 7420 6b6f 6e65 203a 7830 7025 202c     de token: 0x%p, 
+c0d03ad7:	7830 7025 000a 704f 6e65 6553 0061 6e55     0x%p..OpenSea.Un
+c0d03ae7:	6f6c 6b63 7720 6c61 656c 0074 6553 656c     lock wallet.Sele
+c0d03af7:	7463 726f 4920 646e 7865 3a20 6425 6e20     ctor Index :%d n
+c0d03b07:	746f 7320 7075 6f70 7472 6465 000a 5047     ot supported..GP
+c0d03b17:	5249 4f49 2055 5854 545f 5059 0a45 4700     IRIOU TX_TYPE..G
+c0d03b27:	4950 4952 554f 4520 5252 524f 000a 6953     PIRIOU ERROR..Si
+c0d03b37:	6e67 7420 206f 6e75 6f6c 6b63 7720 6c61     gn to unlock wal
+c0d03b47:	656c 2074 003f                              let ?.
 
-c0d03b6f <OPENSEA_APPROVE_PROXY>:
-c0d03b6f:	d8dd 821f                                   ....
+c0d03b4d <OPENSEA_APPROVE_PROXY>:
+c0d03b4d:	d8dd 821f                                   ....
 
-c0d03b73 <OPENSEA_CANCEL_ORDER_>:
-c0d03b73:	a4a8 701c                                    ...p.
+c0d03b51 <OPENSEA_CANCEL_ORDER_>:
+c0d03b51:	a4a8 701c 0000                               ...p...
 
-c0d03b78 <OPENSEA_SELECTORS>:
-c0d03b78:	3b6f c0d0 3b73 c0d0 756a 7473 6920 3a6e     o;..s;..just in:
-c0d03b88:	6d20 7365 6173 6567 203a 6425 000a 5047      message: %d..GP
-c0d03b98:	5249 4f49 2055 4e49 5449 4320 4e4f 5254     IRIOU INIT CONTR
-c0d03ba8:	4341 0a54 5000 4f52 4956 4544 5020 5241     ACT..PROVIDE PAR
-c0d03bb8:	4d41 5445 5245 000a 4946 414e 494c 455a     AMETER..FINALIZE
-c0d03bc8:	000a 5250 564f 4449 2045 4f54 454b 0a4e     ..PROVIDE TOKEN.
-c0d03bd8:	5100 4555 5952 4320 4e4f 5254 4341 2054     .QUERY CONTRACT 
-c0d03be8:	4449 000a 5551 5245 2059 4f43 544e 4152     ID..QUERY CONTRA
-c0d03bf8:	5443 5520 0a49 5500 686e 6e61 6c64 6465     CT UI..Unhandled
-c0d03c08:	6d20 7365 6173 6567 2520 0a64 4500 6874      message %d..Eth
-c0d03c18:	7265 7565 006d 7865 6563 7470 6f69 5b6e     ereum.exception[
-c0d03c28:	6425 3a5d 4c20 3d52 7830 3025 5838 000a     %d]: LR=0x%08X..
+c0d03b58 <OPENSEA_SELECTORS>:
+c0d03b58:	3b4d c0d0 3b51 c0d0 756a 7473 6920 3a6e     M;..Q;..just in:
+c0d03b68:	6d20 7365 6173 6567 203a 6425 000a 5047      message: %d..GP
+c0d03b78:	5249 4f49 2055 4e49 5449 4320 4e4f 5254     IRIOU INIT CONTR
+c0d03b88:	4341 0a54 5000 4f52 4956 4544 5020 5241     ACT..PROVIDE PAR
+c0d03b98:	4d41 5445 5245 000a 4946 414e 494c 455a     AMETER..FINALIZE
+c0d03ba8:	000a 5250 564f 4449 2045 4f54 454b 0a4e     ..PROVIDE TOKEN.
+c0d03bb8:	5100 4555 5952 4320 4e4f 5254 4341 2054     .QUERY CONTRACT 
+c0d03bc8:	4449 000a 5551 5245 2059 4f43 544e 4152     ID..QUERY CONTRA
+c0d03bd8:	5443 5520 0a49 5500 686e 6e61 6c64 6465     CT UI..Unhandled
+c0d03be8:	6d20 7365 6173 6567 2520 0a64 4500 6874      message %d..Eth
+c0d03bf8:	7265 7565 006d 7865 6563 7470 6f69 5b6e     ereum.exception[
+c0d03c08:	6425 3a5d 4c20 3d52 7830 3025 5838 000a     %d]: LR=0x%08X..
 
-c0d03c38 <_ftoa.pow10>:
-c0d03c38:	0000 0000 0000 3ff0 0000 0000 0000 4024     .......?......$@
-c0d03c48:	0000 0000 0000 4059 0000 0000 4000 408f     ......Y@.....@.@
-c0d03c58:	0000 0000 8800 40c3 0000 0000 6a00 40f8     .......@.....j.@
-c0d03c68:	0000 0000 8480 412e 0000 0000 12d0 4163     .......A......cA
-c0d03c78:	0000 0000 d784 4197 0000 0000 cd65 41cd     .......A....e..A
-c0d03c88:	616e 006e 6e66 2d69 6600 696e 002b 6e66     nan.fni-.fni+.fn
-c0d03c98:	0069 0000                                   i...
+c0d03c18 <_ftoa.pow10>:
+c0d03c18:	0000 0000 0000 3ff0 0000 0000 0000 4024     .......?......$@
+c0d03c28:	0000 0000 0000 4059 0000 0000 4000 408f     ......Y@.....@.@
+c0d03c38:	0000 0000 8800 40c3 0000 0000 6a00 40f8     .......@.....j.@
+c0d03c48:	0000 0000 8480 412e 0000 0000 12d0 4163     .......A......cA
+c0d03c58:	0000 0000 d784 4197 0000 0000 cd65 41cd     .......A....e..A
+c0d03c68:	616e 006e 6e66 2d69 6600 696e 002b 6e66     nan.fni-.fni+.fn
+c0d03c78:	0069 0000                                   i...
 
-c0d03c9c <_etext>:
-	...
+c0d03c7c <_etext>:
+c0d03c7c:	00000000 	.word	0x00000000

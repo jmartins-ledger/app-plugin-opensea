@@ -2617,7 +2617,7 @@ END GROUP
                 0x0000000000000000                OFF_G_cx = (0x20001400 - ORIGIN (CXSRAM))
                 0x0000000000120001                _cx_trampoline = 0x120001
 
-.text           0x00000000c0d00000     0x3cc0
+.text           0x00000000c0d00000     0x3c80
                 0x00000000c0d00000                _text = .
                 0x00000000c0d00000                _nvram_start = .
  *(.boot*)
@@ -2790,59 +2790,59 @@ END GROUP
  .rodata.str1.1
                 0x00000000c0d03967       0x11 obj/handle_finalize.o
  .rodata.str1.1
-                0x00000000c0d03978      0x102 obj/handle_init_contract.o
+                0x00000000c0d03978       0xec obj/handle_init_contract.o
  .rodata.str1.1
-                0x00000000c0d03a7a       0x57 obj/handle_provide_parameter.o
+                0x00000000c0d03a64       0x57 obj/handle_provide_parameter.o
  .rodata.str1.1
-                0x00000000c0d03ad1       0x22 obj/handle_provide_token.o
+                0x00000000c0d03abb       0x22 obj/handle_provide_token.o
  .rodata.str1.1
-                0x00000000c0d03af3       0x38 obj/handle_query_contract_id.o
+                0x00000000c0d03add       0x38 obj/handle_query_contract_id.o
  .rodata.str1.1
-                0x00000000c0d03b2b       0x44 obj/handle_query_contract_ui.o
-                                         0x52 (size before relaxing)
+                0x00000000c0d03b15       0x38 obj/handle_query_contract_ui.o
+                                         0x46 (size before relaxing)
  .rodata.OPENSEA_APPROVE_PROXY
-                0x00000000c0d03b6f        0x4 obj/main.o
+                0x00000000c0d03b4d        0x4 obj/main.o
  .rodata.OPENSEA_CANCEL_ORDER_
-                0x00000000c0d03b73        0x4 obj/main.o
- *fill*         0x00000000c0d03b77        0x1 00
+                0x00000000c0d03b51        0x4 obj/main.o
+ *fill*         0x00000000c0d03b55        0x3 00
  .rodata.OPENSEA_SELECTORS
-                0x00000000c0d03b78        0x8 obj/main.o
-                0x00000000c0d03b78                OPENSEA_SELECTORS
+                0x00000000c0d03b58        0x8 obj/main.o
+                0x00000000c0d03b58                OPENSEA_SELECTORS
  .rodata.str1.1
-                0x00000000c0d03b80       0x9e obj/main.o
+                0x00000000c0d03b60       0x9e obj/main.o
  .rodata.str1.1
-                0x00000000c0d03c1e       0x1a obj/os.o
+                0x00000000c0d03bfe       0x1a obj/os.o
  .rodata._ftoa.pow10
-                0x00000000c0d03c38       0x50 obj/printf.o
+                0x00000000c0d03c18       0x50 obj/printf.o
  .rodata.str1.1
-                0x00000000c0d03c88       0x12 obj/printf.o
+                0x00000000c0d03c68       0x12 obj/printf.o
  *(.rodata.N[^_]*)
-                0x00000000c0d03c9c                . = ALIGN (0x4)
- *fill*         0x00000000c0d03c9a        0x2 00
-                0x00000000c0d03c9c                _etext = .
-                0x00000000c0d03cc0                . = ALIGN (PAGE_SIZE)
- *fill*         0x00000000c0d03c9c       0x24 00
-                0x00000000c0d03cc0                _nvram_data = .
+                0x00000000c0d03c7c                . = ALIGN (0x4)
+ *fill*         0x00000000c0d03c7a        0x2 00
+                0x00000000c0d03c7c                _etext = .
+                0x00000000c0d03c80                . = ALIGN (PAGE_SIZE)
+ *fill*         0x00000000c0d03c7c        0x4 00
+                0x00000000c0d03c80                _nvram_data = .
  *(.bss.N_* .rodata.N_*)
-                0x00000000c0d03cc0                . = ALIGN (PAGE_SIZE)
-                0x00000000c0d03cc0                _envram_data = .
-                0x00000000c0d03cc0                _install_parameters = .
-                0x00000000c0d03cc0                _nvram_end = .
+                0x00000000c0d03c80                . = ALIGN (PAGE_SIZE)
+                0x00000000c0d03c80                _envram_data = .
+                0x00000000c0d03c80                _install_parameters = .
+                0x00000000c0d03c80                _nvram_end = .
 
-.glue_7         0x00000000c0d03cc0        0x0
- .glue_7        0x00000000c0d03cc0        0x0 linker stubs
+.glue_7         0x00000000c0d03c80        0x0
+ .glue_7        0x00000000c0d03c80        0x0 linker stubs
 
-.glue_7t        0x00000000c0d03cc0        0x0
- .glue_7t       0x00000000c0d03cc0        0x0 linker stubs
+.glue_7t        0x00000000c0d03c80        0x0
+ .glue_7t       0x00000000c0d03c80        0x0 linker stubs
 
-.vfp11_veneer   0x00000000c0d03cc0        0x0
- .vfp11_veneer  0x00000000c0d03cc0        0x0 linker stubs
+.vfp11_veneer   0x00000000c0d03c80        0x0
+ .vfp11_veneer  0x00000000c0d03c80        0x0 linker stubs
 
-.v4_bx          0x00000000c0d03cc0        0x0
- .v4_bx         0x00000000c0d03cc0        0x0 linker stubs
+.v4_bx          0x00000000c0d03c80        0x0
+ .v4_bx         0x00000000c0d03c80        0x0 linker stubs
 
-.iplt           0x00000000c0d03cc0        0x0
- .iplt          0x00000000c0d03cc0        0x0 obj/debug.o
+.iplt           0x00000000c0d03c80        0x0
+ .iplt          0x00000000c0d03c80        0x0 obj/debug.o
 
 .data           0x00000000d0000000        0x0
                 0x00000000d0000000                . = ALIGN (0x4)
@@ -3326,7 +3326,7 @@ DEBUG           0x00000000d0000000        0x8
 .debug_varnames
  *(.debug_varnames)
                 0x00000000c0d00000                PROVIDE (_nvram = ABSOLUTE (_nvram_start))
-                0x00000000c0d03cc0                PROVIDE (_envram = ABSOLUTE (_nvram_end))
+                0x00000000c0d03c80                PROVIDE (_envram = ABSOLUTE (_nvram_end))
 OUTPUT(bin/app.elf elf32-littlearm)
 LOAD linker stubs
 LOAD /home/glenn2/ledger/gcc-arm-none-eabi-10-2020-q4-major/bin/../lib/gcc/arm-none-eabi/10.2.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc.a

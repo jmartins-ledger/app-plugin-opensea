@@ -26,7 +26,7 @@ void handle_init_contract(void *parameters)
 
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 
-    PRINTF("GPIRIOU PROUTAFOND 2\n");
+    PRINTF("GPIRIOU PROUTAFOND 1\n");
     // Initialize the context (to 0).
     memset(context, 0, sizeof(*context));
     // Mark context as valid.

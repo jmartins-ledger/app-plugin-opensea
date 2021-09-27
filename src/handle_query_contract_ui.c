@@ -35,7 +35,7 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
     {
     case APPROVE_PROXY:
         strncpy(msg->title, "Unlock wallet", msg->titleLength);
-        strncpy(msg->msg, "Would you like to unlock the wallet", msg->msgLength);
+        strncpy(msg->msg, "Sign to unlock wallet ?", msg->msgLength);
         break;
     }
 }
