@@ -28,7 +28,7 @@ splited.forEach((line, index) => {
 		res.push(`E0040000${hexLen}${line}`)
 	/* Last */
 	else if (index === (splited.length - 1))
-		res.push(`E004000${getHexLen(line)}${line}`)
+		res.push(`E0048000${getHexLen(line)}${line}`)
 	/* Between */
 	else res.push(`E004800096${line}`)
 })
