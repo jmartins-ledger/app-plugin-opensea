@@ -1,0 +1,28 @@
+{
+  "name": "opensea-plugin",
+  "version": "1.0.0",
+  "description": "Boilerplate repo to get your plugin started!",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gpiriou/opensea-plugin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gpiriou/opensea-plugin/issues"
+  },
+  "homepage": "https://github.com/gpiriou/opensea-plugin#readme",
+  "dependencies": {
+    "esm": "^3.2.25",
+    "ethers": "^5.4.7"
+  }
+}
