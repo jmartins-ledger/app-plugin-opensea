@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "*.sol": "c"
+        "*.sol": "c",
+        "stdint.h": "c"
     }
 }

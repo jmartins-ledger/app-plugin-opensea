@@ -5,7 +5,8 @@
 
 // Writes the string buf using QEMU's semi-hosting features. Only usable with speculos, the device
 // emulator!
-void debug_write(const char *buf) {
+void debug_write(const char *buf)
+{
     asm volatile(
         "movs r0, #0x04\n"
         "movs r1, %0\n"
@@ -14,7 +15,8 @@ void debug_write(const char *buf) {
 }
 
 // Special printf function using the `debug_write` function.
-int semihosted_printf(const char *format, ...) {
+int semihosted_printf(const char *format, ...)
+{
     char buf[128 + 1];
 
     va_list args;
@@ -25,7 +27,8 @@ int semihosted_printf(const char *format, ...) {
     va_end(args);
 
     debug_write("semi-hosting: ");
-    if (ret > 0) {
+    if (ret > 0)
+    {
         buf[ret] = 0;
         debug_write(buf);
     }
@@ -54,12 +57,14 @@ static const char G_HEX[] = {
 
 // %.*H doesn't work with semi-hosted printf, so here's a utility function to print bytes in hex
 // format.
-void print_bytes(const uint8_t *bytes, uint16_t len) {
+void print_bytes(const uint8_t *bytes, uint16_t len)
+{
     unsigned char nibble1, nibble2;
     char str[] = {0, 0, 0};
 
-    debug_write("GPIRIOU bytes: ");
-    for (uint16_t count = 0; count < len; count++) {
+    // debug_write("GPIRIOU bytes: ");
+    for (uint16_t count = 0; count < len; count++)
+    {
         nibble1 = (bytes[count] >> 4) & 0xF;
         nibble2 = bytes[count] & 0xF;
         str[0] = G_HEX[nibble1];

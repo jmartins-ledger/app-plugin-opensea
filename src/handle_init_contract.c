@@ -3,7 +3,6 @@
 // Called once to init.
 void handle_init_contract(void *parameters)
 {
-    PRINTF("GPIRIOU TEST\n");
     // Cast the msg to the type of structure we expect (here, ethPluginInitContract_t).
     ethPluginInitContract_t *msg = (ethPluginInitContract_t *)parameters;
 
@@ -16,7 +15,6 @@ void handle_init_contract(void *parameters)
     }
 
     // TODO: this could be removed as this can be checked statically?
-    PRINTF("GPIRIOU PROUTAFOND 1\n");
     if (msg->pluginContextLength < sizeof(opensea_parameters_t))
     {
         PRINTF("Plugin parameters structure is bigger than allowed size\n");
@@ -26,25 +24,22 @@ void handle_init_contract(void *parameters)
 
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 
-    PRINTF("GPIRIOU PROUTAFOND 1\n");
     // Initialize the context (to 0).
     memset(context, 0, sizeof(*context));
     // Mark context as valid.
     context->valid = 1;
-    PRINTF("GPIRIOU PROUTAFOND 2 2\n");
 
     // Look for the index of the selectorIndex passed in by `msg`.
     uint8_t i;
     for (i = 0; i < NUM_OPENSEA_SELECTORS; i++)
     {
-        PRINTF("LOOKING for selector %d", i);
+        PRINTF("\033[0;31mLOOKING for selector %d\n\033[0m", i);
         if (memcmp((uint8_t *)PIC(OPENSEA_SELECTORS[i]), msg->selector, SELECTOR_SIZE) == 0)
         {
             context->selectorIndex = i;
             break;
         }
     }
-    PRINTF("GPIRIOU PROUTAFOND 3\n");
 
     // If `i == NUM_UNISWAP_SELECTOR` it means we haven't found the selector. Return an error.
     if (i == NUM_OPENSEA_SELECTORS)
@@ -53,7 +48,6 @@ void handle_init_contract(void *parameters)
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
     }
 
-    PRINTF("GPIRIOU PROUTAFOND 4\n");
     // Set `next_param` to be the first field we expect to parse.
     PRINTF("INIT_CONTRACT selector: %u\n", context->selectorIndex);
     switch (context->selectorIndex)
@@ -61,9 +55,9 @@ void handle_init_contract(void *parameters)
     case APPROVE_PROXY:
         context->next_param = NONE;
         break;
-    // case CANCEL_ORDER_:
-    // context->next_param = CONTRACT_ADDRESS;
-    // break;
+    case CANCEL_ORDER_:
+        context->next_param = CONTRACT_ADDRESS;
+        break;
     // case ADD_LIQUIDITY:
     // case REMOVE_LIQUIDITY:
     // case REMOVE_LIQUIDITY_PERMIT:

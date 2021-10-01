@@ -44,31 +44,31 @@ void dispatch_plugin_calls(int message, void *parameters)
     switch (message)
     {
     case ETH_PLUGIN_INIT_CONTRACT:
-        PRINTF("GPIRIOU INIT CONTRACT\n");
+        PRINTF("\033[0;32mINIT CONTRACT\n\033[0m");
         handle_init_contract(parameters);
         break;
     case ETH_PLUGIN_PROVIDE_PARAMETER:
-        PRINTF("PROVIDE PARAMETER\n");
+        PRINTF("\033[0;32mPROVIDE PARAMETER\n\033[0m");
         handle_provide_parameter(parameters);
         break;
     case ETH_PLUGIN_FINALIZE:
-        PRINTF("FINALIZE\n");
+        PRINTF("\033[0;32mFINALIZE\n\033[0m");
         handle_finalize(parameters);
         break;
     case ETH_PLUGIN_PROVIDE_TOKEN:
-        PRINTF("PROVIDE TOKEN\n");
+        PRINTF("\033[0;32mPROVIDE TOKEN\n\033[0m");
         handle_provide_token(parameters);
         break;
     case ETH_PLUGIN_QUERY_CONTRACT_ID:
-        PRINTF("QUERY CONTRACT ID\n");
+        PRINTF("\033[0;32mQUERY CONTRACT ID\n\033[0m");
         handle_query_contract_id(parameters);
         break;
     case ETH_PLUGIN_QUERY_CONTRACT_UI:
-        PRINTF("QUERY CONTRACT UI\n");
+        PRINTF("\033[0;32mQUERY CONTRACT UI\n\033[0m");
         handle_query_contract_ui(parameters);
         break;
     default:
-        PRINTF("Unhandled message %d\n", message);
+        PRINTF("\033[0;32mUnhandled message %d\n\033[0m", message);
         break;
     }
 }

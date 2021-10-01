@@ -49,6 +49,7 @@ extern const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS];
 typedef enum
 {
     BENEFICIARY,
+    CONTRACT_ADDRESS,
     DEADLINE,
     NONE,
 } selectorField;
