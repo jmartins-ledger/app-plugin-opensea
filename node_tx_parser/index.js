@@ -11,7 +11,7 @@ if (!process.argv[2]) {
 	process.exit(1)
 }
 
-const inputedTx = process.argv[2]
+const inputedTx = process.argv[2].trim()
 const APDU_MAX = 150
 
 /* Prepend the raw data */
