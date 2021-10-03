@@ -56,7 +56,7 @@ void handle_init_contract(void *parameters)
         context->next_param = NONE;
         break;
     case CANCEL_ORDER_:
-        context->next_param = CONTRACT_ADDRESS;
+        context->next_param = EXCHANGE_ADDRESS;
         break;
     // case ADD_LIQUIDITY:
     // case REMOVE_LIQUIDITY:

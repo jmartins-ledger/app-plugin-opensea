@@ -23,6 +23,11 @@ void handle_finalize(void *parameters)
 
     if (context->valid)
     {
+        // !! condition always evaluate to true, should be false when address is 0x0
+        if (context->payment_token_address)
+        {
+            msg->tokenLookup1 = context->payment_token_address;
+        }
         msg->uiType = ETH_UI_TYPE_GENERIC;
         context->plugin_screen_index = TX_TYPE_UI;
         msg->numScreens = 1;

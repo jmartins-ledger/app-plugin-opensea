@@ -54,6 +54,38 @@ typedef enum
     NONE,
 } selectorField;
 
+typedef enum
+{
+    NOOP,
+    EXCHANGE_ADDRESS, // 7 Addresses
+    MAKER_ADDRESS,
+    TAKER_ADDRESS,
+    FEE_RECIPIENT_ADDRESS,
+    TARGET_ADDRESS,
+    STATIC_TARGET_ADDRESS,
+    PAYMENT_TOKEN_ADDRESS,
+    MAKER_RELAYER_FEE, // 9 uint256
+    TAKER_RELAYER_FEE,
+    MAKER_PROTOCOL_FEE,
+    TAKER_PROTOCOL_FEE,
+    BASE_PRICE,
+    EXTRA,
+    LISTING_TIME,
+    EXPIRATION_TIME,
+    SALT,
+    FEE_METHOD,
+    SIDE,
+    SALE_KIND,
+    HOW_TO_CALL,
+    CALLDATA_OFFSET,
+    REPLACEMENT_PATTERN_OFFSET,
+    STATIC_EXTRADATA_OFFSET,
+    CALLDATA,
+    REPLACEMENT_PATTERN,
+    STATIC_EXTRADATA,
+    // SIG stuff
+} cancel_order_parameter;
+
 #define WETH_TICKER "WETH"
 #define WETH_DECIMALS 18
 
@@ -66,25 +98,31 @@ typedef enum
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct opensea_parameters_t
 {
-    uint8_t token_a_address[ADDRESS_LENGTH];    // 20
-    uint8_t token_b_address[ADDRESS_LENGTH];    // 20
-    uint8_t token_a_amount_sent[INT256_LENGTH]; // 32
-    uint8_t token_b_amount_sent[INT256_LENGTH]; // 32
-    char ticker_token_a[MAX_TICKER_LEN];        // 12
-    char ticker_token_b[MAX_TICKER_LEN];        // 12
-    uint8_t beneficiary[ADDRESS_LENGTH];        // 20
-    uint8_t screen_array;                       // 1
-    uint8_t previous_screen_index;              // 1
-    uint8_t plugin_screen_index;                // 1
+    uint16_t calldata_offset;            // 2
+    uint16_t replacement_pattern_offset; // 2
+    uint16_t static_extradata_offset;    // 2
+    uint32_t next_parameter_length;      // 4
 
-    uint16_t path_offset;     // 2
-    uint8_t skip;             // 1
-    uint8_t next_param;       // 1
-    uint8_t valid;            // 1
-    uint8_t decimals_token_a; // 1
-    uint8_t decimals_token_b; // 1
-    uint8_t selectorIndex;    // 1
-    // = 159
+    uint8_t payment_token_address[ADDRESS_LENGTH]; // 20
+    uint8_t payment_token_amount[INT256_LENGTH];   // 32
+    char payment_token_ticker[MAX_TICKER_LEN];     // 12
+    uint8_t payment_token_decimals;                // 1
+    bool payment_token_found;                      // 1
+    uint8_t beneficiary[ADDRESS_LENGTH];           // 20
+
+    uint8_t side;                                 // 1
+    uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
+    // token id
+
+    uint8_t screen_array;          // 1
+    uint8_t previous_screen_index; // 1
+    uint8_t plugin_screen_index;   // 1
+
+    uint8_t skip;          // 1
+    uint8_t next_param;    // 1
+    uint8_t valid;         // 1
+    uint8_t selectorIndex; // 1
+    // = 124
 } opensea_parameters_t;
 
 // Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove

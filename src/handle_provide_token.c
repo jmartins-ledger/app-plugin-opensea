@@ -11,6 +11,17 @@ void handle_provide_token(void *parameters)
         msg->result = ETH_PLUGIN_RESULT_OK;
         return;
     }
+
+    if (msg->token1)
+    {
+        context->payment_token_decimals = msg->token1->decimals;
+        strlcpy(context->payment_token_ticker, (char *)msg->token1->ticker, sizeof(context->payment_token_ticker));
+        context->payment_token_found = true;
+    }
+    else
+    {
+        context->payment_token_found = false;
+    }
     // No need to check token1 for transactions involving sending ETH
     //if (!(context->selectorIndex == ADD_LIQUIDITY_ETH) &&
     //    !(context->selectorIndex == SWAP_EXACT_ETH_FOR_TOKENS) &&
