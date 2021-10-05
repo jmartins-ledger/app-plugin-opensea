@@ -225,7 +225,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
         context->static_extradata_offset = 0;
     }
-    switch ((cancel_order_parameter)context->next_param)
+    switch ((atomic_match_parameter)context->next_param)
     {
     case BUY_EXCHANGE_ADDRESS:
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in CONTRACT_ADDRESS PARAM\n");
