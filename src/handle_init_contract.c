@@ -58,6 +58,9 @@ void handle_init_contract(void *parameters)
     case CANCEL_ORDER_:
         context->next_param = EXCHANGE_ADDRESS;
         break;
+    case ATOMIC_MATCH_:
+        context->next_param = BUY_EXCHANGE_ADDRESS;
+        break;
     // case ADD_LIQUIDITY:
     // case REMOVE_LIQUIDITY:
     // case REMOVE_LIQUIDITY_PERMIT:

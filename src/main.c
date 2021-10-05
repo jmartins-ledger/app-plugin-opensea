@@ -28,12 +28,14 @@
 //OpenSea Contract Methods
 static const uint8_t OPENSEA_APPROVE_PROXY[SELECTOR_SIZE] = {0xdd, 0xd8, 0x1f, 0x82};
 static const uint8_t OPENSEA_CANCEL_ORDER_[SELECTOR_SIZE] = {0xa8, 0xa4, 0x1c, 0x70};
+static const uint8_t OPENSEA_ATOMIC_MATCH_[SELECTOR_SIZE] = {0xab, 0x83, 0x4b, 0xab};
 
 // Array of all the different opensea selectors. Make sure this follows the same order as the
 // enum defined in `opensea_plugin.h`
 const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS] = {
     OPENSEA_APPROVE_PROXY,
     OPENSEA_CANCEL_ORDER_,
+    OPENSEA_ATOMIC_MATCH_,
 };
 
 // ERC721 Standards Methods

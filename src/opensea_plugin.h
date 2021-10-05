@@ -20,7 +20,7 @@
 #define PLUGIN_NAME "OpenSea"
 
 // Number of selectors defined in this plugin.
-#define NUM_OPENSEA_SELECTORS 2
+#define NUM_OPENSEA_SELECTORS 3
 
 // Enumeration of the different selectors possible.
 // Should follow the array declared in main.c
@@ -28,6 +28,7 @@ typedef enum
 {
     APPROVE_PROXY,
     CANCEL_ORDER_,
+    ATOMIC_MATCH_,
 } openseaSelector_t;
 
 #define NUM_NFT_SELECTORS 1
@@ -63,7 +64,7 @@ typedef enum
 
 typedef enum
 {
-    NOOP,
+    A_NOOP,
     EXCHANGE_ADDRESS, // 7 Addresses
     MAKER_ADDRESS,
     TAKER_ADDRESS,
@@ -71,7 +72,7 @@ typedef enum
     TARGET_ADDRESS,
     STATIC_TARGET_ADDRESS,
     PAYMENT_TOKEN_ADDRESS,
-    MAKER_RELAYER_FEE, // 9 uint256
+    MAKER_RELAYER_FEE, // 9 uint256 {
     TAKER_RELAYER_FEE,
     MAKER_PROTOCOL_FEE,
     TAKER_PROTOCOL_FEE,
@@ -79,7 +80,7 @@ typedef enum
     EXTRA,
     LISTING_TIME,
     EXPIRATION_TIME,
-    SALT,
+    SALT, // }
     FEE_METHOD,
     SIDE,
     SALE_KIND,
@@ -92,6 +93,76 @@ typedef enum
     STATIC_EXTRADATA,
     // SIG stuff
 } cancel_order_parameter;
+
+typedef enum
+{
+    B_NOOP,
+    BUY_EXCHANGE_ADDRESS, // 14 Addresses
+    BUY_MAKER_ADDRESS,
+    BUY_TAKER_ADDRESS,
+    BUY_FEE_RECIPIENT_ADDRESS,
+    BUY_TARGET_ADDRESS,
+    BUY_STATIC_TARGET_ADDRESS,
+    BUY_PAYMENT_TOKEN_ADDRESS,
+
+    SELL_EXCHANGE_ADDRESS,
+    SELL_MAKER_ADDRESS,
+    SELL_TAKER_ADDRESS,
+    SELL_FEE_RECIPIENT_ADDRESS,
+    SELL_TARGET_ADDRESS,
+    SELL_STATIC_TARGET_ADDRESS,
+    SELL_PAYMENT_TOKEN_ADDRESS, // }
+
+    BUY_MAKER_RELAYER_FEE, // 18 uint256 {
+    BUY_TAKER_RELAYER_FEE,
+    BUY_MAKER_PROTOCOL_FEE,
+    BUY_TAKER_PROTOCOL_FEE,
+    BUY_BASE_PRICE,
+    BUY_EXTRA,
+    BUY_LISTING_TIME,
+    BUY_EXPIRATION_TIME,
+    BUY_SALT,
+
+    SELL_MAKER_RELAYER_FEE,
+    SELL_TAKER_RELAYER_FEE,
+    SELL_MAKER_PROTOCOL_FEE,
+    SELL_TAKER_PROTOCOL_FEE,
+    SELL_BASE_PRICE,
+    SELL_EXTRA,
+    SELL_LISTING_TIME,
+    SELL_EXPIRATION_TIME,
+    SELL_SALT, // }
+
+    BUY_FEE_METHOD, // 8 uint256 {
+    BUY_SIDE,
+    BUY_SALE_KIND,
+    BUY_HOW_TO_CALL,
+
+    SELL_FEE_METHOD,
+    SELL_SIDE,
+    SELL_SALE_KIND,
+    SELL_HOW_TO_CALL, // }
+
+    BUY_CALLDATA_OFFSET,
+    SELL_CALLDATA_OFFSET,
+
+    BUY_REPLACEMENT_PATTERN_OFFSET,
+    SELL_REPLACEMENT_PATTERN_OFFSET,
+
+    BUY_STATIC_EXTRADATA_OFFSET,
+    SELL_STATIC_EXTRADATA_OFFSET,
+
+    BUY_CALLDATA,
+    SELL_CALLDATA,
+
+    BUY_REPLACEMENT_PATTERN,
+    SELL_REPLACEMENT_PATTERN,
+
+    BUY_STATIC_EXTRADATA,
+    SELL_STATIC_EXTRADATA,
+    // Buy sig stuff
+    // Sell sig stuff
+} atomic_match_parameter;
 
 #define WETH_TICKER "WETH"
 #define WETH_DECIMALS 18
