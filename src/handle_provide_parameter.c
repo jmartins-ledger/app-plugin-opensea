@@ -41,36 +41,61 @@ static void handle_approve_proxy(ethPluginProvideParameter_t *msg, opensea_param
     }
 }
 
+static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
+{
+    PRINTF("IN CALLDATA IN CALL DATA %d =? %d\n", context->calldata_offset + context->next_parameter_length, msg->parameterOffset);
+    if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
+    {
+        PRINTF("METHODMETHODMETHOD: %x\n", msg->parameter[0]);
+        // TODO: define this fn
+        // check_method_id(msg->parameter[0], )
+        // if (memcmp(msg->parameter, ERC721_SELECTORS[TRANSFER_FROM], SELECTOR_SIZE) == 0)
+        if (memcmp((uint8_t *)PIC(ERC721_SELECTORS[TRANSFER_FROM]), msg->parameter, SELECTOR_SIZE) == 0)
+            PRINTF("YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI\n");
+    }
+
+    if (context->calldata_offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
+    {
+        PRINTF("END END END END\n");
+        context->on_param = ON_NONE;
+    }
+}
+
 static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     // PRINTF("\033[0;31mTEST PENZO: %x\033[0m\n", msg->parameter[PARAMETER_LENGTH]);
     PRINTF("\033[0;31mPROVIDE PARAMETER - current parameter:\n");
     print_bytes(msg->parameter, PARAMETER_LENGTH);
     PRINTF("\033[0m");
+    if (context->on_param)
+    {
+        if (context->on_param == ON_CALLDATA)
+            handle_calldata(msg, context);
+    }
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset)
     {
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
-        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - 4);
+        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
         PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
-        context->calldata_offset = 0;
+        // context->calldata_offset = 0;
+        context->on_param = ON_CALLDATA;
     }
     else if (context->replacement_pattern_offset != 0 && msg->parameterOffset == context->replacement_pattern_offset)
     {
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in \033[0;32mREPlACEMENT_PATTERN_LENGTH\033[0m PARAM\n");
-        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - 4);
+        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
         PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
         context->replacement_pattern_offset = 0;
     }
     else if (context->static_extradata_offset != 0 && msg->parameterOffset == context->static_extradata_offset)
     {
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in \033[0;32mSTATIC_EXTRADATA_LENGTH\033[0m PARAM\n");
-        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - 4);
+        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
         PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
         context->static_extradata_offset = 0;
     }
     switch ((cancel_order_parameter)context->next_param)
     {
-    // case CONTRACT_ADDRESS:
     case EXCHANGE_ADDRESS:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in CONTRACT_ADDRESS PARAM\n");
         break;

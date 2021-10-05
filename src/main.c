@@ -25,16 +25,24 @@
 
 // Define here all the selectors you wish to support.
 
+//OpenSea Contract Methods
 static const uint8_t OPENSEA_APPROVE_PROXY[SELECTOR_SIZE] = {0xdd, 0xd8, 0x1f, 0x82};
 static const uint8_t OPENSEA_CANCEL_ORDER_[SELECTOR_SIZE] = {0xa8, 0xa4, 0x1c, 0x70};
-
-// static const uint8_t [SELECTOR_SIZE] = {0xdd, 0xd8, 0x1F, 0x82};
 
 // Array of all the different opensea selectors. Make sure this follows the same order as the
 // enum defined in `opensea_plugin.h`
 const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS] = {
     OPENSEA_APPROVE_PROXY,
     OPENSEA_CANCEL_ORDER_,
+};
+
+// ERC721 Standards Methods
+static const uint8_t _TRANSFER_FROM[SELECTOR_SIZE] = {0x23, 0xb8, 0x72, 0xdd};
+
+// Array of all the different ERC721 selectors. Make sure this follows the same order as the
+// enum defined in `opensea_plugin.h`
+const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS] = {
+    _TRANSFER_FROM,
 };
 
 // Function to dispatch calls from the ethereum app.
