@@ -212,8 +212,10 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         break;
     case SIDE:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in SIDE PARAM\n");
-        context->calldata_offset - U4BE(msg->parameter, PARAMETER_LENGTH - 4);
-        // copy_parameter(context->side, sizeof(context->side), msg->parameter);
+        if (msg->parameter[PARAMETER_LENGTH - 1])
+            context->booleans |= ORDER_SIDE;
+        PRINTF("---BOOLS: %d\n", context->booleans);
+        // context->calldata_offset - U4BE(msg->parameter, PARAMETER_LENGTH - 4);
         break;
     case SALE_KIND:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in SALE_KIND PARAM\n");

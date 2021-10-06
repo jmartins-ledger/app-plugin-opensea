@@ -39,7 +39,7 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
         break;
     case CANCEL_ORDER_:
         strncpy(msg->title, "Cancel Order:", msg->titleLength);
-        if (context->side)
+        if (context->booleans & ORDER_SIDE)
             strncpy(msg->msg, "Withdraw offer?", msg->msgLength);
         else
             strncpy(msg->msg, "Remove listing?", msg->msgLength);
