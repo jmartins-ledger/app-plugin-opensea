@@ -31,11 +31,21 @@ typedef enum
     ATOMIC_MATCH_,
 } openseaSelector_t;
 
-#define NUM_NFT_SELECTORS 1
+#define NUM_NFT_SELECTORS 3
+
 typedef enum
 {
     TRANSFER_FROM,
+    SAFE_TRANSFER_FROM,
+    METHOD_NOT_FOUND,
 } erc721Selector_t;
+
+typedef enum
+{
+    FROM,
+    TO,
+    TOKEN_ID,
+} transfer_from_parameter;
 
 extern const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS];
 extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
@@ -62,6 +72,7 @@ typedef enum
     NONE,
 } selectorField;
 
+// cancelOrder_() parameters
 typedef enum
 {
     A_NOOP,
@@ -174,6 +185,7 @@ typedef enum
 #define DEFAULT_TICKER "? "
 
 // on_param defines
+// PENZO useless bit shifting, this should be 1, 2, 3...
 #define ON_NONE 0
 #define ON_CALLDATA 1
 #define ON_REPLACEMENT_PATTERN (1 << 1)
@@ -187,6 +199,7 @@ typedef struct opensea_parameters_t
     uint16_t static_extradata_offset;    // 2
     uint32_t next_parameter_length;      // 4
     uint8_t on_param;                    // 1
+    uint8_t calldata_method;             // 1
 
     uint8_t payment_token_address[ADDRESS_LENGTH]; // 20
     uint8_t payment_token_amount[INT256_LENGTH];   // 32
@@ -195,11 +208,9 @@ typedef struct opensea_parameters_t
     bool payment_token_found;                      // 1
     uint8_t beneficiary[ADDRESS_LENGTH];           // 20
 
-    uint8_t token_id[INT256_LENGTH]; // 32
-
     uint8_t side;                                 // 1
     uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
-    // token id
+    uint8_t token_id[INT256_LENGTH];              // 32
 
     uint8_t screen_array;          // 1
     uint8_t previous_screen_index; // 1
@@ -209,7 +220,7 @@ typedef struct opensea_parameters_t
     uint8_t next_param;    // 1
     uint8_t valid;         // 1
     uint8_t selectorIndex; // 1
-    // = 157
+    // = 158
 } opensea_parameters_t;
 
 // Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove

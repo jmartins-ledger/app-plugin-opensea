@@ -41,22 +41,56 @@ static void handle_approve_proxy(ethPluginProvideParameter_t *msg, opensea_param
     }
 }
 
+static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
+{
+    PRINTF("IN TRANSFER METHOD.\n");
+    PRINTF("IN TRANSFER METHOD.\n");
+    PRINTF("calldata_offset: %d\n", context->calldata_offset);
+    PRINTF("msg->offset: %d\n", msg->parameterOffset);
+    // if (context->calldata_offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
+    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
+        PRINTF("IN 'from' =======================================\n");
+    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 2)
+        PRINTF("IN 'to' =======================================\n");
+    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 3)
+    {
+        PRINTF("IN 'tokenID' =======================================\n");
+        memcpy(context->token_id, msg->parameter + SELECTOR_SIZE, PARAMETER_LENGTH - SELECTOR_SIZE);
+    }
+    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 4)
+    {
+        PRINTF("IN 'tokenID' part 2 =======================================\n");
+        memcpy(context->token_id + PARAMETER_LENGTH - SELECTOR_SIZE, msg->parameter, SELECTOR_SIZE);
+        PRINTF("IN 'tokenID' RES: =======================================\n");
+        print_bytes(context->token_id, PARAMETER_LENGTH);
+    }
+}
+
 static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
-    PRINTF("IN CALLDATA IN CALL DATA %d =? %d\n", context->calldata_offset + context->next_parameter_length, msg->parameterOffset);
+    PRINTF("IN CALLDATA IN CALL DATA target:%d =? current:%d\n", context->calldata_offset + context->next_parameter_length, msg->parameterOffset);
+    // Find calldata Method ID.
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
     {
-        PRINTF("METHODMETHODMETHOD: %x\n", msg->parameter[0]);
-        // TODO: define this fn
-        // check_method_id(msg->parameter[0], )
-        // if (memcmp(msg->parameter, ERC721_SELECTORS[TRANSFER_FROM], SELECTOR_SIZE) == 0)
-        if (memcmp((uint8_t *)PIC(ERC721_SELECTORS[TRANSFER_FROM]), msg->parameter, SELECTOR_SIZE) == 0)
-            PRINTF("YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI YOUPI\n");
+        PRINTF("CALLDATA METHOD: %x%x%x%x\n", msg->parameter[0], msg->parameter[1], msg->parameter[2], msg->parameter[3]);
+        uint8_t i;
+        for (i = 0; i < NUM_NFT_SELECTORS; i++)
+        {
+            context->calldata_method = i;
+            if (memcmp((uint8_t *)PIC(ERC721_SELECTORS[i]), msg->parameter, SELECTOR_SIZE) == 0)
+            {
+                PRINTF("CALLDATA METHOD FOUND: %d!\n", context->calldata_method);
+                break;
+            }
+        }
     }
-
+    if (context->calldata_method == TRANSFER_FROM ||
+        context->calldata_method == SAFE_TRANSFER_FROM)
+        handle_tranfer_from_method(msg, context);
+    // End of calldata
     if (context->calldata_offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
     {
-        PRINTF("END END END END\n");
+        PRINTF("END END END CALLDATA END END END\n");
         context->on_param = ON_NONE;
     }
 }
@@ -72,6 +106,7 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         if (context->on_param == ON_CALLDATA)
             handle_calldata(msg, context);
     }
+    // Is on calldata_length parameter
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset)
     {
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
@@ -161,6 +196,7 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         break;
     case SIDE:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in SIDE PARAM\n");
+        // TODO: keep value
         break;
     case SALE_KIND:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in SALE_KIND PARAM\n");

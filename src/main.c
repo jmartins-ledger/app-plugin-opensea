@@ -40,11 +40,16 @@ const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS] = {
 
 // ERC721 Standards Methods
 static const uint8_t _TRANSFER_FROM[SELECTOR_SIZE] = {0x23, 0xb8, 0x72, 0xdd};
+static const uint8_t _SAFE_TRANSFER_FROM[SELECTOR_SIZE] = {0xf2, 0x42, 0x43, 0x2a};
+// je sais pas la.
+static const uint8_t _METHOD_NOT_FOUND[SELECTOR_SIZE] = {0x00, 0x00, 0x00, 0x00};
 
 // Array of all the different ERC721 selectors. Make sure this follows the same order as the
 // enum defined in `opensea_plugin.h`
 const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS] = {
     _TRANSFER_FROM,
+    _SAFE_TRANSFER_FROM,
+    _METHOD_NOT_FOUND,
 };
 
 // Function to dispatch calls from the ethereum app.
