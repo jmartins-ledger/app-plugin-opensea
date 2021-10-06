@@ -28,18 +28,18 @@ static void handle_beneficiary(ethPluginProvideParameter_t *msg, opensea_paramet
     PRINTF("BENEFICIARY: %.*H\n", ADDRESS_LENGTH, context->beneficiary);
 }
 
-static void handle_approve_proxy(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
-{
-    switch (context->selectorIndex)
-    {
-    case NONE:
-        break;
-    default:
-        PRINTF("Param not supported\n");
-        msg->result = ETH_PLUGIN_RESULT_ERROR;
-        break;
-    }
-}
+//static void handle_approve_proxy(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
+//{
+//    switch (context->selectorIndex)
+//    {
+//    case NONE:
+//        break;
+//    default:
+//        PRINTF("Param not supported\n");
+//        msg->result = ETH_PLUGIN_RESULT_ERROR;
+//        break;
+//    }
+//}
 
 static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
@@ -212,7 +212,8 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         break;
     case SIDE:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in SIDE PARAM\n");
-        // TODO: keep value
+        context->calldata_offset - U4BE(msg->parameter, PARAMETER_LENGTH - 4);
+        // copy_parameter(context->side, sizeof(context->side), msg->parameter);
         break;
     case SALE_KIND:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in SALE_KIND PARAM\n");
@@ -478,7 +479,7 @@ void handle_provide_parameter(void *parameters)
     switch (context->selectorIndex)
     {
     case APPROVE_PROXY:
-        handle_approve_proxy(msg, context);
+        // handle_approve_proxy(msg, context);
         break;
     case CANCEL_ORDER_:
         handle_cancel_order(msg, context);

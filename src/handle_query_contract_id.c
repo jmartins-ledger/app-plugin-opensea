@@ -11,7 +11,10 @@ void handle_query_contract_id(void *parameters)
     switch (context->selectorIndex)
     {
     case APPROVE_PROXY:
-        strncpy(msg->version, "Unlock wallet", msg->versionLength);
+        strncpy(msg->version, "Unlock Wallet", msg->versionLength);
+        break;
+    case CANCEL_ORDER_:
+        strncpy(msg->version, "Cancel Order", msg->versionLength);
         break;
     default:
         PRINTF("Selector Index :%d not supported\n", context->selectorIndex);

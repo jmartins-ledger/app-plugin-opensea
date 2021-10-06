@@ -53,7 +53,7 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 
 // screeen array correspondance
 #define TX_TYPE_UI 1
-#define WARNING_TOKEN_A_UI (1 << 1)
+#define COLLECTION_UI (1 << 1)
 #define AMOUNT_TOKEN_A_UI (1 << 2)
 #define WARNING_TOKEN_B_UI (1 << 3)
 #define AMOUNT_TOKEN_B_UI (1 << 4)
@@ -63,15 +63,6 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 
 #define RIGHT_SCROLL 1
 #define LEFT_SCROLL 0
-
-// Enumeration used to parse the smart-contract data.
-typedef enum
-{
-    BENEFICIARY,
-    CONTRACT_ADDRESS,
-    DEADLINE,
-    NONE,
-} selectorField;
 
 // cancelOrder_() parameters
 typedef enum

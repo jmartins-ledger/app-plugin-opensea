@@ -53,7 +53,6 @@ void handle_init_contract(void *parameters)
     switch (context->selectorIndex)
     {
     case APPROVE_PROXY:
-        context->next_param = NONE;
         break;
     case CANCEL_ORDER_:
         context->next_param = EXCHANGE_ADDRESS;

@@ -6,7 +6,7 @@ void handle_provide_token(void *parameters)
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
     PRINTF("plugin provide token: 0x%p, 0x%p\n", msg->token1, msg->token2);
 
-    if (context->selectorIndex == APPROVE_PROXY)
+    if (context->selectorIndex == APPROVE_PROXY || context->selectorIndex == CANCEL_ORDER_)
     {
         msg->result = ETH_PLUGIN_RESULT_OK;
         return;

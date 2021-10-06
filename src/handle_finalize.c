@@ -17,7 +17,8 @@ void handle_finalize(void *parameters)
 
     // set generic screen_array
     context->screen_array |= TX_TYPE_UI;
-    // context->screen_array |= AMOUNT_TOKEN_A_UI;
+    if (context->selectorIndex != APPROVE_PROXY)
+        context->screen_array |= COLLECTION_UI;
     // context->screen_array |= AMOUNT_TOKEN_B_UI;
     // context->screen_array |= ADDRESS_UI;
 
@@ -30,7 +31,10 @@ void handle_finalize(void *parameters)
         }
         msg->uiType = ETH_UI_TYPE_GENERIC;
         context->plugin_screen_index = TX_TYPE_UI;
-        msg->numScreens = 1;
+        if (context->selectorIndex != APPROVE_PROXY)
+            msg->numScreens = 2;
+        else
+            msg->numScreens = 1;
 
         // check_beneficiary_warning(msg, context);
 
