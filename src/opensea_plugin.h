@@ -31,12 +31,13 @@ typedef enum
     ATOMIC_MATCH_,
 } openseaSelector_t;
 
-#define NUM_NFT_SELECTORS 3
+#define NUM_NFT_SELECTORS 4
 
 typedef enum
 {
     TRANSFER_FROM,
     SAFE_TRANSFER_FROM,
+    ATOMICIZE,
     METHOD_NOT_FOUND,
 } erc721Selector_t;
 
@@ -191,9 +192,15 @@ typedef enum
 #define ON_REPLACEMENT_PATTERN (1 << 1)
 #define ON_STATIC_EXTRADATA (1 << 2)
 
+// Booleans
+#define SKIP 1
+#define ORDER_SIDE (1 << 1)
+#define PAYMENT_TOKEN_FOUND (1 << 2)
+
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct opensea_parameters_t
 {
+    uint8_t booleans;                    // 1
     uint16_t calldata_offset;            // 2
     uint16_t replacement_pattern_offset; // 2
     uint16_t static_extradata_offset;    // 2
@@ -205,12 +212,14 @@ typedef struct opensea_parameters_t
     uint8_t payment_token_amount[INT256_LENGTH];   // 32
     char payment_token_ticker[MAX_TICKER_LEN];     // 12
     uint8_t payment_token_decimals;                // 1
-    bool payment_token_found;                      // 1
-    uint8_t beneficiary[ADDRESS_LENGTH];           // 20
+    // uint8_t payment_token_found;                   // 1
+    uint8_t beneficiary[ADDRESS_LENGTH]; // 20
 
-    uint8_t side;                                 // 1
+    // uint8_t side;                                 // 1
     uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
     uint8_t token_id[INT256_LENGTH];              // 32
+    // !! Risky uint8_t for size
+    uint8_t bundle_size; // 1
 
     uint8_t screen_array;          // 1
     uint8_t previous_screen_index; // 1
@@ -220,8 +229,8 @@ typedef struct opensea_parameters_t
     uint8_t next_param;    // 1
     uint8_t valid;         // 1
     uint8_t selectorIndex; // 1
-    // = 158
 } opensea_parameters_t;
+// = 159
 
 // Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove
 // this check.

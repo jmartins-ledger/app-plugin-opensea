@@ -16,11 +16,11 @@ void handle_provide_token(void *parameters)
     {
         context->payment_token_decimals = msg->token1->decimals;
         strlcpy(context->payment_token_ticker, (char *)msg->token1->ticker, sizeof(context->payment_token_ticker));
-        context->payment_token_found = true;
+        context->booleans |= PAYMENT_TOKEN_FOUND;
     }
     else
     {
-        context->payment_token_found = false;
+        // should set payment_token_found to false, but it is false by default
     }
     // No need to check token1 for transactions involving sending ETH
     //if (!(context->selectorIndex == ADD_LIQUIDITY_ETH) &&

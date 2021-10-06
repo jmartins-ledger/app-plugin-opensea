@@ -66,6 +66,17 @@ static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea
     }
 }
 
+static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
+{
+    PRINTF("====== HANDLE_ATOMICIZE ======\n");
+    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 6)
+    {
+        PRINTF("penzo123 CICICICICICICICICICICICICICICICICICICICICIC???????\n");
+        context->bundle_size = U4BE(msg->parameter, 0);
+        PRINTF("bundle size: %d\n", context->bundle_size);
+    }
+}
+
 static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     PRINTF("IN CALLDATA IN CALL DATA target:%d =? current:%d\n", context->calldata_offset + context->next_parameter_length, msg->parameterOffset);
@@ -87,6 +98,11 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
     if (context->calldata_method == TRANSFER_FROM ||
         context->calldata_method == SAFE_TRANSFER_FROM)
         handle_tranfer_from_method(msg, context);
+    else if (context->calldata_method == ATOMICIZE)
+    {
+        // TODO: count items
+        handle_atomicize(msg, context);
+    }
     // End of calldata
     if (context->calldata_offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
     {
