@@ -34,8 +34,32 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
     switch (context->selectorIndex)
     {
     case APPROVE_PROXY:
-        strncpy(msg->title, "Unlock wallet", msg->titleLength);
-        strncpy(msg->msg, "Sign to unlock wallet ?", msg->msgLength);
+        strncpy(msg->title, "Unlock wallet:", msg->titleLength);
+        strncpy(msg->msg, "Sign to unlock wallet?", msg->msgLength); /// STRING TO BE EDITED
+        break;
+    case CANCEL_ORDER_:
+        strncpy(msg->title, "Cancel Order:", msg->titleLength);
+        if (context->side)
+            strncpy(msg->msg, "Withdraw offer?", msg->msgLength);
+        else
+            strncpy(msg->msg, "Remove listing?", msg->msgLength);
+        break;
+    default:
+        break;
+    }
+}
+
+static void set_collection_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
+{
+    switch (context->selectorIndex)
+    {
+    case CANCEL_ORDER_:
+        if (context->bundle_size)
+        {
+            strncpy(msg->title, "Bundle:", msg->titleLength);
+            snprintf(msg->msg, msg->msgLength, "%d items", context->bundle_size);
+        }
+
         break;
     }
 }
@@ -176,10 +200,10 @@ void handle_query_contract_ui(void *parameters)
         PRINTF("GPIRIOU TX_TYPE\n");
         set_tx_type_ui(msg, context);
         break;
-    // case WARNING_TOKEN_A_UI:
-    //    PRINTF("GPIRIOU WARNING A\n");
-    //    set_token_a_warning_ui(msg, context);
-    //    break;
+    case COLLECTION_UI:
+        PRINTF("GPIRIOU COLLECTION UI\n");
+        set_collection_ui(msg, context);
+        break;
     //case AMOUNT_TOKEN_A_UI:
     //    PRINTF("GPIRIOU AMOUNT A\n");
     //    switch (context->selectorIndex)
