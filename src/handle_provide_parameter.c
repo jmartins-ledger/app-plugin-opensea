@@ -189,6 +189,7 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
     default:
         break;
     }
+    PRINTF("GPIRIOU NEXT PARAM !!!\n");
     context->next_param++;
 }
 
@@ -196,7 +197,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
 {
     // PRINTF("\033[0;31mTEST PENZO: %x\033[0m\n", msg->parameter[PARAMETER_LENGTH]);
     PRINTF("\033[0;31mPROVIDE PARAMETER - current parameter:\n");
-    print_bytes(msg->parameter, PARAMETER_LENGTH);
+    // print_bytes(msg->parameter, PARAMETER_LENGTH);
     PRINTF("\033[0m");
     if (context->on_param)
     {
@@ -255,6 +256,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         copy_address(context->payment_token_address,
                      sizeof(context->payment_token_address),
                      msg->parameter);
+        PRINTF("GPIRIOU PAYMENT\n");
         break;
     case BUY_MAKER_RELAYER_FEE:
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in MAKER_RELAYER_FEE PARAM\n");

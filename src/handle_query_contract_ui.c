@@ -176,7 +176,7 @@ void handle_query_contract_ui(void *parameters)
         PRINTF("GPIRIOU TX_TYPE\n");
         set_tx_type_ui(msg, context);
         break;
-    //case WARNING_TOKEN_A_UI:
+    // case WARNING_TOKEN_A_UI:
     //    PRINTF("GPIRIOU WARNING A\n");
     //    set_token_a_warning_ui(msg, context);
     //    break;
