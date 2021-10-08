@@ -49,6 +49,13 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
     }
 }
 
+static void set_collection_warning_ui(ethQueryContractUI_t *msg,
+                                      opensea_parameters_t *context __attribute__((unused)))
+{
+    strncpy(msg->title, "Warning:", msg->titleLength);
+    strncpy(msg->msg, "Unknown collection", msg->titleLength);
+}
+
 static void set_collection_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
 {
     switch (context->selectorIndex)
@@ -59,25 +66,68 @@ static void set_collection_ui(ethQueryContractUI_t *msg, opensea_parameters_t *c
             strncpy(msg->title, "Bundle:", msg->titleLength);
             snprintf(msg->msg, msg->msgLength, "%d items", context->bundle_size);
         }
+        else
+        {
+            //if (context->booleans & WARNING_COLLECTION_UI)
+            //{
+            strncpy(msg->title, "Collection name:", msg->titleLength);
+            msg->msg[0] = '0';
+            msg->msg[1] = 'x';
+            getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
+                                          (uint8_t *)msg->msg + 2,
+                                          msg->pluginSharedRW->sha3,
+                                          0);
+            //}
+            //else {
 
+            //}
+
+            //getEthDisplayableAddress((uint8_t *)msg->msg,
+            //                         (char *)context->nft_contract_address,
+            //                         sizeof(context->nft_contract_address),
+            //                         msg->pluginSharedRW->sha3,
+            //                         0);
+        }
         break;
     }
 }
 
 // Set UI for "Warning" screen.
-static void set_token_a_warning_ui(ethQueryContractUI_t *msg,
-                                   opensea_parameters_t *context __attribute__((unused)))
+static void set_token_warning_ui(ethQueryContractUI_t *msg,
+                                 opensea_parameters_t *context __attribute__((unused)))
 {
-    strncpy(msg->title, "0000 0010", msg->titleLength);
-    strncpy(msg->msg, "! token A", msg->msgLength);
+    strncpy(msg->title, "Warning:", msg->titleLength);
+    strncpy(msg->msg, "Unknown payment token", msg->msgLength);
 }
 
-static void set_token_b_warning_ui(ethQueryContractUI_t *msg,
-                                   opensea_parameters_t *context __attribute__((unused)))
+static void set_payment_token_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
 {
-    strncpy(msg->title, "0000 1000", msg->titleLength);
-    strncpy(msg->msg, "! token B", msg->msgLength);
+    strncpy(msg->title, "Price:", msg->titleLength);
+    if (context->payment_token_address)
+    {
+        amountToString(context->payment_token_amount, sizeof(context->payment_token_amount),
+                       context->payment_token_decimals,
+                       context->payment_token_ticker,
+                       msg->msg,
+                       msg->msgLength);
+    }
+    else
+    {
+        amountToString((uint8_t *)msg->pluginSharedRO->txContent->value.value,
+                       msg->pluginSharedRO->txContent->value.length,
+                       WEI_TO_ETHER,
+                       "ETH ",
+                       msg->msg,
+                       msg->msgLength);
+    }
 }
+
+//static void set_token_b_warning_ui(ethQueryContractUI_t *msg,
+//                                   opensea_parameters_t *context __attribute__((unused)))
+//{
+//    strncpy(msg->title, "0000 1000", msg->titleLength);
+//    strncpy(msg->msg, "! token B", msg->msgLength);
+//}
 
 //static void set_amount_eth_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
 //{
@@ -113,10 +163,10 @@ static void set_beneficiary_ui(ethQueryContractUI_t *msg, opensea_parameters_t *
     msg->msg[0] = '0';
     msg->msg[1] = 'x';
     // chain_config_t chainConfig = {0};
-    getEthAddressStringFromBinary((uint8_t *)context->beneficiary,
-                                  (uint8_t *)msg->msg + 2,
-                                  msg->pluginSharedRW->sha3,
-                                  0);
+    //getEthAddressStringFromBinary((uint8_t *)context->beneficiary,
+    //                              (uint8_t *)msg->msg + 2,
+    //                              msg->pluginSharedRW->sha3,
+    //                              0);
 }
 
 // Not used if last bit in screen array isn't 1
@@ -200,9 +250,21 @@ void handle_query_contract_ui(void *parameters)
         PRINTF("GPIRIOU TX_TYPE\n");
         set_tx_type_ui(msg, context);
         break;
+    case WARNING_COLLECTION_UI:
+        PRINTF("GPIRIOU COLLECTION UI\n");
+        set_collection_warning_ui(msg, context);
+        break;
     case COLLECTION_UI:
         PRINTF("GPIRIOU COLLECTION UI\n");
         set_collection_ui(msg, context);
+        break;
+    case WARNING_TOKEN_UI:
+        PRINTF("GPIRIOU COLLECTION UI\n");
+        set_token_warning_ui(msg, context);
+        break;
+    case PAYMENT_TOKEN_UI:
+        PRINTF("GPIRIOU COLLECTION UI\n");
+        set_payment_token_ui(msg, context);
         break;
     //case AMOUNT_TOKEN_A_UI:
     //    PRINTF("GPIRIOU AMOUNT A\n");

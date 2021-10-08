@@ -53,13 +53,16 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 
 // screeen array correspondance
 #define TX_TYPE_UI 1
-#define COLLECTION_UI (1 << 1)
-#define AMOUNT_TOKEN_A_UI (1 << 2)
-#define WARNING_TOKEN_B_UI (1 << 3)
-#define AMOUNT_TOKEN_B_UI (1 << 4)
+#define WARNING_COLLECTION_UI (1 << 1)
+#define COLLECTION_UI (1 << 2)
+#define WARNING_TOKEN_UI (1 << 3)
+#define PAYMENT_TOKEN_UI (1 << 4)
+
 #define WARNING_ADDRESS_UI (1 << 5)
 #define ADDRESS_UI (1 << 6)
-#define LAST_UI (1 << 7)
+
+#define AVANT_DERNIER (1 << 7)
+#define LAST_UI (1 << 8)
 
 #define RIGHT_SCROLL 1
 #define LEFT_SCROLL 0
@@ -206,7 +209,7 @@ typedef struct opensea_parameters_t
     // uint8_t payment_token_found;                   // 1
     uint8_t beneficiary[ADDRESS_LENGTH]; // 20
 
-    // uint8_t side;                                 // 1
+    // uint8_t side;                               // 1
     uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
     uint8_t token_id[INT256_LENGTH];              // 32
     // !! Risky uint8_t for size

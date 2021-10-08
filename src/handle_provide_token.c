@@ -6,11 +6,11 @@ void handle_provide_token(void *parameters)
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
     PRINTF("plugin provide token: 0x%p, 0x%p\n", msg->token1, msg->token2);
 
-    if (context->selectorIndex == APPROVE_PROXY || context->selectorIndex == CANCEL_ORDER_)
-    {
-        msg->result = ETH_PLUGIN_RESULT_OK;
-        return;
-    }
+    //if (context->selectorIndex == APPROVE_PROXY || context->selectorIndex == CANCEL_ORDER_)
+    //{
+    //    msg->result = ETH_PLUGIN_RESULT_OK;
+    //    return;
+    //}
 
     if (msg->token1)
     {
@@ -20,8 +20,13 @@ void handle_provide_token(void *parameters)
     }
     else
     {
+        context->payment_token_decimals = DEFAULT_DECIMAL;
+        strncpy(context->payment_token_ticker, DEFAULT_TICKER, sizeof(context->payment_token_ticker));
+        context->screen_array |= WARNING_TOKEN_UI;
+        msg->additionalScreens++;
         // should set payment_token_found to false, but it is false by default
     }
+
     // No need to check token1 for transactions involving sending ETH
     //if (!(context->selectorIndex == ADD_LIQUIDITY_ETH) &&
     //    !(context->selectorIndex == SWAP_EXACT_ETH_FOR_TOKENS) &&
