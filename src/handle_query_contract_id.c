@@ -16,6 +16,9 @@ void handle_query_contract_id(void *parameters)
     case CANCEL_ORDER_:
         strncpy(msg->version, "Cancel Order", msg->versionLength);
         break;
+    case ATOMIC_MATCH_:
+        strncpy(msg->version, "Buy now", msg->versionLength);
+        break;
     default:
         PRINTF("Selector Index :%d not supported\n", context->selectorIndex);
         msg->result = ETH_PLUGIN_RESULT_ERROR;

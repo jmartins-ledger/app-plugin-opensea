@@ -44,6 +44,13 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
         else
             strncpy(msg->msg, "Remove listing?", msg->msgLength);
         break;
+    case ATOMIC_MATCH_:
+        strncpy(msg->title, "Buy now:", msg->titleLength);
+        if (context->bundle_size)
+            snprintf(msg->msg, msg->msgLength, "%d items", context->bundle_size);
+        else
+            strncpy(msg->msg, "1 item", msg->msgLength);
+        break;
     default:
         break;
     }
@@ -61,6 +68,7 @@ static void set_collection_ui(ethQueryContractUI_t *msg, opensea_parameters_t *c
     switch (context->selectorIndex)
     {
     case CANCEL_ORDER_:
+    case ATOMIC_MATCH_:
         if (context->bundle_size)
         {
             strncpy(msg->title, "Bundle:", msg->titleLength);
@@ -68,8 +76,6 @@ static void set_collection_ui(ethQueryContractUI_t *msg, opensea_parameters_t *c
         }
         else
         {
-            //if (context->booleans & WARNING_COLLECTION_UI)
-            //{
             strncpy(msg->title, "Collection name:", msg->titleLength);
             msg->msg[0] = '0';
             msg->msg[1] = 'x';
@@ -77,16 +83,6 @@ static void set_collection_ui(ethQueryContractUI_t *msg, opensea_parameters_t *c
                                           (uint8_t *)msg->msg + 2,
                                           msg->pluginSharedRW->sha3,
                                           0);
-            //}
-            //else {
-
-            //}
-
-            //getEthDisplayableAddress((uint8_t *)msg->msg,
-            //                         (char *)context->nft_contract_address,
-            //                         sizeof(context->nft_contract_address),
-            //                         msg->pluginSharedRW->sha3,
-            //                         0);
         }
         break;
     }
@@ -103,23 +99,23 @@ static void set_token_warning_ui(ethQueryContractUI_t *msg,
 static void set_payment_token_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
 {
     strncpy(msg->title, "Price:", msg->titleLength);
-    if (context->payment_token_address)
-    {
-        amountToString(context->payment_token_amount, sizeof(context->payment_token_amount),
-                       context->payment_token_decimals,
-                       context->payment_token_ticker,
-                       msg->msg,
-                       msg->msgLength);
-    }
-    else
-    {
-        amountToString((uint8_t *)msg->pluginSharedRO->txContent->value.value,
-                       msg->pluginSharedRO->txContent->value.length,
-                       WEI_TO_ETHER,
-                       "ETH ",
-                       msg->msg,
-                       msg->msgLength);
-    }
+    // if (context->payment_token_address)
+    // {
+    amountToString(context->payment_token_amount, sizeof(context->payment_token_amount),
+                   context->payment_token_decimals,
+                   context->payment_token_ticker,
+                   msg->msg,
+                   msg->msgLength);
+    // }
+    // else
+    // {
+    //     amountToString((uint8_t *)msg->pluginSharedRO->txContent->value.value,
+    //                    msg->pluginSharedRO->txContent->value.length,
+    //                    WEI_TO_ETHER,
+    //                    "ETH ",
+    //                    msg->msg,
+    //                    msg->msgLength);
+    // }
 }
 
 //static void set_token_b_warning_ui(ethQueryContractUI_t *msg,
@@ -173,8 +169,14 @@ static void set_beneficiary_ui(ethQueryContractUI_t *msg, opensea_parameters_t *
 static void set_last_ui(ethQueryContractUI_t *msg,
                         opensea_parameters_t *context __attribute__((unused)))
 {
-    strncpy(msg->title, "1000 0000", msg->titleLength);
-    strncpy(msg->msg, "LAST", msg->titleLength);
+    // Should display token id.
+    strncpy(msg->title, "Token ID:", msg->titleLength);
+    // long n = strtol(num, NULL, 16);
+    uint256_to_decimal(context->token_id, INT256_LENGTH, msg->msg, msg->msgLength);
+    // snprintf(msg->msg, msg->msgLength, "%d", (int)context->token_id);
+    // snprintf(msg->msg, msg->msgLength, "%d", U4BE(context->token_id));
+    // U4BE()
+    // strncpy(msg->msg, "LAST", msg->titleLength);
 }
 
 static void skip_right(ethQueryContractUI_t *msg __attribute__((unused)),
@@ -265,6 +267,10 @@ void handle_query_contract_ui(void *parameters)
     case PAYMENT_TOKEN_UI:
         PRINTF("GPIRIOU COLLECTION UI\n");
         set_payment_token_ui(msg, context);
+        break;
+    case LAST_UI:
+        PRINTF("GPIRIOU COLLECTION UI\n");
+        set_last_ui(msg, context);
         break;
     default:
         PRINTF("GPIRIOU ERROR\n");

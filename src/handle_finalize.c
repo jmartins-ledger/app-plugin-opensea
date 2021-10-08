@@ -17,31 +17,69 @@ void handle_finalize(void *parameters)
 
     // set generic screen_array
     context->screen_array |= TX_TYPE_UI;
-    if (context->selectorIndex != APPROVE_PROXY)
+    switch (context->selectorIndex)
     {
+    case ATOMIC_MATCH_:
         context->screen_array |= COLLECTION_UI;
         context->screen_array |= PAYMENT_TOKEN_UI;
+        context->screen_array |= LAST_UI;
+        break;
+    case CANCEL_ORDER_:
+        context->screen_array |= COLLECTION_UI;
+        context->screen_array |= PAYMENT_TOKEN_UI;
+        break;
+    case APPROVE_PROXY:
+        // TODO
+        break;
+    default:
+        break;
     }
+    // if (context->selectorIndex != APPROVE_PROXY)
+    // {
+    //     context->screen_array |= COLLECTION_UI;
+    //     context->screen_array |= PAYMENT_TOKEN_UI;
+    // }
     // context->screen_array |= ADDRESS_UI;
 
     if (context->valid)
     {
-        // !! condition always evaluate to true, should be false when address is 0x0
-        if (context->payment_token_address)
+        // If there is a payment_token_address
+        if (memcmp(context->payment_token_address, NULL_ADDRESS, ADDRESS_LENGTH))
         {
             msg->tokenLookup1 = context->payment_token_address;
         }
-        msg->uiType = ETH_UI_TYPE_GENERIC;
-        context->plugin_screen_index = TX_TYPE_UI;
-        if (context->selectorIndex != APPROVE_PROXY)
-            msg->numScreens = 3;
         else
+        {
+            context->booleans |= IS_ETH;
+        }
+        msg->uiType = ETH_UI_TYPE_GENERIC;
+        // set the first screen to display.
+        context->plugin_screen_index = TX_TYPE_UI;
+        switch (context->selectorIndex)
+        {
+        case ATOMIC_MATCH_:
+            msg->numScreens = 4;
+            break;
+        case CANCEL_ORDER_:
+            msg->numScreens = 3;
+            break;
+        case APPROVE_PROXY:
             msg->numScreens = 1;
+            break;
+        default:
+            break;
+        }
+        // if (context->selectorIndex != APPROVE_PROXY)
+        //     msg->numScreens = 3;
+        // else
+        //     msg->numScreens = 1;
 
         // check_beneficiary_warning(msg, context);
 
         //msg->tokenLookup1 = context->token_a_address; // TODO: CHECK THIS
         //msg->tokenLookup2 = context->token_b_address; // TODO: CHECK THIS
+
+        context->payment_token_decimals = DEFAULT_DECIMAL;
         msg->result = ETH_PLUGIN_RESULT_OK;
     }
     else

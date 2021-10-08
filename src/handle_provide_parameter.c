@@ -166,6 +166,13 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         copy_address(context->payment_token_address,
                      sizeof(context->payment_token_address),
                      msg->parameter);
+        // If address is NULL, the payment token is ETH.
+        if (memcmp(context->payment_token_address, NULL_ADDRESS, ADDRESS_LENGTH) == 0)
+        {
+            context->payment_token_decimals = WEI_TO_ETHER;
+            strncpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
+            context->booleans |= IS_ETH;
+        }
         break;
     case MAKER_RELAYER_FEE:
     case TAKER_RELAYER_FEE:
@@ -265,6 +272,12 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         copy_address(context->payment_token_address,
                      sizeof(context->payment_token_address),
                      msg->parameter);
+        if (memcmp(context->payment_token_address, NULL_ADDRESS, ADDRESS_LENGTH) == 0)
+        {
+            context->payment_token_decimals = WEI_TO_ETHER;
+            strncpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
+            context->booleans |= IS_ETH;
+        }
         PRINTF("GPIRIOU PAYMENT\n");
         break;
     case BUY_MAKER_RELAYER_FEE:

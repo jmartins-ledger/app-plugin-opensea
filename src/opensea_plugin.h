@@ -61,7 +61,7 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define WARNING_ADDRESS_UI (1 << 5)
 #define ADDRESS_UI (1 << 6)
 
-#define LAST_UI (1 << 7)
+#define LAST_UI (1 << 7) // TOKEN ID UI
 
 #define RIGHT_SCROLL 1
 #define LEFT_SCROLL 0
@@ -191,6 +191,7 @@ typedef enum
 #define SKIP 1
 #define ORDER_SIDE (1 << 1)
 #define PAYMENT_TOKEN_FOUND (1 << 2)
+#define IS_ETH (1 << 3)
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct opensea_parameters_t
