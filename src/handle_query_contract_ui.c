@@ -266,41 +266,6 @@ void handle_query_contract_ui(void *parameters)
         PRINTF("GPIRIOU COLLECTION UI\n");
         set_payment_token_ui(msg, context);
         break;
-    //case AMOUNT_TOKEN_A_UI:
-    //    PRINTF("GPIRIOU AMOUNT A\n");
-    //    switch (context->selectorIndex)
-    //    {
-    //    case ADD_LIQUIDITY_ETH:
-    //    case SWAP_ETH_FOR_EXACT_TOKENS:
-    //    case SWAP_EXACT_ETH_FOR_TOKENS_FEE:
-    //    case SWAP_EXACT_ETH_FOR_TOKENS:
-    //        set_amount_eth_ui(msg, context);
-    //        break;
-    //    default:
-    //        set_amount_token_a_ui(msg, context);
-    //        break;
-    //    }
-    //    break;
-    //case WARNING_TOKEN_B_UI:
-    //    PRINTF("GPIRIOU WARNING B\n");
-    //    set_token_b_warning_ui(msg, context);
-    //    break;
-    //case AMOUNT_TOKEN_B_UI:
-    //    PRINTF("GPIRIOU AMOUNT B\n");
-    //    set_amount_token_b_ui(msg, context);
-    //    break;
-    //case WARNING_ADDRESS_UI:
-    //    PRINTF("GPIRIOU WARNING ADDRESS\n");
-    //    set_beneficiary_warning_ui(msg, context);
-    //    break;
-    //case ADDRESS_UI:
-    //    PRINTF("GPIRIOU BENEFICIARY\n");
-    //    set_beneficiary_ui(msg, context);
-    //    break;
-    //case LAST_UI:
-    //    PRINTF("GPIRIOU LAST UI\n");
-    //    set_last_ui(msg, context);
-    //    break;
     default:
         PRINTF("GPIRIOU ERROR\n");
         break;

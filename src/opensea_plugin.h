@@ -61,11 +61,12 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define WARNING_ADDRESS_UI (1 << 5)
 #define ADDRESS_UI (1 << 6)
 
-#define AVANT_DERNIER (1 << 7)
-#define LAST_UI (1 << 8)
+#define LAST_UI (1 << 7)
 
 #define RIGHT_SCROLL 1
 #define LEFT_SCROLL 0
+
+#define NULL_ADDRESS "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
 
 // cancelOrder_() parameters
 typedef enum
@@ -194,13 +195,13 @@ typedef enum
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct opensea_parameters_t
 {
-    uint8_t booleans;                    // 1
-    uint16_t calldata_offset;            // 2
-    uint16_t replacement_pattern_offset; // 2
-    uint16_t static_extradata_offset;    // 2
-    uint32_t next_parameter_length;      // 4
-    uint8_t on_param;                    // 1
-    uint8_t calldata_method;             // 1
+    uint8_t booleans;         // 1
+    uint16_t calldata_offset; // 2
+    // uint16_t replacement_pattern_offset; // 2
+    // uint16_t static_extradata_offset;    // 2
+    uint32_t next_parameter_length; // 4
+    uint8_t on_param;               // 1
+    uint8_t calldata_method;        // 1
 
     uint8_t payment_token_address[ADDRESS_LENGTH]; // 20
     uint8_t payment_token_amount[INT256_LENGTH];   // 32
