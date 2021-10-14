@@ -1,2 +1,4 @@
-snapshots-tmp
+snapshots-tmp/
+lib/
+node_modules/
 
