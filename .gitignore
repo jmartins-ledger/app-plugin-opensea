@@ -7,4 +7,3 @@ src/glyphs.c
 src/glyphs.h
 opensea_registry.sol
 opensea_code.sol
-tests/node_modules/
