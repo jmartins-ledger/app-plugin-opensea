@@ -90,15 +90,16 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         PRINTF("PENZO 4\n");
             // cmp start
             if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size)) {
-        PRINTF("PENZO 5\n");
+                PRINTF("PENZO 5\n");
                 if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE)) {
-        PRINTF("PENZO 6\n");
+                    PRINTF("PENZO 6\n");
                     context->booleans |= MULTIPLE_NFTS;
                 };
             }
             // cmp end
+            PRINTF("PENZO 7\n");
             if (memcmp(&context->nft_contract_address + (ADDRESS_LENGTH - SELECTOR_SIZE), msg->parameter, SELECTOR_SIZE)) {
-        PRINTF("PENZO 7\n");
+        PRINTF("PENZO 8\n");
                 context->booleans |= MULTIPLE_NFTS;
             };
         }
