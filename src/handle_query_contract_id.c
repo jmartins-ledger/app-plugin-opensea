@@ -4,6 +4,12 @@ void handle_query_contract_id(void *parameters)
 {
     ethQueryContractID_t *msg = (ethQueryContractID_t *)parameters;
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
+    
+        PRINTF("ORDER_SIDE: %d\n", context->booleans & ORDER_SIDE);
+        PRINTF("PAYMENT_TOKEN_FOUND: %d\n", context->booleans & PAYMENT_TOKEN_FOUND);
+        PRINTF("IS_ETH: %d\n", context->booleans & IS_ETH);
+        PRINTF("NFT_ADDRESS_COPIED: %d\n", context->booleans & NFT_ADDRESS_COPIED);
+        PRINTF("MULTIPLE_NFTS: %d\n", context->booleans & MULTIPLE_NFTS);
 
     // set 'OpenSea' title.
     strncpy(msg->name, PLUGIN_NAME, msg->nameLength);

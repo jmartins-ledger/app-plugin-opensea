@@ -69,11 +69,6 @@ static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea
 static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     if (context->booleans & MULTIPLE_NFTS) {
-        PRINTF("ORDER_SIDE: %d\n", context->booleans & ORDER_SIDE);
-        PRINTF("PAYMENT_TOKEN_FOUND: %d\n", context->booleans & PAYMENT_TOKEN_FOUND);
-        PRINTF("IS_ETH: %d\n", context->booleans & IS_ETH);
-        PRINTF("NFT_ADDRESS_COPIED: %d\n", context->booleans & NFT_ADDRESS_COPIED);
-        PRINTF("MULTIPLE_NFTS: %d\n", context->booleans & MULTIPLE_NFTS);
         return;
     }
     PRINTF("====== HANDLE_ATOMICIZE ======\n");
