@@ -92,7 +92,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         // Once nft_address is copied, memcmp to check if there is multiple addresses.
         if (context->booleans & NFT_ADDRESS_COPIED) {
             // Memcmp the first part of the address.
-            if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1)) {
+            if (msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1)) {
                 PRINTF("PENZO HIHIHIHIHIHIHIHIHIHIHI\n");
                 if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE)) {
                     context->booleans |= MULTIPLE_NFTS;
