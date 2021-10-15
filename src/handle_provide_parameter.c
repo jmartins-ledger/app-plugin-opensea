@@ -91,7 +91,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         if (context->booleans & NFT_ADDRESS_COPIED) {
         PRINTF("PENZO 4\n");
             // cmp start
-            if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size)) {
+            if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1)) {
                 PRINTF("PENZO 5\n");
                 if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE)) {
                     PRINTF("PENZO 6\n");
