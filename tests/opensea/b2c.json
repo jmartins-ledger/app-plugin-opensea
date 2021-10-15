@@ -20,7 +20,18 @@
                     "plugin": "OpenSea"
                 }
 	        }
-	    }
+	    },
+        {
+            "address": "0xa5409ec958c83c3f309868babaca7c86dcb077c1",
+            "contractName": "OpenSeaRegistry",
+            "selectors": {
+                "0xddd81f82": {
+                    "erc20OfInterest": [],
+                    "method": "registerProxy",
+                    "plugin": "OpenSea"
+                }
+            }
+        }
     ],
     "name": "OpenSea"
 }
