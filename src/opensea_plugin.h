@@ -193,6 +193,8 @@ typedef enum
 #define ORDER_SIDE (1 << 1)
 #define PAYMENT_TOKEN_FOUND (1 << 2)
 #define IS_ETH (1 << 3)
+#define NFT_ADDRESS_COPIED (1 << 4)
+#define MULTIPLE_NFTS (1 << 5)
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct opensea_parameters_t
