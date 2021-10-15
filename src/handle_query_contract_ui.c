@@ -40,9 +40,9 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
     case CANCEL_ORDER_:
         strncpy(msg->title, "Cancel Order:", msg->titleLength);
         if (context->booleans & ORDER_SIDE)
-            strncpy(msg->msg, "Withdraw offer?", msg->msgLength);
-        else
             strncpy(msg->msg, "Remove listing?", msg->msgLength);
+        else
+            strncpy(msg->msg, "Withdraw offer?", msg->msgLength);
         break;
     case ATOMIC_MATCH_:
         strncpy(msg->title, "Buy now:", msg->titleLength);
@@ -69,12 +69,7 @@ static void set_collection_ui(ethQueryContractUI_t *msg, opensea_parameters_t *c
     {
     case CANCEL_ORDER_:
     case ATOMIC_MATCH_:
-        if (context->bundle_size)
-        {
-            strncpy(msg->title, "Bundle:", msg->titleLength);
-            snprintf(msg->msg, msg->msgLength, "%d items", context->bundle_size);
-        }
-        else
+        if (!context->bundle_size)
         {
             strncpy(msg->title, "Collection name:", msg->titleLength);
             msg->msg[0] = '0';
@@ -166,8 +161,8 @@ static void set_beneficiary_ui(ethQueryContractUI_t *msg, opensea_parameters_t *
 }
 
 // Not used if last bit in screen array isn't 1
-static void set_last_ui(ethQueryContractUI_t *msg,
-                        opensea_parameters_t *context __attribute__((unused)))
+static void set_token_id_ui(ethQueryContractUI_t *msg,
+                            opensea_parameters_t *context __attribute__((unused)))
 {
     // Should display token id.
     strncpy(msg->title, "Token ID:", msg->titleLength);
@@ -216,8 +211,8 @@ static void get_screen_array(ethQueryContractUI_t *msg, opensea_parameters_t *co
     // This should only happen on last valid Screen
     if (msg->screenIndex == context->previous_screen_index)
     {
-        context->plugin_screen_index = LAST_UI;
-        if (context->screen_array & LAST_UI)
+        context->plugin_screen_index = PAYMENT_TOKEN_UI;
+        if (context->screen_array & PAYMENT_TOKEN_UI)
             return;
     }
     bool scroll_direction = get_scroll_direction(msg->screenIndex, context->previous_screen_index);
@@ -253,24 +248,24 @@ void handle_query_contract_ui(void *parameters)
         set_tx_type_ui(msg, context);
         break;
     case WARNING_COLLECTION_UI:
-        PRINTF("GPIRIOU COLLECTION UI\n");
+        PRINTF("GPIRIOU WARNING COLLECTION UI\n");
         set_collection_warning_ui(msg, context);
         break;
     case COLLECTION_UI:
         PRINTF("GPIRIOU COLLECTION UI\n");
         set_collection_ui(msg, context);
         break;
+    case TOKEN_ID_UI:
+        PRINTF("GPIRIOU TOKEN ID UI\n");
+        set_token_id_ui(msg, context);
+        break;
     case WARNING_TOKEN_UI:
-        PRINTF("GPIRIOU COLLECTION UI\n");
+        PRINTF("GPIRIOU WARNING TOKEN UI\n");
         set_token_warning_ui(msg, context);
         break;
     case PAYMENT_TOKEN_UI:
-        PRINTF("GPIRIOU COLLECTION UI\n");
+        PRINTF("GPIRIOU PAYMENT TOKEN UI\n");
         set_payment_token_ui(msg, context);
-        break;
-    case LAST_UI:
-        PRINTF("GPIRIOU COLLECTION UI\n");
-        set_last_ui(msg, context);
         break;
     default:
         PRINTF("GPIRIOU ERROR\n");

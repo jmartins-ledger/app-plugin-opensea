@@ -52,16 +52,17 @@ extern const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS];
 extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 
 // screeen array correspondance
-#define TX_TYPE_UI 1
+#define TX_TYPE_UI 1 // Must remain first screen in screen array.
 #define WARNING_COLLECTION_UI (1 << 1)
 #define COLLECTION_UI (1 << 2)
-#define WARNING_TOKEN_UI (1 << 3)
-#define PAYMENT_TOKEN_UI (1 << 4)
 
-#define WARNING_ADDRESS_UI (1 << 5)
-#define ADDRESS_UI (1 << 6)
+#define WARNING_ADDRESS_UI (1 << 3)
+#define ADDRESS_UI (1 << 4)
 
-#define LAST_UI (1 << 7) // TOKEN ID UI
+#define TOKEN_ID_UI (1 << 5)
+
+#define WARNING_TOKEN_UI (1 << 6)
+#define PAYMENT_TOKEN_UI (1 << 7) // Must remain last screen in screen array.
 
 #define RIGHT_SCROLL 1
 #define LEFT_SCROLL 0

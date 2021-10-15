@@ -20,9 +20,12 @@ void handle_finalize(void *parameters)
     switch (context->selectorIndex)
     {
     case ATOMIC_MATCH_:
-        context->screen_array |= COLLECTION_UI;
+        if (!context->bundle_size)
+        {
+            context->screen_array |= COLLECTION_UI;
+            context->screen_array |= TOKEN_ID_UI;
+        }
         context->screen_array |= PAYMENT_TOKEN_UI;
-        context->screen_array |= LAST_UI;
         break;
     case CANCEL_ORDER_:
         context->screen_array |= COLLECTION_UI;
@@ -58,7 +61,10 @@ void handle_finalize(void *parameters)
         switch (context->selectorIndex)
         {
         case ATOMIC_MATCH_:
-            msg->numScreens = 4;
+            if (context->bundle_size)
+                msg->numScreens = 2;
+            else
+                msg->numScreens = 3;
             break;
         case CANCEL_ORDER_:
             msg->numScreens = 3;
