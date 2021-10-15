@@ -81,7 +81,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         PRINTF("PENZO 1\n");
         // copy end of nft_address the first time
         if (!(context->booleans & NFT_ADDRESS_COPIED))
-            memcpy(&context->nft_contract_address + (ADDRESS_LENGTH - SELECTOR_SIZE), msg->parameter, SELECTOR_SIZE);
+            memcpy(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
         PRINTF("PENZO 2\n");
         // rise is_nft_address_copied
         context->booleans |= NFT_ADDRESS_COPIED;
