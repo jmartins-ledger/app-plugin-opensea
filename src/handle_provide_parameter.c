@@ -68,12 +68,33 @@ static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea
 
 static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
+    if (context->booleans & MULTIPLE_NFTS) return;
     PRINTF("====== HANDLE_ATOMICIZE ======\n");
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 6)
     {
         PRINTF("penzo123 CICICICICICICICICICICICICICICICICICICICICIC???????\n");
         context->bundle_size = U4BE(msg->parameter, 0);
+        memcpy(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE);
         PRINTF("bundle size: %d\n", context->bundle_size);
+    }
+    else if (msg->parameterOffset > context->calldata_offset + PARAMETER_LENGTH * 6 && msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size)) {
+        // copy end of nft_address the first time
+        if (!(context->booleans & NFT_ADDRESS_COPIED))
+            memcpy(&context->nft_contract_address + (ADDRESS_LENGTH - SELECTOR_SIZE), msg->parameter, SELECTOR_SIZE);
+        // rise is_nft_address_copied
+        context->booleans |= NFT_ADDRESS_COPIED;
+        if (context->booleans & NFT_ADDRESS_COPIED) {
+            // cmp start
+            if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size)) {
+                if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE)) {
+                    context->booleans |= MULTIPLE_NFTS;
+                };
+            }
+            // cmp end
+            if (memcmp(&context->nft_contract_address + (ADDRESS_LENGTH - SELECTOR_SIZE), msg->parameter, SELECTOR_SIZE)) {
+                context->booleans |= MULTIPLE_NFTS;
+            };
+        }
     }
 }
 
