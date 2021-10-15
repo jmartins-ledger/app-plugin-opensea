@@ -98,8 +98,8 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
             }
             // cmp end
             PRINTF("PENZO 7\n");
-            if (memcmp(&context->nft_contract_address + (ADDRESS_LENGTH - SELECTOR_SIZE), msg->parameter, SELECTOR_SIZE)) {
-        PRINTF("PENZO 8\n");
+            if (memcmp(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE)) {
+                PRINTF("PENZO 8\n");
                 context->booleans |= MULTIPLE_NFTS;
             };
         }
