@@ -69,7 +69,8 @@ static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea
 static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     // skip all checks if we already found multiple addresses.
-    if (context->booleans & MULTIPLE_NFTS) {
+    if (context->booleans & MULTIPLE_NFT_ADDRESSES)
+    {
         return;
     }
     // Here we are on atomicize's calldata length.
@@ -82,25 +83,31 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         PRINTF("bundle size: %d\n", context->bundle_size);
     }
     // Here we are on atomicize's calldata's addresses array.
-    else if (msg->parameterOffset > context->calldata_offset + PARAMETER_LENGTH * 6 && msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size)) {
+    else if (msg->parameterOffset > context->calldata_offset + PARAMETER_LENGTH * 6 && msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size))
+    {
         // Copy end of nft_address the first time.
-        if (!(context->booleans & NFT_ADDRESS_COPIED)) {
+        if (!(context->booleans & NFT_ADDRESS_COPIED))
+        {
             memcpy(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
             // Rise NFT_ADDRESS_COPIED.
             context->booleans |= NFT_ADDRESS_COPIED;
         }
         // Once nft_address is copied, memcmp to check if there is multiple addresses.
-        if (context->booleans & NFT_ADDRESS_COPIED) {
+        if (context->booleans & NFT_ADDRESS_COPIED)
+        {
             // Memcmp the first part of the address.
-            if (msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1)) {
+            if (msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1))
+            {
                 PRINTF("PENZO HIHIHIHIHIHIHIHIHIHIHI\n");
-                if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE)) {
-                    context->booleans |= MULTIPLE_NFTS;
+                if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE))
+                {
+                    context->booleans |= MULTIPLE_NFT_ADDRESSES;
                 };
             }
             // Memcmp the last part of the address.
-            if (memcmp(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE)) {
-                context->booleans |= MULTIPLE_NFTS;
+            if (memcmp(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE))
+            {
+                context->booleans |= MULTIPLE_NFT_ADDRESSES;
             };
         }
     }

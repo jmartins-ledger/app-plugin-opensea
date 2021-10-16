@@ -34,8 +34,8 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
     switch (context->selectorIndex)
     {
     case APPROVE_PROXY:
-        strncpy(msg->title, "Unlock wallet:", msg->titleLength);
-        strncpy(msg->msg, "Sign to unlock wallet?", msg->msgLength); /// STRING TO BE EDITED
+        strncpy(msg->title, "Initialize wallet:", msg->titleLength);
+        strncpy(msg->msg, "Sign to authorize wallet?", msg->msgLength); /// STRING TO BE EDITED
         break;
     case CANCEL_ORDER_:
         strncpy(msg->title, "Cancel Order:", msg->titleLength);
@@ -45,39 +45,72 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
             strncpy(msg->msg, "Withdraw offer?", msg->msgLength);
         break;
     case ATOMIC_MATCH_:
-        strncpy(msg->title, "Buy now:", msg->titleLength);
-        if (context->bundle_size)
-            snprintf(msg->msg, msg->msgLength, "%d items", context->bundle_size);
-        else
-            strncpy(msg->msg, "1 item", msg->msgLength);
+        strncpy(msg->title, "Buy", msg->titleLength);
+        strncpy(msg->msg, "now", msg->msgLength);
         break;
     default:
         break;
     }
 }
 
-static void set_collection_warning_ui(ethQueryContractUI_t *msg,
-                                      opensea_parameters_t *context __attribute__((unused)))
-{
-    strncpy(msg->title, "Warning:", msg->titleLength);
-    strncpy(msg->msg, "Unknown collection", msg->titleLength);
-}
-
-static void set_collection_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
+static void set_token_id_and_bundle_ui(ethQueryContractUI_t *msg,
+                                       opensea_parameters_t *context __attribute__((unused)))
 {
     switch (context->selectorIndex)
     {
     case CANCEL_ORDER_:
     case ATOMIC_MATCH_:
-        if (!context->bundle_size)
+        if (context->calldata_method == METHOD_NOT_FOUND && !(context->selectorIndex == CANCEL_ORDER_))
         {
-            strncpy(msg->title, "Collection name:", msg->titleLength);
+            strncpy(msg->title, "Warning:", msg->titleLength);
+            strncpy(msg->msg, "Unknown transfer method!", msg->msgLength);
+        }
+        else if (context->bundle_size)
+        {
+            strncpy(msg->title, "Bundle:", msg->titleLength);
+            snprintf(msg->msg, msg->msgLength, "%d NFT's", context->bundle_size);
+        }
+        else
+        {
+            strncpy(msg->title, "Token ID:", msg->titleLength);
+            uint256_to_decimal(context->token_id, INT256_LENGTH, msg->msg, msg->msgLength);
+        }
+        break;
+    }
+}
+
+static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
+{
+    switch (context->selectorIndex)
+    {
+    case CANCEL_ORDER_:
+    case ATOMIC_MATCH_:
+        if (context->booleans & MULTIPLE_NFT_ADDRESSES)
+        {
+            strncpy(msg->title, "Multiple NFT", msg->titleLength);
+            strncpy(msg->msg, "collections", msg->msgLength);
+        }
+        else
+        {
+            // if (context->booleans & NAME_FOUND)
+            // {
+            // strncpy(msg->title, "NFT name:", msg->titleLength);
+            // snprintf(msg->msg, msg->msgLength, "%d", context->TOBEDEFINED); // Waiting for Ethereum app update.
+            // }
+            //else if (!memcmp(context->nft_contract_address, "c99f70bfd82fb7c8f8191fdfbfb735606b15e5c5", sizeof(context->nft_contract_address))
+            if (!(memcmp(context->nft_contract_address, "c99f70bfd82fb7c8f8191fdfbfb735606b15e5c5", sizeof(context->nft_contract_address)) && context->calldata_method == METHOD_NOT_FOUND))
+            {
+                strncpy(msg->title, "Warning:", msg->titleLength);
+                strncpy(msg->msg, "Transaction will fail", msg->msgLength);
+            }
+            strncpy(msg->title, "Unknown NFT:", msg->titleLength);
             msg->msg[0] = '0';
             msg->msg[1] = 'x';
             getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
                                           (uint8_t *)msg->msg + 2,
                                           msg->pluginSharedRW->sha3,
                                           0);
+            //}
         }
         break;
     }
@@ -113,66 +146,27 @@ static void set_payment_token_ui(ethQueryContractUI_t *msg, opensea_parameters_t
     // }
 }
 
-//static void set_token_b_warning_ui(ethQueryContractUI_t *msg,
-//                                   opensea_parameters_t *context __attribute__((unused)))
+//static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
+//                                       opensea_parameters_t *context __attribute__((unused)))
 //{
-//    strncpy(msg->title, "0000 1000", msg->titleLength);
-//    strncpy(msg->msg, "! token B", msg->msgLength);
+//    strncpy(msg->title, "Warning:", msg->titleLength);
+//    strncpy(msg->msg, "Tokens not sent to user's address", msg->titleLength);
 //}
-
-//static void set_amount_eth_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
-//{
-//    switch (context->selectorIndex)
-//    {
-//    case ADD_LIQUIDITY_ETH:
-//        strncpy(msg->title, "Deposit:", msg->titleLength);
-//        break;
-//    case SWAP_EXACT_ETH_FOR_TOKENS:
-//    case SWAP_EXACT_ETH_FOR_TOKENS_FEE:
-//        strncpy(msg->title, "Swap:", msg->titleLength);
-//        break;
-//    }
-//    amountToString((uint8_t *)msg->pluginSharedRO->txContent->value.value,
-//                   msg->pluginSharedRO->txContent->value.length,
-//                   WEI_TO_ETHER,
-//                   "ETH ",
-//                   msg->msg,
-//                   msg->msgLength);
-//}
-
-static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
-                                       opensea_parameters_t *context __attribute__((unused)))
-{
-    strncpy(msg->title, "0010 0000", msg->titleLength);
-    strncpy(msg->msg, "Not user's address", msg->titleLength);
-}
 
 // Set UI for "Beneficiary" screen.
-static void set_beneficiary_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
-{
-    strncpy(msg->title, "Beneficiary:", msg->titleLength);
-    msg->msg[0] = '0';
-    msg->msg[1] = 'x';
-    // chain_config_t chainConfig = {0};
-    //getEthAddressStringFromBinary((uint8_t *)context->beneficiary,
-    //                              (uint8_t *)msg->msg + 2,
-    //                              msg->pluginSharedRW->sha3,
-    //                              0);
-}
+//static void set_beneficiary_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
+//{
+//    strncpy(msg->title, "Beneficiary:", msg->titleLength);
+//    msg->msg[0] = '0';
+//    msg->msg[1] = 'x';
+// chain_config_t chainConfig = {0};
+//getEthAddressStringFromBinary((uint8_t *)context->beneficiary,
+//                              (uint8_t *)msg->msg + 2,
+//                              msg->pluginSharedRW->sha3,
+//                              0);
+//}
 
 // Not used if last bit in screen array isn't 1
-static void set_token_id_ui(ethQueryContractUI_t *msg,
-                            opensea_parameters_t *context __attribute__((unused)))
-{
-    // Should display token id.
-    strncpy(msg->title, "Token ID:", msg->titleLength);
-    // long n = strtol(num, NULL, 16);
-    uint256_to_decimal(context->token_id, INT256_LENGTH, msg->msg, msg->msgLength);
-    // snprintf(msg->msg, msg->msgLength, "%d", (int)context->token_id);
-    // snprintf(msg->msg, msg->msgLength, "%d", U4BE(context->token_id));
-    // U4BE()
-    // strncpy(msg->msg, "LAST", msg->titleLength);
-}
 
 static void skip_right(ethQueryContractUI_t *msg __attribute__((unused)),
                        opensea_parameters_t *context)
@@ -211,8 +205,8 @@ static void get_screen_array(ethQueryContractUI_t *msg, opensea_parameters_t *co
     // This should only happen on last valid Screen
     if (msg->screenIndex == context->previous_screen_index)
     {
-        context->plugin_screen_index = PAYMENT_TOKEN_UI;
-        if (context->screen_array & PAYMENT_TOKEN_UI)
+        context->plugin_screen_index = LAST_UI;
+        if (context->screen_array & LAST_UI)
             return;
     }
     bool scroll_direction = get_scroll_direction(msg->screenIndex, context->previous_screen_index);
@@ -247,26 +241,25 @@ void handle_query_contract_ui(void *parameters)
         PRINTF("GPIRIOU TX_TYPE\n");
         set_tx_type_ui(msg, context);
         break;
-    case WARNING_COLLECTION_UI:
-        PRINTF("GPIRIOU WARNING COLLECTION UI\n");
-        set_collection_warning_ui(msg, context);
-        break;
-    case COLLECTION_UI:
+    case TOKEN_ID_AND_BUNDLE_UI:
+        set_token_id_and_bundle_ui(msg, context);
         PRINTF("GPIRIOU COLLECTION UI\n");
-        set_collection_ui(msg, context);
         break;
-    case TOKEN_ID_UI:
-        PRINTF("GPIRIOU TOKEN ID UI\n");
-        set_token_id_ui(msg, context);
+    case NFT_NAME_UI:
+        PRINTF("GPIRIOU WARNING COLLECTION UI\n");
+        set_nft_name_ui(msg, context);
         break;
-    case WARNING_TOKEN_UI:
+    case WARNING_PAYMENT_TOKEN_UI:
         PRINTF("GPIRIOU WARNING TOKEN UI\n");
         set_token_warning_ui(msg, context);
         break;
     case PAYMENT_TOKEN_UI:
-        PRINTF("GPIRIOU PAYMENT TOKEN UI\n");
+        PRINTF("GPIRIOU TOKEN ID UI\n");
         set_payment_token_ui(msg, context);
         break;
+    //case WARNING_BENIFICIARY_UI:
+    //    set_beneficiary_warning_ui(msg, context);
+    //    break;
     default:
         PRINTF("GPIRIOU ERROR\n");
         break;
