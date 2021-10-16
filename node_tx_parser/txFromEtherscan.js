@@ -31,6 +31,8 @@ function txFromEtherscan(rawTx) {
 
 export function getHexLen(str) {
 	const len = str.length / 2
+	if (len.toString(16) < 10)
+		return '0' + len.toString(16)
 	return len.toString(16)
 }
 
