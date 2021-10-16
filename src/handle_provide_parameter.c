@@ -68,39 +68,47 @@ static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea
 
 static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
-    // skip all checks if we already found multiple addresses.
-    if (context->booleans & MULTIPLE_NFTS) {
+    if (context->booleans & MULTIPLE_NFT_ADDRESSES)
+    {
         return;
     }
-    // Here we are on atomicize's calldata length.
+    PRINTF("====== HANDLE_ATOMICIZE ======\n");
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 6)
     {
-        // Copy bundle_size
+        PRINTF("penzo123 CICICICICICICICICICICICICICICICICICICICICIC???????\n");
         context->bundle_size = U4BE(msg->parameter, 0);
-        // Copy the first part of nft_address.
         memcpy(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE);
         PRINTF("bundle size: %d\n", context->bundle_size);
     }
-    // Here we are on atomicize's calldata's addresses array.
-    else if (msg->parameterOffset > context->calldata_offset + PARAMETER_LENGTH * 6 && msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size)) {
-        // Copy end of nft_address the first time.
-        if (!(context->booleans & NFT_ADDRESS_COPIED)) {
+    else if (msg->parameterOffset > context->calldata_offset + PARAMETER_LENGTH * 6 && msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size))
+    {
+        PRINTF("PENZO 1\n");
+        // copy end of nft_address the first time
+        if (!(context->booleans & NFT_ADDRESS_COPIED))
             memcpy(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
-            // Rise NFT_ADDRESS_COPIED.
-            context->booleans |= NFT_ADDRESS_COPIED;
-        }
-        // Once nft_address is copied, memcmp to check if there is multiple addresses.
-        if (context->booleans & NFT_ADDRESS_COPIED) {
-            // Memcmp the first part of the address.
-            if (msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1)) {
-                PRINTF("PENZO HIHIHIHIHIHIHIHIHIHIHI\n");
-                if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE)) {
-                    context->booleans |= MULTIPLE_NFTS;
+        PRINTF("PENZO 2\n");
+        // rise is_nft_address_copied
+        context->booleans |= NFT_ADDRESS_COPIED;
+        PRINTF("PENZO 3\n");
+        if (context->booleans & NFT_ADDRESS_COPIED)
+        {
+            PRINTF("PENZO 4\n");
+            // cmp start
+            if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1))
+            {
+                PRINTF("PENZO 5\n");
+                if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE))
+                {
+                    PRINTF("PENZO 6\n");
+                    context->booleans |= MULTIPLE_NFT_ADDRESSES;
                 };
             }
-            // Memcmp the last part of the address.
-            if (memcmp(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE)) {
-                context->booleans |= MULTIPLE_NFTS;
+            // cmp end
+            PRINTF("PENZO 7\n");
+            if (memcmp(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE))
+            {
+                PRINTF("PENZO 8\n");
+                context->booleans |= MULTIPLE_NFT_ADDRESSES;
             };
         }
     }
@@ -148,6 +156,7 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
     PRINTF("\033[0m");
     if (context->on_param)
     {
+        PRINTF("GPIRIOU TEST\n");
         if (context->on_param == ON_CALLDATA)
             handle_calldata(msg, context);
     }
@@ -235,14 +244,17 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         PRINTF("\033[0;34m OFFSETT: %d\n", U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE);
         PRINTF("\033[0m");
         context->calldata_offset = U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE;
+        PRINTF("GPIRIOU DEBUG 9\n");
         break;
     case REPLACEMENT_PATTERN_OFFSET:
     case STATIC_EXTRADATA_OFFSET:
+        PRINTF("GPIRIOU DEBUG 10\n");
         break;
     default:
+        PRINTF("GPIRIOU DEBUG 100\n");
         break;
     }
-    PRINTF("GPIRIOU NEXT PARAM !!!\n");
+    PRINTF("GPIRIOU PARAM !!!\n");
     context->next_param++;
 }
 
@@ -296,6 +308,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case BUY_STATIC_TARGET_ADDRESS:
         break;
     case BUY_PAYMENT_TOKEN_ADDRESS:
+        PRINTF("GPIRIOU DEBUG1\n");
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in PAYMENT_TOKEN_ADDRESS PARAM\n");
         // set context->payment_token_address
         copy_address(context->payment_token_address,
@@ -303,6 +316,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
                      msg->parameter);
         if (memcmp(context->payment_token_address, NULL_ADDRESS, ADDRESS_LENGTH) == 0)
         {
+            PRINTF("GPIRIOU IS ETH\n");
             context->payment_token_decimals = WEI_TO_ETHER;
             strncpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
             context->booleans |= IS_ETH;
@@ -315,6 +329,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case BUY_TAKER_PROTOCOL_FEE:
         break;
     case BUY_BASE_PRICE:
+        PRINTF("GPIRIOU DEBUG2\n");
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in BASE_PRICE PARAM\n");
         // set context->payment_token_amount
         copy_parameter(context->payment_token_amount,
@@ -335,6 +350,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case SELL_FEE_RECIPIENT_ADDRESS:
         break;
     case SELL_TARGET_ADDRESS:
+        PRINTF("GPIRIOU DEBUG3\n");
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in TARGET_ADDRESS PARAM\n");
         // set context->nft_contract_address
         copy_address(context->nft_contract_address,
@@ -356,6 +372,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case SELL_TAKER_PROTOCOL_FEE:
         break;
     case SELL_BASE_PRICE:
+        PRINTF("GPIRIOU DEBUG4\n");
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in BASE_PRICE PARAM\n");
         // set context->payment_token_amount
         copy_parameter(context->payment_token_amount,
@@ -372,12 +389,14 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case SELL_HOW_TO_CALL:
         break;
     case BUY_CALLDATA_OFFSET:
+        PRINTF("GPIRIOU DEBUG5\n");
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in CALLDATA_OFFSET PARAM\n");
         PRINTF("\033[0;34m OFFSETT: %d\n", U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE);
         PRINTF("\033[0m");
         context->calldata_offset = U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE;
         break;
     case SELL_CALLDATA_OFFSET:
+        PRINTF("GPIRIOU DEBUG6\n");
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in CALLDATA_OFFSET PARAM\n");
         PRINTF("\033[0;34m OFFSETT: %d\n", U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE);
         PRINTF("\033[0m");
@@ -386,11 +405,15 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case BUY_REPLACEMENT_PATTERN_OFFSET:
     case SELL_REPLACEMENT_PATTERN_OFFSET:
     case BUY_STATIC_EXTRADATA_OFFSET:
+        PRINTF("GPIRIOU DEBUG 7\n");
+        break;
     case SELL_STATIC_EXTRADATA_OFFSET:
+        PRINTF("GPIRIOU DEBUG 10\n");
         break;
     default:
         break;
     }
+    PRINTF("GPIRIOU PARAM !!!!!!!\n");
     context->next_param++;
 }
 
@@ -412,6 +435,7 @@ void handle_provide_parameter(void *parameters)
         break;
     case ATOMIC_MATCH_:
         handle_atomic_match(msg, context);
+        PRINTF("GPIRIOU DEBUG 99\n");
         break;
     default:
         PRINTF("Selector Index %d not supported\n", context->selectorIndex);
