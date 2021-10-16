@@ -5,7 +5,7 @@ static void check_beneficiary_warning(ethPluginFinalize_t *msg, opensea_paramete
     if (memcmp(msg->address, context->beneficiary, ADDRESS_LENGTH))
     {
         PRINTF("GPIRIOU WARNING SET\n");
-        context->screen_array |= UNUSED_UI;
+        context->screen_array |= WARNING_ADDRESS_UI;
         msg->numScreens++;
     }
 }
@@ -20,20 +20,29 @@ void handle_finalize(void *parameters)
     switch (context->selectorIndex)
     {
     case ATOMIC_MATCH_:
-    case CANCEL_ORDER_:
-        context->screen_array |= NFT_NAME_UI;
-        context->screen_array |= TOKEN_ID_AND_BUNDLE_UI;
+        if (!context->bundle_size)
+        {
+            context->screen_array |= COLLECTION_UI;
+            context->screen_array |= TOKEN_ID_UI;
+        }
         context->screen_array |= PAYMENT_TOKEN_UI;
+        break;
+    case CANCEL_ORDER_:
+        context->screen_array |= COLLECTION_UI;
+        context->screen_array |= PAYMENT_TOKEN_UI;
+        break;
+    case APPROVE_PROXY:
+        // TODO
         break;
     default:
         break;
     }
     // if (context->selectorIndex != APPROVE_PROXY)
     // {
-    //     context->screen_array |= TOKEN_ID_AND_BUNDLE_UI;
+    //     context->screen_array |= COLLECTION_UI;
     //     context->screen_array |= PAYMENT_TOKEN_UI;
     // }
-    // context->screen_array |= WARNING_BENIFICIARY_UI;
+    // context->screen_array |= ADDRESS_UI;
 
     if (context->valid)
     {
@@ -51,9 +60,14 @@ void handle_finalize(void *parameters)
         context->plugin_screen_index = TX_TYPE_UI;
         switch (context->selectorIndex)
         {
-        case CANCEL_ORDER_:
         case ATOMIC_MATCH_:
-            msg->numScreens = 4;
+            if (context->bundle_size)
+                msg->numScreens = 2;
+            else
+                msg->numScreens = 3;
+            break;
+        case CANCEL_ORDER_:
+            msg->numScreens = 3;
             break;
         case APPROVE_PROXY:
             msg->numScreens = 1;

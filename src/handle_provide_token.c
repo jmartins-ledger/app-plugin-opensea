@@ -41,7 +41,7 @@ void handle_provide_token(void *parameters)
             PRINTF("NOT FOUND\n");
             context->payment_token_decimals = DEFAULT_DECIMAL;
             strncpy(context->payment_token_ticker, DEFAULT_TICKER, sizeof(context->payment_token_ticker));
-            context->screen_array |= WARNING_PAYMENT_TOKEN_UI;
+            context->screen_array |= WARNING_TOKEN_UI;
             msg->additionalScreens++;
         }
         // should set payment_token_found to false, but it is false by default

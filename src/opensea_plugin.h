@@ -53,16 +53,16 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 
 // screeen array correspondance
 #define TX_TYPE_UI 1 // Must remain first screen in screen array.
-#define TOKEN_ID_AND_BUNDLE_UI (1 << 1)
-#define NFT_NAME_UI (1 << 2)
+#define WARNING_COLLECTION_UI (1 << 1)
+#define COLLECTION_UI (1 << 2)
 
-#define WARNING_PAYMENT_TOKEN_UI (1 << 3)
-#define PAYMENT_TOKEN_UI (1 << 4)
+#define WARNING_ADDRESS_UI (1 << 3)
+#define ADDRESS_UI (1 << 4)
 
-#define WARNING_BENIFICIARY_UI (1 << 5)
+#define TOKEN_ID_UI (1 << 5)
 
-#define UNUSED_UI (1 << 6)
-#define LAST_UI (1 << 7) // Must remain last screen in screen array.
+#define WARNING_TOKEN_UI (1 << 6)
+#define PAYMENT_TOKEN_UI (1 << 7) // Must remain last screen in screen array.
 
 #define RIGHT_SCROLL 1
 #define LEFT_SCROLL 0
@@ -194,8 +194,7 @@ typedef enum
 #define PAYMENT_TOKEN_FOUND (1 << 2)
 #define IS_ETH (1 << 3)
 #define NFT_ADDRESS_COPIED (1 << 4)
-#define MULTIPLE_NFT_ADDRESSES (1 << 5)
-#define NAME_FOUND (1 << 6)
+#define MULTIPLE_NFTS (1 << 5)
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct opensea_parameters_t

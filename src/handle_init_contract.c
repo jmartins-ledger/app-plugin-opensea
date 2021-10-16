@@ -55,11 +55,9 @@ void handle_init_contract(void *parameters)
     case APPROVE_PROXY:
         break;
     case CANCEL_ORDER_:
-        PRINTF("GPIRIOU CANCEL ORDER\n");
         context->next_param = EXCHANGE_ADDRESS;
         break;
     case ATOMIC_MATCH_:
-        PRINTF("GPIRIOU ATOMIC MATCH\n");
         context->next_param = BUY_EXCHANGE_ADDRESS;
         break;
     // case ADD_LIQUIDITY:
