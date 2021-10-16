@@ -1,9 +1,0 @@
-APDU CALLDATA CancelOrder_
-
-4	Method id
-32	12(0) + 20 Current owner address ?
-32	?? Full 0
-32	Token ID
-32	Side ?
-32	?? “a0”
-32	Full 0
