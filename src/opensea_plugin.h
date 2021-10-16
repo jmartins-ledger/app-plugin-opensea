@@ -200,10 +200,8 @@ typedef enum
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct opensea_parameters_t
 {
-    uint8_t booleans;         // 1
-    uint16_t calldata_offset; // 2
-    // uint16_t replacement_pattern_offset; // 2
-    // uint16_t static_extradata_offset;    // 2
+    uint8_t booleans;               // 1
+    uint16_t calldata_offset;       // 2
     uint32_t next_parameter_length; // 4
     uint8_t on_param;               // 1
     uint8_t calldata_method;        // 1
@@ -212,14 +210,12 @@ typedef struct opensea_parameters_t
     uint8_t payment_token_amount[INT256_LENGTH];   // 32
     char payment_token_ticker[MAX_TICKER_LEN];     // 12
     uint8_t payment_token_decimals;                // 1
-    // uint8_t payment_token_found;                   // 1
-    uint8_t beneficiary[ADDRESS_LENGTH]; // 20
+    uint8_t beneficiary[ADDRESS_LENGTH];           // 20
 
-    // uint8_t side;                               // 1
     uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
     uint8_t token_id[INT256_LENGTH];              // 32
     // !! Risky uint8_t for size
-    uint8_t bundle_size; // 1
+    uint32_t bundle_size; // 4
 
     uint8_t screen_array;          // 1
     uint8_t previous_screen_index; // 1
@@ -230,7 +226,7 @@ typedef struct opensea_parameters_t
     uint8_t valid;         // 1
     uint8_t selectorIndex; // 1
 } opensea_parameters_t;
-// = 159
+// = 157
 
 // Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove
 // this check.
