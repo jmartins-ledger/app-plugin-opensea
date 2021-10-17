@@ -3,7 +3,7 @@ import Eth from '@ledgerhq/hw-app-eth';
 import { generate_plugin_config } from './generate_plugin_config';
 import { parseEther, parseUnits, RLP } from "ethers/lib/utils";
 
-const transactionUploadDelay = 60000;
+const transactionUploadDelay = 120000;
 
 async function waitForAppScreen(sim) {
     await sim.waitUntilScreenIsNot(sim.getMainMenuSnapshot(), transactionUploadDelay);

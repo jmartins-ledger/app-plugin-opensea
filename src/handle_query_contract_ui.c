@@ -99,22 +99,16 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
             // strncpy(msg->title, "NFT name:", msg->titleLength);
             // snprintf(msg->msg, msg->msgLength, "%d", context->TOBEDEFINED); // Waiting for Ethereum app update.
             // }
-            // PRINTF("GPIRIOU memcmp: %d\n", memcmp(context->nft_contract_address, "C99F70BFD82FB7C8F8191FDFBFB735606B15E5C5", sizeof(context->nft_contract_address)));
-            if (!(memcmp(context->nft_contract_address, "C99F70BFD82FB7C8F8191FDFBFB735606B15E5C5", sizeof(context->nft_contract_address)) && context->calldata_method != ATOMICIZE))
-            {
-                strncpy(msg->title, "Warning:", msg->titleLength);
-                strncpy(msg->msg, "Transaction will fail", msg->msgLength);
-            }
-            else
-            {
-                strncpy(msg->title, "Unknown NFT:", msg->titleLength);
-                msg->msg[0] = '0';
-                msg->msg[1] = 'x';
-                getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
-                                              (uint8_t *)msg->msg + 2,
-                                              msg->pluginSharedRW->sha3,
-                                              0);
-            }
+            // else
+            // {
+            strncpy(msg->title, "Unknown NFT:", msg->titleLength);
+            msg->msg[0] = '0';
+            msg->msg[1] = 'x';
+            getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
+                                          (uint8_t *)msg->msg + 2,
+                                          msg->pluginSharedRW->sha3,
+                                          0);
+            // }
         }
         break;
     default:
@@ -133,23 +127,11 @@ static void set_token_warning_ui(ethQueryContractUI_t *msg,
 static void set_payment_token_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
 {
     strncpy(msg->title, "Price:", msg->titleLength);
-    // if (context->payment_token_address)
-    // {
     amountToString(context->payment_token_amount, sizeof(context->payment_token_amount),
                    context->payment_token_decimals,
                    context->payment_token_ticker,
                    msg->msg,
                    msg->msgLength);
-    // }
-    // else
-    // {
-    //     amountToString((uint8_t *)msg->pluginSharedRO->txContent->value.value,
-    //                    msg->pluginSharedRO->txContent->value.length,
-    //                    WEI_TO_ETHER,
-    //                    "ETH ",
-    //                    msg->msg,
-    //                    msg->msgLength);
-    // }
 }
 
 //static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
