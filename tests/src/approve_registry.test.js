@@ -9,14 +9,14 @@ const pluginName = "opensea";
 const abi_path = `../${pluginName}/abis/` + contractAddr + '.json';
 // const abi = require(abi_path);
 
-// from https://etherscan.io/tx/0x0a863562ee39b566d2eac1d11f0bcefab4fac12c26dc300fa8ad0df3a142afad
-test('[Nano S] approve registry', zemu("nanos", async (sim, eth) => {
-  const serializedTx = txFromEtherscan("0x02f87001138459682f0085103743e1af8307e31394a5409ec958c83c3f309868babaca7c86dcb077c18084ddd81f82c001a0ac03b62363de842c8afe05d632ab797f2c4d4dadca670586a2ec9515f97d6379a004b94348bb042f63b4581d8e2a3c03058c5f3f67d9d4e80d36fd6b73c54e48be");
+// from https://etherscan.io/tx/0x6557bf57679f13b3bc953f86ed60c45a6111a0d5300ac539c886d6ee071ea8d4
+test('[Nano S] nanos_register_proxy', zemu("nanos", async (sim, eth) => {
+  const serializedTx = txFromEtherscan("0x02f87001068459682f008510cf2358568307e31394a5409ec958c83c3f309868babaca7c86dcb077c18084ddd81f82c080a0a3b03b61a326669936ffcfeea480241284fe864962b7d8b3d5bc9c239b01fa25a03e4055474823523011e8b304e324e3c596ce7bb37572de00ba16cf132638e232");
   const tx = eth.signTransaction(
     "44'/60'/0'/0",
     serializedTx,
   );
   await waitForAppScreen(sim);
-  await sim.navigateAndCompareSnapshots('.', 'nanos_approve_registry', [6, 0]);
+  await sim.navigateAndCompareSnapshots('.', 'nanos_register_proxy', [7, 0]);
   await tx;
 }));

@@ -99,12 +99,8 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
             // strncpy(msg->title, "NFT name:", msg->titleLength);
             // snprintf(msg->msg, msg->msgLength, "%d", context->TOBEDEFINED); // Waiting for Ethereum app update.
             // }
-            // else if (!(memcmp(context->nft_contract_address, "c99f70bfd82fb7c8f8191fdfbfb735606b15e5c5", sizeof(context->nft_contract_address)) && context->calldata_method != ATOMICIZE))
-            if (!(memcmp(context->nft_contract_address, "c99f70bfd82fb7c8f8191fdfbfb735606b15e5c5", sizeof(context->nft_contract_address)) && context->calldata_method != ATOMICIZE))
-            {
-                strncpy(msg->title, "Warning:", msg->titleLength);
-                strncpy(msg->msg, "Transaction will fail", msg->msgLength);
-            }
+            // else
+            // {
             strncpy(msg->title, "Unknown NFT:", msg->titleLength);
             msg->msg[0] = '0';
             msg->msg[1] = 'x';
@@ -112,7 +108,7 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
                                           (uint8_t *)msg->msg + 2,
                                           msg->pluginSharedRW->sha3,
                                           0);
-            //}
+            // }
         }
         break;
     default:
@@ -131,23 +127,11 @@ static void set_token_warning_ui(ethQueryContractUI_t *msg,
 static void set_payment_token_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
 {
     strncpy(msg->title, "Price:", msg->titleLength);
-    // if (context->payment_token_address)
-    // {
     amountToString(context->payment_token_amount, sizeof(context->payment_token_amount),
                    context->payment_token_decimals,
                    context->payment_token_ticker,
                    msg->msg,
                    msg->msgLength);
-    // }
-    // else
-    // {
-    //     amountToString((uint8_t *)msg->pluginSharedRO->txContent->value.value,
-    //                    msg->pluginSharedRO->txContent->value.length,
-    //                    WEI_TO_ETHER,
-    //                    "ETH ",
-    //                    msg->msg,
-    //                    msg->msgLength);
-    // }
 }
 
 //static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
