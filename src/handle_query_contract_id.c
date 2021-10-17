@@ -10,6 +10,7 @@ void handle_query_contract_id(void *parameters)
     PRINTF("IS_ETH: %d\n", context->booleans & IS_ETH);
     PRINTF("NFT_ADDRESS_COPIED: %d\n", context->booleans & NFT_ADDRESS_COPIED);
     PRINTF("MULTIPLE_NFT_ADDRESSES: %d\n", context->booleans & MULTIPLE_NFT_ADDRESSES);
+    PRINTF("NFT_ADDRES\n");
     print_bytes(context->nft_contract_address, ADDRESS_LENGTH);
 
     // set 'OpenSea' title.

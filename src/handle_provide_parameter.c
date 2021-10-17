@@ -19,49 +19,22 @@ static void copy_address(uint8_t *dst, size_t dst_len, uint8_t *src)
     memcpy(dst, &src[offset], len);
 }
 
-// static void handle_beneficiary(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
-// {
-//     memset(context->beneficiary, 0, sizeof(context->beneficiary));
-//     memcpy(context->beneficiary,
-//            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
-//            sizeof(context->beneficiary));
-//     PRINTF("BENEFICIARY: %.*H\n", ADDRESS_LENGTH, context->beneficiary);
-// }
-
-//static void handle_approve_proxy(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
-//{
-//    switch (context->selectorIndex)
-//    {
-//    case NONE:
-//        break;
-//    default:
-//        PRINTF("Param not supported\n");
-//        msg->result = ETH_PLUGIN_RESULT_ERROR;
-//        break;
-//    }
-//}
-
 static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
-    PRINTF("IN TRANSFER METHOD.\n");
-    PRINTF("IN TRANSFER METHOD.\n");
-    PRINTF("calldata_offset: %d\n", context->calldata_offset);
-    PRINTF("msg->offset: %d\n", msg->parameterOffset);
-    // if (context->calldata_offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
-        PRINTF("IN 'from' =======================================\n");
+        PRINTF("in tranferFrom 'from'\n");
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 2)
-        PRINTF("IN 'to' =======================================\n");
+        PRINTF("in transferFrom 'to'\n");
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 3)
     {
-        PRINTF("IN 'tokenID' =======================================\n");
+        PRINTF("in tranferFrom 'tokenID' part 1\n");
         memcpy(context->token_id, msg->parameter + SELECTOR_SIZE, PARAMETER_LENGTH - SELECTOR_SIZE);
     }
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 4)
     {
-        PRINTF("IN 'tokenID' part 2 =======================================\n");
+        PRINTF("in tranferFrom 'tokenID' part 2\n");
         memcpy(context->token_id + PARAMETER_LENGTH - SELECTOR_SIZE, msg->parameter, SELECTOR_SIZE);
-        PRINTF("IN 'tokenID' RES: =======================================\n");
+        PRINTF("copied 'tokenID' RES:\n");
         print_bytes(context->token_id, PARAMETER_LENGTH);
     }
 }
@@ -70,9 +43,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
 {
     // skip all checks if we already found multiple addresses.
     if (context->booleans & MULTIPLE_NFT_ADDRESSES)
-    {
         return;
-    }
     // Here we are on atomicize's calldata length.
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 6)
     {
@@ -93,29 +64,21 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
             context->booleans |= NFT_ADDRESS_COPIED;
         }
         // Once nft_address is copied, memcmp to check if there is multiple addresses.
-        if (context->booleans & NFT_ADDRESS_COPIED)
+        // Memcmp the first part of the address.
+        if (msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1))
         {
-            // Memcmp the first part of the address.
-            if (msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1))
-            {
-                PRINTF("PENZO HIHIHIHIHIHIHIHIHIHIHI\n");
-                if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE))
-                {
-                    context->booleans |= MULTIPLE_NFT_ADDRESSES;
-                };
-            }
-            // Memcmp the last part of the address.
-            if (memcmp(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE))
-            {
+            if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE))
                 context->booleans |= MULTIPLE_NFT_ADDRESSES;
-            };
         }
+        // Memcmp the last part of the address.
+        if (memcmp(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE))
+            context->booleans |= MULTIPLE_NFT_ADDRESSES;
     }
 }
 
 static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
-    PRINTF("IN CALLDATA IN CALL DATA target:%d =? current:%d\n", context->calldata_offset + context->next_parameter_length, msg->parameterOffset);
+    PRINTF("IN CALLDATA target:%d =? current:%d\n", context->calldata_offset + context->next_parameter_length, msg->parameterOffset);
     // Find calldata Method ID.
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
     {
@@ -135,21 +98,17 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
         context->calldata_method == SAFE_TRANSFER_FROM)
         handle_tranfer_from_method(msg, context);
     else if (context->calldata_method == ATOMICIZE)
-    {
-        // TODO: count items
         handle_atomicize(msg, context);
-    }
     // End of calldata
     if (context->calldata_offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
     {
-        PRINTF("END END END CALLDATA END END END\n");
+        PRINTF("END OF CALLDATA\n");
         context->on_param = ON_NONE;
     }
 }
 
 static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
-    // PRINTF("\033[0;31mTEST PENZO: %x\033[0m\n", msg->parameter[PARAMETER_LENGTH]);
     PRINTF("\033[0;31mPROVIDE PARAMETER - current parameter:\n");
     print_bytes(msg->parameter, PARAMETER_LENGTH);
     PRINTF("\033[0m");
@@ -164,23 +123,8 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
         context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
         PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
-        // context->calldata_offset = 0;
         context->on_param = ON_CALLDATA;
     }
-    // else if (context->replacement_pattern_offset != 0 && msg->parameterOffset == context->replacement_pattern_offset)
-    // {
-    //     PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in \033[0;32mREPlACEMENT_PATTERN_LENGTH\033[0m PARAM\n");
-    //     context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
-    //     PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
-    //     context->replacement_pattern_offset = 0;
-    // }
-    // else if (context->static_extradata_offset != 0 && msg->parameterOffset == context->static_extradata_offset)
-    // {
-    //     PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in \033[0;32mSTATIC_EXTRADATA_LENGTH\033[0m PARAM\n");
-    //     context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
-    //     PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
-    //     context->static_extradata_offset = 0;
-    // }
 
     switch ((cancel_order_parameter)context->next_param)
     {
@@ -229,10 +173,9 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         break;
     case SIDE:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in SIDE PARAM\n");
+        // This value is either 1 or 0.
         if (msg->parameter[PARAMETER_LENGTH - 1])
             context->booleans |= ORDER_SIDE;
-        PRINTF("---BOOLS: %d\n", context->booleans);
-        // context->calldata_offset - U4BE(msg->parameter, PARAMETER_LENGTH - 4);
         break;
     case SALE_KIND:
     case HOW_TO_CALL:
@@ -249,7 +192,6 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
     default:
         break;
     }
-    PRINTF("GPIRIOU NEXT PARAM !!!\n");
     context->next_param++;
 }
 
@@ -268,23 +210,8 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
         context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
         PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
-        // context->calldata_offset = 0;
         context->on_param = ON_CALLDATA;
     }
-    // else if (context->replacement_pattern_offset != 0 && msg->parameterOffset == context->replacement_pattern_offset)
-    // {
-    //     PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mREPlACEMENT_PATTERN_LENGTH\033[0m PARAM\n");
-    //     context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
-    //     PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
-    //     context->replacement_pattern_offset = 0;
-    // }
-    // else if (context->static_extradata_offset != 0 && msg->parameterOffset == context->static_extradata_offset)
-    // {
-    //     PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mSTATIC_EXTRADATA_LENGTH\033[0m PARAM\n");
-    //     context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
-    //     PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
-    //     context->static_extradata_offset = 0;
-    // }
 
     switch ((atomic_match_parameter)context->next_param)
     {
@@ -308,13 +235,13 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         copy_address(context->payment_token_address,
                      sizeof(context->payment_token_address),
                      msg->parameter);
+        // If address is NULL, the payment token is ETH.
         if (memcmp(context->payment_token_address, NULL_ADDRESS, ADDRESS_LENGTH) == 0)
         {
             context->payment_token_decimals = WEI_TO_ETHER;
             strncpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
             context->booleans |= IS_ETH;
         }
-        PRINTF("GPIRIOU PAYMENT\n");
         break;
     case BUY_MAKER_RELAYER_FEE:
     case BUY_TAKER_RELAYER_FEE:
@@ -340,23 +267,11 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case SELL_MAKER_ADDRESS:
     case SELL_TAKER_ADDRESS:
     case SELL_FEE_RECIPIENT_ADDRESS:
-        break;
     case SELL_TARGET_ADDRESS:
-        PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in TARGET_ADDRESS PARAM\n");
-        // set context->nft_contract_address
-        copy_address(context->nft_contract_address,
-                     sizeof(context->nft_contract_address),
-                     msg->parameter);
-        break;
+        // already catch in BUY order
     case SELL_STATIC_TARGET_ADDRESS:
-        break;
     case SELL_PAYMENT_TOKEN_ADDRESS:
-        PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in PAYMENT_TOKEN_ADDRESS PARAM\n");
-        // set context->payment_token_address
-        copy_address(context->payment_token_address,
-                     sizeof(context->payment_token_address),
-                     msg->parameter);
-        break;
+        // already catch in BUY order
     case SELL_MAKER_RELAYER_FEE:
     case SELL_TAKER_RELAYER_FEE:
     case SELL_MAKER_PROTOCOL_FEE:
@@ -412,7 +327,6 @@ void handle_provide_parameter(void *parameters)
     switch (context->selectorIndex)
     {
     case APPROVE_PROXY:
-        // handle_approve_proxy(msg, context);
         break;
     case CANCEL_ORDER_:
         handle_cancel_order(msg, context);

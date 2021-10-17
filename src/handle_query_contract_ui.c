@@ -257,9 +257,6 @@ void handle_query_contract_ui(void *parameters)
         PRINTF("GPIRIOU TOKEN ID UI\n");
         set_payment_token_ui(msg, context);
         break;
-    //case WARNING_BENIFICIARY_UI:
-    //    set_beneficiary_warning_ui(msg, context);
-    //    break;
     default:
         PRINTF("GPIRIOU ERROR\n");
         break;

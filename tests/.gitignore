@@ -1,4 +1,5 @@
 snapshots-tmp/
+elfs/
 lib/
 node_modules/
 .DS_Store/

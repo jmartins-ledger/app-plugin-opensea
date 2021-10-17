@@ -60,28 +60,6 @@ void handle_init_contract(void *parameters)
     case ATOMIC_MATCH_:
         context->next_param = BUY_EXCHANGE_ADDRESS;
         break;
-    // case ADD_LIQUIDITY:
-    // case REMOVE_LIQUIDITY:
-    // case REMOVE_LIQUIDITY_PERMIT:
-    // case REMOVE_LIQUIDITY_ETH:
-    // case REMOVE_LIQUIDITY_ETH_PERMIT:
-    // case REMOVE_LIQUIDITY_ETH_FEE:
-    // case REMOVE_LIQUIDITY_ETH_PERMIT_FEE:
-    // context->next_param = TOKEN_A_ADDRESS;
-    // break;
-    // case SWAP_EXACT_TOKENS_FOR_ETH:
-    // case SWAP_EXACT_TOKENS_FOR_ETH_FEE:
-    // case SWAP_EXACT_TOKENS_FOR_TOKENS:
-    // case SWAP_EXACT_TOKENS_FOR_TOKENS_FEE:
-    // context->next_param = AMOUNT_IN;
-    // break;
-    // case SWAP_ETH_FOR_EXACT_TOKENS:
-    // case SWAP_EXACT_ETH_FOR_TOKENS:
-    // case SWAP_EXACT_ETH_FOR_TOKENS_FEE:
-    // case SWAP_TOKENS_FOR_EXACT_ETH:
-    // case SWAP_TOKENS_FOR_EXACT_TOKENS:
-    // context->next_param = AMOUNT_OUT;
-    // break;
     default:
         PRINTF("Missing selectorIndex\n");
         msg->result = ETH_PLUGIN_RESULT_ERROR;
