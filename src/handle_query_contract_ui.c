@@ -99,20 +99,22 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
             // strncpy(msg->title, "NFT name:", msg->titleLength);
             // snprintf(msg->msg, msg->msgLength, "%d", context->TOBEDEFINED); // Waiting for Ethereum app update.
             // }
-            // else if (!(memcmp(context->nft_contract_address, "c99f70bfd82fb7c8f8191fdfbfb735606b15e5c5", sizeof(context->nft_contract_address)) && context->calldata_method != ATOMICIZE))
-            if (!(memcmp(context->nft_contract_address, "c99f70bfd82fb7c8f8191fdfbfb735606b15e5c5", sizeof(context->nft_contract_address)) && context->calldata_method != ATOMICIZE))
+            // PRINTF("GPIRIOU memcmp: %d\n", memcmp(context->nft_contract_address, "C99F70BFD82FB7C8F8191FDFBFB735606B15E5C5", sizeof(context->nft_contract_address)));
+            if (!(memcmp(context->nft_contract_address, "C99F70BFD82FB7C8F8191FDFBFB735606B15E5C5", sizeof(context->nft_contract_address)) && context->calldata_method != ATOMICIZE))
             {
                 strncpy(msg->title, "Warning:", msg->titleLength);
                 strncpy(msg->msg, "Transaction will fail", msg->msgLength);
             }
-            strncpy(msg->title, "Unknown NFT:", msg->titleLength);
-            msg->msg[0] = '0';
-            msg->msg[1] = 'x';
-            getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
-                                          (uint8_t *)msg->msg + 2,
-                                          msg->pluginSharedRW->sha3,
-                                          0);
-            //}
+            else
+            {
+                strncpy(msg->title, "Unknown NFT:", msg->titleLength);
+                msg->msg[0] = '0';
+                msg->msg[1] = 'x';
+                getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
+                                              (uint8_t *)msg->msg + 2,
+                                              msg->pluginSharedRW->sha3,
+                                              0);
+            }
         }
         break;
     default:
