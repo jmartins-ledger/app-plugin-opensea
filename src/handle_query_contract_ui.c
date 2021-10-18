@@ -45,8 +45,16 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
             strncpy(msg->msg, "Withdraw offer?", msg->msgLength);
         break;
     case ATOMIC_MATCH_:
-        strncpy(msg->title, "Buy", msg->titleLength);
-        strncpy(msg->msg, "now", msg->msgLength);
+        if (context->booleans & ORDER_SIDE)
+        {
+            strncpy(msg->title, "Accept", msg->titleLength);
+            strncpy(msg->msg, "offer:", msg->msgLength);
+        }
+        else
+        {
+            strncpy(msg->title, "Buy:", msg->titleLength);
+            strncpy(msg->msg, "now:", msg->msgLength);
+        }
         break;
     default:
         break;
@@ -90,7 +98,7 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
         if (context->booleans & MULTIPLE_NFT_ADDRESSES)
         {
             strncpy(msg->title, "Multiple NFT", msg->titleLength);
-            strncpy(msg->msg, "collections", msg->msgLength);
+            strncpy(msg->msg, "collections.", msg->msgLength);
         }
         else
         {
@@ -121,7 +129,7 @@ static void set_token_warning_ui(ethQueryContractUI_t *msg,
                                  opensea_parameters_t *context __attribute__((unused)))
 {
     strncpy(msg->title, "Warning:", msg->titleLength);
-    strncpy(msg->msg, "Unknown payment token", msg->msgLength);
+    strncpy(msg->msg, "Unknown payment token.", msg->msgLength);
 }
 
 static void set_payment_token_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
@@ -134,25 +142,15 @@ static void set_payment_token_ui(ethQueryContractUI_t *msg, opensea_parameters_t
                    msg->msgLength);
 }
 
-//static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
-//                                       opensea_parameters_t *context __attribute__((unused)))
-//{
-//    strncpy(msg->title, "Warning:", msg->titleLength);
-//    strncpy(msg->msg, "Tokens not sent to user's address", msg->titleLength);
-//}
-
-// Set UI for "Beneficiary" screen.
-//static void set_beneficiary_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
-//{
-//    strncpy(msg->title, "Beneficiary:", msg->titleLength);
-//    msg->msg[0] = '0';
-//    msg->msg[1] = 'x';
-// chain_config_t chainConfig = {0};
-//getEthAddressStringFromBinary((uint8_t *)context->beneficiary,
-//                              (uint8_t *)msg->msg + 2,
-//                              msg->pluginSharedRW->sha3,
-//                              0);
-//}
+static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
+                                       opensea_parameters_t *context __attribute__((unused)))
+{
+    strncpy(msg->title, "Warning:", msg->titleLength);
+    if (context->bundle_size)
+        strncpy(msg->msg, "NFT's will not be sent to user!", msg->titleLength);
+    else
+        strncpy(msg->msg, "NFT will not be sent to user!", msg->titleLength);
+}
 
 // Not used if last bit in screen array isn't 1
 
@@ -245,8 +243,11 @@ void handle_query_contract_ui(void *parameters)
         PRINTF("GPIRIOU TOKEN ID UI\n");
         set_payment_token_ui(msg, context);
         break;
+    case WARNING_BENEFICIARY_UI:
+        PRINTF("GPIRIOU WARNING BENIFICARY\n");
+        set_beneficiary_warning_ui(msg, context);
+        break;
     default:
-        PRINTF("GPIRIOU ERROR\n");
         break;
     }
 }
