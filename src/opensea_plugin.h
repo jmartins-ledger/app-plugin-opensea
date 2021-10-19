@@ -214,8 +214,7 @@ typedef struct opensea_parameters_t
 
     uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
     uint8_t token_id[INT256_LENGTH];              // 32
-    // !! Risky uint8_t for size
-    uint32_t bundle_size; // 4
+    uint32_t bundle_size;                         // 4
 
     uint8_t screen_array;          // 1
     uint8_t previous_screen_index; // 1
