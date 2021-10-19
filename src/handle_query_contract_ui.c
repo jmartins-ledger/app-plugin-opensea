@@ -81,7 +81,7 @@ static void set_token_id_and_bundle_ui(ethQueryContractUI_t *msg,
         else
         {
             strncpy(msg->title, "Token ID:", msg->titleLength);
-            uint256_to_decimal(context->token_id, INT256_LENGTH, msg->msg, msg->msgLength);
+            uint256_to_decimal(context->token_id, INT256_LENGTH, msg->msg, 78);
         }
         break;
     default:
