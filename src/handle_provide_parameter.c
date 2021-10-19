@@ -24,9 +24,18 @@ static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
         PRINTF("in tranferFrom 'from'\n");
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 2)
-        PRINTF("in transferFrom 'to'\n");
+    {
+        PRINTF("PENZO in transferFrom 'to' p1, ORDER_SIDE: %d\n", context->booleans & ORDER_SIDE);
+        // check if 'to' part1 is sender if it's a 'buy now'
+        if (!(context->booleans & ORDER_SIDE))
+            memcpy(context->beneficiary, &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE], ADDRESS_LENGTH - SELECTOR_SIZE);
+    }
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 3)
     {
+        PRINTF("PENZO in transferFrom 'to' p2\n");
+        // check if 'to' part2 is sender if it's a 'buy now'
+        if (!(context->booleans & ORDER_SIDE))
+            memcpy(&context->beneficiary[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
         PRINTF("in tranferFrom 'tokenID' part 1\n");
         memcpy(context->token_id, msg->parameter + SELECTOR_SIZE, PARAMETER_LENGTH - SELECTOR_SIZE);
     }
@@ -122,7 +131,7 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
     {
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
         context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
-        PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
+        PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
         context->on_param = ON_CALLDATA;
     }
 
@@ -204,13 +213,24 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     {
         if (context->on_param == ON_CALLDATA)
             handle_calldata(msg, context);
+        else if (context->on_param == ON_CALLDATA_SELL)
+            handle_calldata(msg, context);
     }
+    // is on first calldata length
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset)
     {
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
         context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
-        PRINTF("PENZO - context->next_parameter_length = %d\n", context->next_parameter_length);
+        PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
         context->on_param = ON_CALLDATA;
+    }
+    // is on second calldata length
+    if (context->calldata_sell_offset != 0 && msg->parameterOffset == context->calldata_offset)
+    {
+        PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
+        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
+        PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
+        context->on_param = ON_CALLDATA_SELL;
     }
 
     switch ((atomic_match_parameter)context->next_param)
@@ -313,7 +333,8 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in CALLDATA_OFFSET PARAM\n");
         PRINTF("\033[0;34m OFFSETT: %d\n", U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE);
         PRINTF("\033[0m");
-        context->calldata_offset = U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE;
+        context->calldata_sell_offset = U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE;
+        // set context->calldata_sell_offset
         break;
     case BUY_REPLACEMENT_PATTERN_OFFSET:
     case SELL_REPLACEMENT_PATTERN_OFFSET:
