@@ -48,13 +48,15 @@ static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea
     }
 }
 
-static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
+// add offset parameter
+static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameters_t *context, uint16_t offset)
 {
     // skip all checks if we already found multiple addresses.
     if (context->booleans & MULTIPLE_NFT_ADDRESSES)
         return;
+
     // Here we are on atomicize's calldata length.
-    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 6)
+    if (msg->parameterOffset == offset + PARAMETER_LENGTH * 6)
     {
         // Copy bundle_size
         context->bundle_size = U4BE(msg->parameter, 0);
@@ -62,8 +64,8 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         memcpy(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE);
         PRINTF("bundle size: %d\n", context->bundle_size);
     }
-    // Here we are on atomicize's calldata's addresses array.
-    else if (msg->parameterOffset > context->calldata_offset + PARAMETER_LENGTH * 6 && msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size))
+    // Here we are on atomicize's calldata's NFTs addresses array.
+    else if (msg->parameterOffset > offset + PARAMETER_LENGTH * 6 && msg->parameterOffset <= offset + PARAMETER_LENGTH * (6 + context->bundle_size))
     {
         // Copy end of nft_address the first time.
         if (!(context->booleans & NFT_ADDRESS_COPIED))
@@ -74,7 +76,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         }
         // Once nft_address is copied, memcmp to check if there is multiple addresses.
         // Memcmp the first part of the address.
-        if (msg->parameterOffset <= context->calldata_offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1))
+        if (msg->parameterOffset <= offset + PARAMETER_LENGTH * (6 + context->bundle_size - 1))
         {
             if (memcmp(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE))
                 context->booleans |= MULTIPLE_NFT_ADDRESSES;
@@ -83,13 +85,29 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         if (memcmp(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE))
             context->booleans |= MULTIPLE_NFT_ADDRESSES;
     }
+    else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (7 + context->bundle_size))
+    {
+        PRINTF("On atomicize values[] length\n");
+    }
+    else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (8 + context->bundle_size * 2))
+    {
+        PRINTF("\033[0;33mOn atomicize calldata_length[] length\033[0m\n");
+    }
+    else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
+    {
+        PRINTF("On atomicize CALLDATA LENGTH = %hu\n", msg->parameter); //random selector_  size
+    }
+    else
+    {
+        PRINTF("PENZO ATOMICIZE ELSE\n");
+    }
 }
 
-static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
+static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context, uint16_t offset)
 {
-    PRINTF("IN CALLDATA target:%d =? current:%d\n", context->calldata_offset + context->next_parameter_length, msg->parameterOffset);
+    PRINTF("IN CALLDATA target:%d =? current:%d\n", offset + context->next_parameter_length, msg->parameterOffset);
     // Find calldata Method ID.
-    if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
+    if (offset != 0 && msg->parameterOffset == offset + PARAMETER_LENGTH)
     {
         PRINTF("CALLDATA METHOD: %x%x%x%x\n", msg->parameter[0], msg->parameter[1], msg->parameter[2], msg->parameter[3]);
         uint8_t i;
@@ -107,9 +125,9 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
         context->calldata_method == SAFE_TRANSFER_FROM)
         handle_tranfer_from_method(msg, context);
     else if (context->calldata_method == ATOMICIZE)
-        handle_atomicize(msg, context);
+        handle_atomicize(msg, context, offset);
     // End of calldata
-    if (context->calldata_offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
+    if (offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
     {
         PRINTF("END OF CALLDATA\n");
         context->on_param = ON_NONE;
@@ -120,11 +138,11 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
 {
     PRINTF("\033[0;31mPROVIDE PARAMETER - current parameter:\n");
     print_bytes(msg->parameter, PARAMETER_LENGTH);
-    PRINTF("\033[0m");
+    PRINTF("\033[0m\n");
     if (context->on_param)
     {
         if (context->on_param == ON_CALLDATA)
-            handle_calldata(msg, context);
+            handle_calldata(msg, context, context->calldata_offset);
     }
     // Is on calldata_length parameter
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset)
@@ -208,13 +226,13 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
 {
     PRINTF("\033[0;31mPROVIDE PARAMETER - current parameter:\n");
     print_bytes(msg->parameter, PARAMETER_LENGTH);
-    PRINTF("\033[0m");
+    PRINTF("\033[0m\n");
     if (context->on_param)
     {
         if (context->on_param == ON_CALLDATA)
-            handle_calldata(msg, context);
+            handle_calldata(msg, context, context->calldata_offset);
         else if (context->on_param == ON_CALLDATA_SELL)
-            handle_calldata(msg, context);
+            handle_calldata(msg, context, context->calldata_sell_offset);
     }
     // is on first calldata length
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset)
@@ -225,9 +243,11 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         context->on_param = ON_CALLDATA;
     }
     // is on second calldata length
-    if (context->calldata_sell_offset != 0 && msg->parameterOffset == context->calldata_offset)
+    if (context->calldata_sell_offset != 0 && msg->parameterOffset == context->calldata_sell_offset)
     {
-        PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
+        PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mCALLDATA_SELL_LENGTH\033[0m PARAM\n");
+        PRINTF("offset buy: %d\n", context->calldata_offset);
+        PRINTF("offset sell: %d\n", context->calldata_sell_offset);
         context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
         PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
         context->on_param = ON_CALLDATA_SELL;
