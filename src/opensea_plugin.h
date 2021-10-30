@@ -183,50 +183,56 @@ typedef enum
 #define DEFAULT_TICKER "? "
 
 // on_param defines
-// PENZO useless bit shifting, this should be 1, 2, 3...
-#define ON_NONE 0
-#define ON_CALLDATA 1
-#define ON_REPLACEMENT_PATTERN (1 << 1)
-#define ON_STATIC_EXTRADATA (1 << 2)
+typedef enum
+{
+    ON_NONE,
+    ON_CALLDATA,
+    ON_CALLDATA_SELL,
+    ON_REPLACEMENT_PATTERN,
+    ON_STATIC_EXTRADATA,
+} on_param_calldata;
 
 // Booleans
 #define SKIP 1
-#define ORDER_SIDE (1 << 1)
+#define ORDER_SIDE (1 << 1) // false is buy now, true is accept offer
 #define PAYMENT_TOKEN_FOUND (1 << 2)
 #define IS_ETH (1 << 3)
 #define NFT_ADDRESS_COPIED (1 << 4)
 #define MULTIPLE_NFT_ADDRESSES (1 << 5)
-#define NFT_NAME_FOUND (1 << 6)
+#define NAME_FOUND (1 << 6)
+#define RECEIVER_NOT_SENDER (1 << 7)
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
-typedef struct opensea_parameters_t
+typedef struct __attribute__((__packed__)) opensea_parameters_t
 {
-    uint8_t booleans;               // 1
+    uint8_t payment_token_address[ADDRESS_LENGTH]; // 20
+    char payment_token_ticker[MAX_TICKER_LEN];     // 12
+    uint8_t payment_token_decimals;                // 1
+    uint8_t payment_token_amount[INT256_LENGTH];   // 32
+
+    uint8_t beneficiary[ADDRESS_LENGTH];          // 20
+    uint8_t token_id[INT256_LENGTH];              // 32
+    uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
+    uint32_t bundle_size;                         // 4
+
     uint16_t calldata_offset;       // 2
+    uint16_t calldata_sell_offset;  // 2
     uint32_t next_parameter_length; // 4
     uint8_t on_param;               // 1
     uint8_t calldata_method;        // 1
 
-    uint8_t payment_token_address[ADDRESS_LENGTH]; // 20
-    uint8_t payment_token_amount[INT256_LENGTH];   // 32
-    char payment_token_ticker[MAX_TICKER_LEN];     // 12
-    uint8_t payment_token_decimals;                // 1
-    uint8_t beneficiary[ADDRESS_LENGTH];           // 20
-
-    uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
-    uint8_t token_id[INT256_LENGTH];              // 32
-    uint32_t bundle_size;                         // 4
+    // uint8_t skip;          // 1
+    uint8_t valid; // 1
 
     uint8_t screen_array;          // 1
     uint8_t previous_screen_index; // 1
     uint8_t plugin_screen_index;   // 1
 
-    uint8_t skip;          // 1
+    uint8_t booleans;      // 1
     uint8_t next_param;    // 1
-    uint8_t valid;         // 1
     uint8_t selectorIndex; // 1
 } opensea_parameters_t;
-// = 157
+// = 158
 
 // Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove
 // this check.

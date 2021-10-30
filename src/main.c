@@ -43,6 +43,10 @@ static const uint8_t _TRANSFER_FROM[SELECTOR_SIZE] = {0x23, 0xb8, 0x72, 0xdd};
 static const uint8_t _SAFE_TRANSFER_FROM[SELECTOR_SIZE] = {0x42, 0x84, 0x2e, 0x0e};
 static const uint8_t _SAFE_TRANSFER_FROM_DATA[SELECTOR_SIZE] = {0xf2, 0x42, 0x43, 0x2a};
 static const uint8_t _ATOMICIZE[SELECTOR_SIZE] = {0x68, 0xf0, 0xbc, 0xaa};
+// TODO : add
+// ddf252ad Transfer(address,address,uint256)
+// 42842e0e safeTransferFrom(address,address,uint256)
+// b88d4fde safeTransferFrom(address,address,uint256,bytes)
 // je sais pas la.
 static const uint8_t _METHOD_NOT_FOUND[SELECTOR_SIZE] = {0x00, 0x00, 0x00, 0x00};
 
