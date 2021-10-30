@@ -26,14 +26,14 @@ static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opense
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 2)
     {
         PRINTF("PENZO in transferFrom 'to' p1, ORDER_SIDE: %d\n", context->booleans & ORDER_SIDE);
-        // check if 'to' part1 is sender if it's a 'buy now'
+        // If it's a buy now, check if 'to' part1 is sender.
         if (!(context->booleans & ORDER_SIDE))
             memcpy(context->beneficiary, &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE], ADDRESS_LENGTH - SELECTOR_SIZE);
     }
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 3)
     {
         PRINTF("PENZO in transferFrom 'to' p2\n");
-        // check if 'to' part2 is sender if it's a 'buy now'
+        // If it's a 'buy now' checks if 'to' part2 is sender.
         if (!(context->booleans & ORDER_SIDE))
             memcpy(&context->beneficiary[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
         PRINTF("in tranferFrom 'tokenID' part 1\n");
@@ -121,8 +121,7 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
             }
         }
     }
-    if (context->calldata_method == TRANSFER_FROM ||
-        context->calldata_method == SAFE_TRANSFER_FROM || context->calldata_method == SAFE_TRANSFER_FROM_DATA)
+    if (context->calldata_method != ATOMICIZE && context->calldata_method != METHOD_NOT_FOUND)
         handle_transfer_from_method(msg, context);
     else if (context->calldata_method == ATOMICIZE)
         handle_atomicize(msg, context, offset);

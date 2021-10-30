@@ -159,7 +159,7 @@ static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
 {
     strncpy(msg->title, "Warning:", msg->titleLength);
     if (context->bundle_size)
-        strncpy(msg->msg, "NFT's will not be sent to user!", msg->titleLength);
+        strncpy(msg->msg, "NFT's might not be sent to user!", msg->titleLength);
     else
         strncpy(msg->msg, "NFT will not be sent to user!", msg->titleLength);
 }

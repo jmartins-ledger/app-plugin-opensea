@@ -20,7 +20,7 @@
 #define PLUGIN_NAME "OpenSea"
 
 // Number of selectors defined in this plugin.
-#define NUM_OPENSEA_SELECTORS 3
+#define NUM_OPENSEA_SELECTORS 7
 
 // Enumeration of the different selectors possible.
 // Should follow the array declared in main.c
@@ -31,14 +31,16 @@ typedef enum
     ATOMIC_MATCH_,
 } openseaSelector_t;
 
-#define NUM_NFT_SELECTORS 4
+#define NUM_NFT_SELECTORS 7
 
 typedef enum
 {
     TRANSFER_FROM,
     SAFE_TRANSFER_FROM,
-    SAFE_TRANSFER_FROM_DATA,
+    SAFE_TRANSFER_FROM_DATA_721,
+    TRANSFER,
     ATOMICIZE,
+    SAFE_TRANSFER_FROM_DATA_1155,
     METHOD_NOT_FOUND, //  Must remain last
 } erc721Selector_t;
 
@@ -199,7 +201,7 @@ typedef enum
 #define IS_ETH (1 << 3)
 #define NFT_ADDRESS_COPIED (1 << 4)
 #define MULTIPLE_NFT_ADDRESSES (1 << 5)
-#define NAME_FOUND (1 << 6)
+#define NFT_NAME_FOUND (1 << 6)
 #define RECEIVER_NOT_SENDER (1 << 7)
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
@@ -213,11 +215,11 @@ typedef struct __attribute__((__packed__)) opensea_parameters_t
     uint8_t beneficiary[ADDRESS_LENGTH];          // 20
     uint8_t token_id[INT256_LENGTH];              // 32
     uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
-    uint32_t bundle_size;                         // 4
+    uint16_t bundle_size;                         // 2
 
-    uint16_t calldata_offset;       // 2
-    uint16_t calldata_sell_offset;  // 2
-    uint32_t next_parameter_length; // 4
+    uint32_t calldata_offset;       // 4
+    uint32_t calldata_sell_offset;  // 4
+    uint16_t next_parameter_length; // 2
     uint8_t on_param;               // 1
     uint8_t calldata_method;        // 1
 
