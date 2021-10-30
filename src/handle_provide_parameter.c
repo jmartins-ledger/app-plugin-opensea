@@ -19,7 +19,7 @@ static void copy_address(uint8_t *dst, size_t dst_len, uint8_t *src)
     memcpy(dst, &src[offset], len);
 }
 
-static void handle_tranfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
+static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
         PRINTF("in tranferFrom 'from'\n");
@@ -122,8 +122,8 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
         }
     }
     if (context->calldata_method == TRANSFER_FROM ||
-        context->calldata_method == SAFE_TRANSFER_FROM)
-        handle_tranfer_from_method(msg, context);
+        context->calldata_method == SAFE_TRANSFER_FROM || context->calldata_method == SAFE_TRANSFER_FROM_DATA)
+        handle_transfer_from_method(msg, context);
     else if (context->calldata_method == ATOMICIZE)
         handle_atomicize(msg, context, offset);
     // End of calldata
@@ -202,7 +202,10 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in SIDE PARAM\n");
         // This value is either 1 or 0.
         if (msg->parameter[PARAMETER_LENGTH - 1])
+        {
+            PRINTF("GPIRIOU DEBUG CANCEL\n");
             context->booleans |= ORDER_SIDE;
+        }
         break;
     case SALE_KIND:
     case HOW_TO_CALL:
@@ -260,7 +263,9 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         break;
     case BUY_TAKER_ADDRESS:
         if (!(memcmp(msg->parameter, NULL_ADDRESS, ADDRESS_LENGTH)))
+        {
             context->booleans |= ORDER_SIDE;
+        }
         break;
     case BUY_FEE_RECIPIENT_ADDRESS:
         break;

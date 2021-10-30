@@ -52,7 +52,7 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
         }
         else
         {
-            strncpy(msg->title, "Buy:", msg->titleLength);
+            strncpy(msg->title, "Buy", msg->titleLength);
             strncpy(msg->msg, "now:", msg->msgLength);
         }
         break;
@@ -61,8 +61,8 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
     }
 }
 
-static void set_token_id_and_bundle_ui(ethQueryContractUI_t *msg,
-                                       opensea_parameters_t *context __attribute__((unused)))
+static void set_token_id_or_bundle_ui(ethQueryContractUI_t *msg,
+                                      opensea_parameters_t *context __attribute__((unused)))
 {
     switch (context->selectorIndex)
     {
@@ -102,21 +102,21 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
         }
         else
         {
-            // if (context->booleans & NAME_FOUND)
-            // {
-            // strncpy(msg->title, "NFT name:", msg->titleLength);
-            // snprintf(msg->msg, msg->msgLength, "%d", context->TOBEDEFINED); // Waiting for Ethereum app update.
-            // }
-            // else
-            // {
-            strncpy(msg->title, "Unknown NFT:", msg->titleLength);
-            msg->msg[0] = '0';
-            msg->msg[1] = 'x';
-            getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
-                                          (uint8_t *)msg->msg + 2,
-                                          msg->pluginSharedRW->sha3,
-                                          0);
-            // }
+            if (context->booleans & NFT_NAME_FOUND)
+            {
+                strncpy(msg->title, "NFT name:", msg->titleLength);
+                snprintf(msg->msg, msg->msgLength, "%s", msg->item2->nft.collectionName);
+            }
+            else
+            {
+                strncpy(msg->title, "Unknown NFT:", msg->titleLength);
+                msg->msg[0] = '0';
+                msg->msg[1] = 'x';
+                getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
+                                              (uint8_t *)msg->msg + 2,
+                                              msg->pluginSharedRW->sha3,
+                                              0);
+            }
         }
         break;
     default:
@@ -128,11 +128,23 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
 static void set_token_warning_ui(ethQueryContractUI_t *msg,
                                  opensea_parameters_t *context __attribute__((unused)))
 {
-    strncpy(msg->title, "Warning:", msg->titleLength);
-    strncpy(msg->msg, "Unknown payment token.", msg->msgLength);
+    strncpy(msg->title, "Unknown", msg->titleLength);
+    strncpy(msg->msg, "payment token:", msg->titleLength);
 }
 
-static void set_payment_token_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
+static void set_token_address_ui(ethQueryContractUI_t *msg,
+                                 opensea_parameters_t *context __attribute__((unused)))
+{
+    strncpy(msg->title, "Token address:", msg->titleLength);
+    msg->msg[0] = '0';
+    msg->msg[1] = 'x';
+    getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
+                                  (uint8_t *)msg->msg + 2,
+                                  msg->pluginSharedRW->sha3,
+                                  0);
+}
+
+static void set_price_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
 {
     strncpy(msg->title, "Price:", msg->titleLength);
     amountToString(context->payment_token_amount, sizeof(context->payment_token_amount),
@@ -227,27 +239,32 @@ void handle_query_contract_ui(void *parameters)
         PRINTF("GPIRIOU TX_TYPE\n");
         set_tx_type_ui(msg, context);
         break;
-    case TOKEN_ID_AND_BUNDLE_UI:
-        set_token_id_and_bundle_ui(msg, context);
+    case TOKEN_ID_OR_BUNDLE_UI:
+        set_token_id_or_bundle_ui(msg, context);
         PRINTF("GPIRIOU COLLECTION UI\n");
         break;
     case NFT_NAME_UI:
         PRINTF("GPIRIOU WARNING COLLECTION UI\n");
         set_nft_name_ui(msg, context);
         break;
-    case WARNING_PAYMENT_TOKEN_UI:
+    case UNKOWN_PAYMENT_TOKEN_UI:
         PRINTF("GPIRIOU WARNING TOKEN UI\n");
         set_token_warning_ui(msg, context);
         break;
-    case PAYMENT_TOKEN_UI:
-        PRINTF("GPIRIOU TOKEN ID UI\n");
-        set_payment_token_ui(msg, context);
+    case UNKNOWN_TOKEN_ADDRESS_UI:
+        PRINTF("GPIRIOU WARNING TOKEN UI\n");
+        set_token_address_ui(msg, context);
+        break;
+    case PRICE_UI:
+        PRINTF("GPIRIOU TOKEN ADDRESS UI\n");
+        set_price_ui(msg, context);
         break;
     case WARNING_BENEFICIARY_UI:
         PRINTF("GPIRIOU WARNING BENIFICARY\n");
         set_beneficiary_warning_ui(msg, context);
         break;
     default:
+        msg->result = ETH_PLUGIN_RESULT_ERROR;
         break;
     }
 }

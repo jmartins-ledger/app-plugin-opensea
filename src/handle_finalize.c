@@ -12,8 +12,8 @@ void handle_finalize(void *parameters)
     case ATOMIC_MATCH_:
     case CANCEL_ORDER_:
         context->screen_array |= NFT_NAME_UI;
-        context->screen_array |= TOKEN_ID_AND_BUNDLE_UI;
-        context->screen_array |= PAYMENT_TOKEN_UI;
+        context->screen_array |= TOKEN_ID_OR_BUNDLE_UI;
+        context->screen_array |= PRICE_UI;
         break;
     default:
         break;
