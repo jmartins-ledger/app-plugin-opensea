@@ -37,6 +37,7 @@ typedef enum
 {
     TRANSFER_FROM,
     SAFE_TRANSFER_FROM,
+    SAFE_TRANSFER_FROM_DATA,
     ATOMICIZE,
     METHOD_NOT_FOUND, //  Must remain last
 } erc721Selector_t;

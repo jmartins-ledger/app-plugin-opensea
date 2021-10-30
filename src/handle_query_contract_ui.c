@@ -52,7 +52,7 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
         }
         else
         {
-            strncpy(msg->title, "Buy:", msg->titleLength);
+            strncpy(msg->title, "Buy", msg->titleLength);
             strncpy(msg->msg, "now:", msg->msgLength);
         }
         break;
