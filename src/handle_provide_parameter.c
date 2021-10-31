@@ -147,7 +147,7 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset)
     {
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
-        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
+        context->next_parameter_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
         PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
         context->on_param = ON_CALLDATA;
     }
@@ -240,7 +240,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset)
     {
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mCALLDATA_LENGTH\033[0m PARAM\n");
-        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
+        context->next_parameter_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
         PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
         context->on_param = ON_CALLDATA;
     }
