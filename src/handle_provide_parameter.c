@@ -58,8 +58,8 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
     // Here we are on atomicize's calldata length.
     if (msg->parameterOffset == offset + PARAMETER_LENGTH * 6)
     {
-        // Copy bundle_size
-        context->bundle_size = U4BE(msg->parameter, 0);
+        // Copy bundle_size (uint16)
+        context->bundle_size = U2BE(msg->parameter, 2);
         // Copy the first part of nft_address.
         memcpy(context->nft_contract_address, msg->parameter + SELECTOR_SIZE + (PARAMETER_LENGTH - ADDRESS_LENGTH), ADDRESS_LENGTH - SELECTOR_SIZE);
         PRINTF("bundle size: %d\n", context->bundle_size);
