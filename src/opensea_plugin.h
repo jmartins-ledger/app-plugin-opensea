@@ -20,7 +20,7 @@
 #define PLUGIN_NAME "OpenSea"
 
 // Number of selectors defined in this plugin.
-#define NUM_OPENSEA_SELECTORS 7
+#define NUM_OPENSEA_SELECTORS 3
 
 // Enumeration of the different selectors possible.
 // Should follow the array declared in main.c

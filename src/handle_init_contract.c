@@ -41,7 +41,6 @@ void handle_init_contract(void *parameters)
         }
     }
 
-    // If `i == NUM_UNISWAP_SELECTOR` it means we haven't found the selector. Return an error.
     if (i == NUM_OPENSEA_SELECTORS)
     {
         context->valid = 0;
