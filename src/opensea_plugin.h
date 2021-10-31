@@ -4,18 +4,6 @@
 #include "eth_plugin_interface.h"
 #include <string.h>
 
-// Size of parameters passed in by the Ethereum app. No need to modify it. TODO: move it to
-// `eth_plugin_interals.h`.
-#define PARAMETER_LENGTH 32
-
-// Size of the smart-contract method. No need to modify it. TODO: mov eit to
-// `eth_plugin_interals.h`.
-#define SELECTOR_SIZE 4
-
-// Value to be passed in as parameter when calling the Ethereum app. TODO: mov eit to
-// `eth_plugin_interals.h`.
-#define RUN_APPLICATION 1
-
 // Name of the plugin.
 #define PLUGIN_NAME "OpenSea"
 
@@ -58,19 +46,35 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define TX_TYPE_UI 1 // Must remain first screen in screen array.
 #define TOKEN_ID_OR_BUNDLE_UI (1 << 1)
 #define NFT_NAME_UI (1 << 2)
-
 #define UNKOWN_PAYMENT_TOKEN_UI (1 << 3)
 #define UNKNOWN_TOKEN_ADDRESS_UI (1 << 4)
 #define PRICE_UI (1 << 5)
-
 #define WARNING_BENEFICIARY_UI (1 << 6)
-
 #define LAST_UI (1 << 7) // Must remain last screen in screen array.
 
 #define RIGHT_SCROLL 1
 #define LEFT_SCROLL 0
 
 #define NULL_ADDRESS "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+
+#define WETH_TICKER "WETH"
+#define WETH_DECIMALS WEI_TO_ETHER
+
+// Number of decimals used when the token wasn't found in the Crypto Asset List.
+#define DEFAULT_DECIMAL WEI_TO_ETHER
+
+// Ticker used when the token wasn't found in the Crypto Asset List.
+#define DEFAULT_TICKER "? "
+
+// Booleans
+#define SKIP 1
+#define ORDER_SIDE (1 << 1) // false is buy now, true is accept offer
+#define PAYMENT_TOKEN_FOUND (1 << 2)
+#define IS_ETH (1 << 3)
+#define NFT_ADDRESS_COPIED (1 << 4)
+#define MULTIPLE_NFT_ADDRESSES (1 << 5)
+#define NFT_NAME_FOUND (1 << 6)
+#define RECEIVER_NOT_SENDER (1 << 7)
 
 // cancelOrder_() parameters
 typedef enum
@@ -175,15 +179,6 @@ typedef enum
     // Sell sig stuff
 } atomic_match_parameter;
 
-#define WETH_TICKER "WETH"
-#define WETH_DECIMALS 18
-
-// Number of decimals used when the token wasn't found in the Crypto Asset List.
-#define DEFAULT_DECIMAL WEI_TO_ETHER
-
-// Ticker used when the token wasn't found in the Crypto Asset List.
-#define DEFAULT_TICKER "? "
-
 // on_param defines
 typedef enum
 {
@@ -193,16 +188,6 @@ typedef enum
     ON_REPLACEMENT_PATTERN,
     ON_STATIC_EXTRADATA,
 } on_param_calldata;
-
-// Booleans
-#define SKIP 1
-#define ORDER_SIDE (1 << 1) // false is buy now, true is accept offer
-#define PAYMENT_TOKEN_FOUND (1 << 2)
-#define IS_ETH (1 << 3)
-#define NFT_ADDRESS_COPIED (1 << 4)
-#define MULTIPLE_NFT_ADDRESSES (1 << 5)
-#define NFT_NAME_FOUND (1 << 6)
-#define RECEIVER_NOT_SENDER (1 << 7)
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct __attribute__((__packed__)) opensea_parameters_t
@@ -223,7 +208,6 @@ typedef struct __attribute__((__packed__)) opensea_parameters_t
     uint8_t on_param;               // 1
     uint8_t calldata_method;        // 1
 
-    // uint8_t skip;          // 1
     uint8_t valid; // 1
 
     uint8_t screen_array;          // 1
