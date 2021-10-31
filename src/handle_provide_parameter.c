@@ -259,12 +259,11 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     {
     case BUY_EXCHANGE_ADDRESS:
     case BUY_MAKER_ADDRESS:
+        copy_address(context->beneficiary, sizeof(context->beneficiary), msg->parameter);
         break;
     case BUY_TAKER_ADDRESS:
         if (!(memcmp(msg->parameter, NULL_ADDRESS, ADDRESS_LENGTH)))
-        {
             context->booleans |= ORDER_SIDE;
-        }
         break;
     case BUY_FEE_RECIPIENT_ADDRESS:
         break;
