@@ -1,7 +1,7 @@
 {
   "name": "opensea-plugin",
   "version": "1.0.0",
-  "description": "Boilerplate repo to get your plugin started!",
+  "description": "node tx parser",
   "main": "index.js",
   "type": "module",
   "directories": {
