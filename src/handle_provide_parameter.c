@@ -103,7 +103,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
     }
 }
 
-static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context, uint16_t offset)
+static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context, uint32_t offset)
 {
     PRINTF("IN CALLDATA target:%d =? current:%d\n", offset + context->next_parameter_length, msg->parameterOffset);
     // Find calldata Method ID.
