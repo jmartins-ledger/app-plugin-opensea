@@ -39,14 +39,10 @@ void handle_finalize(void *parameters)
         case ATOMIC_MATCH_:
             msg->numScreens = 4;
             // on 'buy now': raise warning if beneficiary != sender
-            if (!(context->booleans & ORDER_SIDE))
+            if (context->selectorIndex == ATOMIC_MATCH_ && !(context->booleans & ORDER_SIDE) && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH))
             {
-                if (memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH))
-                {
-                    context->booleans |= RECEIVER_NOT_SENDER; // not needed
-                    context->screen_array |= WARNING_BENEFICIARY_UI;
-                    msg->numScreens++;
-                }
+                context->screen_array |= WARNING_BENEFICIARY_UI;
+                msg->numScreens++;
             }
             break;
         case APPROVE_PROXY:
