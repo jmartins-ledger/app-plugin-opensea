@@ -38,8 +38,8 @@ void handle_finalize(void *parameters)
         case CANCEL_ORDER_:
         case ATOMIC_MATCH_:
             msg->numScreens = 4;
-            // on 'buy now': raise warning if beneficiary != sender
-            if (context->selectorIndex == ATOMIC_MATCH_ && !(context->booleans & ORDER_SIDE) && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH))
+            // if is a 'buy now', in atomic_match and beneficiary != sender
+            if (!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH))
             {
                 context->screen_array |= WARNING_BENEFICIARY_UI;
                 msg->numScreens++;
