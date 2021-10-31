@@ -7,9 +7,6 @@
 // Name of the plugin.
 #define PLUGIN_NAME "OpenSea"
 
-// Number of selectors defined in this plugin.
-#define NUM_OPENSEA_SELECTORS 3
-
 // Enumeration of the different selectors possible.
 // Should follow the array declared in main.c
 typedef enum
@@ -18,8 +15,8 @@ typedef enum
     CANCEL_ORDER_,
     ATOMIC_MATCH_,
 } openseaSelector_t;
-
-#define NUM_NFT_SELECTORS 7
+// Number of selectors defined in this plugin.
+#define NUM_OPENSEA_SELECTORS 3
 
 typedef enum
 {
@@ -31,6 +28,7 @@ typedef enum
     SAFE_TRANSFER_FROM_DATA_1155,
     METHOD_NOT_FOUND, //  Must remain last
 } erc721Selector_t;
+#define NUM_NFT_SELECTORS 7
 
 typedef enum
 {
@@ -192,33 +190,33 @@ typedef enum
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct __attribute__((__packed__)) opensea_parameters_t
 {
+    // payment_token
     uint8_t payment_token_address[ADDRESS_LENGTH]; // 20
     char payment_token_ticker[MAX_TICKER_LEN];     // 12
-    uint8_t payment_token_decimals;                // 1
     uint8_t payment_token_amount[INT256_LENGTH];   // 32
-
+    uint8_t payment_token_decimals;
+    // tx data
     uint8_t beneficiary[ADDRESS_LENGTH];          // 20
     uint8_t token_id[INT256_LENGTH];              // 32
     uint8_t nft_contract_address[ADDRESS_LENGTH]; // 20
-    uint16_t bundle_size;                         // 2
+    uint16_t bundle_size;
+    // calldata utils
+    uint32_t calldata_offset;      // 4
+    uint32_t calldata_sell_offset; // 4
+    uint16_t next_parameter_length;
+    uint8_t on_param;
+    uint8_t calldata_method;
+    // screen utils
+    uint8_t screen_array;
+    uint8_t previous_screen_index;
+    uint8_t plugin_screen_index;
+    // plugin utils
+    uint8_t booleans;
+    uint8_t next_param;
+    uint8_t selectorIndex;
 
-    uint32_t calldata_offset;       // 4
-    uint32_t calldata_sell_offset;  // 4
-    uint16_t next_parameter_length; // 2
-    uint8_t on_param;               // 1
-    uint8_t calldata_method;        // 1
-
-    uint8_t valid; // 1
-
-    uint8_t screen_array;          // 1
-    uint8_t previous_screen_index; // 1
-    uint8_t plugin_screen_index;   // 1
-
-    uint8_t booleans;      // 1
-    uint8_t next_param;    // 1
-    uint8_t selectorIndex; // 1
+    uint8_t valid;
 } opensea_parameters_t;
-// = 158
 
 // Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove
 // this check.

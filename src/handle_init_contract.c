@@ -21,6 +21,7 @@ void handle_init_contract(void *parameters)
         msg->result = ETH_PLUGIN_RESULT_ERROR;
         return;
     }
+    PRINTF("sizeof(opensea_parameter_t): %d\n", sizeof(opensea_parameters_t));
 
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 

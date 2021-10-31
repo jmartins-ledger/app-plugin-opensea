@@ -62,7 +62,6 @@ void print_bytes(const uint8_t *bytes, uint16_t len)
     unsigned char nibble1, nibble2;
     char str[] = {0, 0, 0};
 
-    // debug_write("GPIRIOU bytes: ");
     for (uint16_t count = 0; count < len; count++)
     {
         nibble1 = (bytes[count] >> 4) & 0xF;

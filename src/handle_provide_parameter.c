@@ -25,14 +25,14 @@ static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opense
         PRINTF("in tranferFrom 'from'\n");
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 2)
     {
-        PRINTF("PENZO in transferFrom 'to' p1, ORDER_SIDE: %d\n", context->booleans & ORDER_SIDE);
+        PRINTF("in transferFrom 'to' p1, ORDER_SIDE: %d\n", context->booleans & ORDER_SIDE);
         // If it's a buy now, check if 'to' part1 is sender.
         if (!(context->booleans & ORDER_SIDE))
             memcpy(context->beneficiary, &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE], ADDRESS_LENGTH - SELECTOR_SIZE);
     }
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 3)
     {
-        PRINTF("PENZO in transferFrom 'to' p2\n");
+        PRINTF("in transferFrom 'to' p2\n");
         // If it's a 'buy now' checks if 'to' part2 is sender.
         if (!(context->booleans & ORDER_SIDE))
             memcpy(&context->beneficiary[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
@@ -99,7 +99,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
     }
     else
     {
-        PRINTF("PENZO ATOMICIZE ELSE\n");
+        PRINTF("ATOMICIZE ELSE\n");
     }
 }
 
@@ -202,7 +202,6 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         // This value is either 1 or 0.
         if (msg->parameter[PARAMETER_LENGTH - 1])
         {
-            PRINTF("GPIRIOU DEBUG CANCEL\n");
             context->booleans |= ORDER_SIDE;
         }
         break;
@@ -248,9 +247,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     if (context->calldata_sell_offset != 0 && msg->parameterOffset == context->calldata_sell_offset)
     {
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mCALLDATA_SELL_LENGTH\033[0m PARAM\n");
-        PRINTF("offset buy: %d\n", context->calldata_offset);
-        PRINTF("offset sell: %d\n", context->calldata_sell_offset);
-        context->next_parameter_length = U4BE(msg->parameter, PARAMETER_LENGTH - SELECTOR_SIZE);
+        context->next_parameter_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
         PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
         context->on_param = ON_CALLDATA_SELL;
     }
@@ -284,11 +281,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
                      msg->parameter);
         // If address is NULL, the payment token is ETH.
         if (memcmp(context->payment_token_address, NULL_ADDRESS, ADDRESS_LENGTH) == 0)
-        {
-            context->payment_token_decimals = WEI_TO_ETHER;
-            strncpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
             context->booleans |= IS_ETH;
-        }
         break;
     case BUY_MAKER_RELAYER_FEE:
     case BUY_TAKER_RELAYER_FEE:
