@@ -11,7 +11,7 @@ void handle_provide_token(void *parameters)
     // Check for payment token.
     if (msg->item1)
     {
-        PRINTF("TOKEN1 FOUND\n");
+        PRINTF("payment token found\n");
         context->payment_token_decimals = msg->item1->token.decimals;
         strncpy(context->payment_token_ticker, (char *)msg->item1->token.ticker, sizeof(context->payment_token_ticker));
         context->booleans |= PAYMENT_TOKEN_FOUND;
@@ -20,13 +20,13 @@ void handle_provide_token(void *parameters)
     {
         if (context->booleans & IS_ETH)
         {
-            PRINTF("NO ADDRESS, should display ETH\n");
+            PRINTF("payment token is ETH\n");
             context->payment_token_decimals = WEI_TO_ETHER;
             strncpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
         }
         else
         {
-            PRINTF("NOT FOUND\n");
+            PRINTF("warning: payment token not found\n");
             context->payment_token_decimals = DEFAULT_DECIMAL;
             strncpy(context->payment_token_ticker, DEFAULT_TICKER, sizeof(context->payment_token_ticker));
             context->screen_array |= UNKNOWN_PAYMENT_TOKEN_UI;

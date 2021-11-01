@@ -228,6 +228,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     PRINTF("\033[0;31mPROVIDE PARAMETER - current parameter:\n");
     print_bytes(msg->parameter, PARAMETER_LENGTH);
     PRINTF("\033[0m\n");
+    // Here we are on a calldata
     if (context->on_param)
     {
         if (context->on_param == ON_CALLDATA)
@@ -259,6 +260,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         copy_address(context->beneficiary, sizeof(context->beneficiary), msg->parameter);
         break;
     case BUY_TAKER_ADDRESS:
+        // use buy_taker_address to determine order_side
         if (!(memcmp(msg->parameter, NULL_ADDRESS, ADDRESS_LENGTH)))
             context->booleans |= ORDER_SIDE;
         break;
@@ -350,7 +352,6 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         PRINTF("\033[0;34m OFFSETT: %d\n", U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE);
         PRINTF("\033[0m");
         context->calldata_sell_offset = U4BE(msg->parameter, PARAMETER_LENGTH - 4) + SELECTOR_SIZE;
-        // set context->calldata_sell_offset
         break;
     case BUY_REPLACEMENT_PATTERN_OFFSET:
     case SELL_REPLACEMENT_PATTERN_OFFSET:
