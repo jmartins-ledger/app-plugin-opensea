@@ -47,7 +47,6 @@ void handle_finalize(void *parameters)
             break;
         }
 
-        context->payment_token_decimals = DEFAULT_DECIMAL;
         msg->result = ETH_PLUGIN_RESULT_OK;
     }
     else
