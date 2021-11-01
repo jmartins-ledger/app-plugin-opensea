@@ -226,7 +226,7 @@ test('[Nano S] nanos_atomicMatch_buynow_unknownMethod_multiple_weth', zemu("nano
     serializedTx,
   );
   await waitForAppScreen(sim);
-  await sim.navigateAndCompareSnapshots('.', 'nanos_atomicMatch_buynow_unknownMethod_multiple_weth', [12, 0]);
+  await sim.navigateAndCompareSnapshots('.', 'nanos_atomicMatch_buynow_unknownMethod_multiple_weth', [11, 0]);
   await tx;
 }));
 
