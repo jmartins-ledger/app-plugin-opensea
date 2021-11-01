@@ -24,7 +24,12 @@ void handle_finalize(void *parameters)
         if (memcmp(context->payment_token_address, NULL_ADDRESS, ADDRESS_LENGTH))
             msg->tokenLookup1 = context->payment_token_address;
         else
+        {
+            // set default token info, in case of skiped handle_provide_token()
+            context->payment_token_decimals = WEI_TO_ETHER;
+            strncpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
             context->booleans |= IS_ETH;
+        }
         msg->uiType = ETH_UI_TYPE_GENERIC;
         // set the first screen to display.
         context->plugin_screen_index = TX_TYPE_UI;
@@ -47,6 +52,7 @@ void handle_finalize(void *parameters)
             break;
         }
         context->payment_token_decimals = DEFAULT_DECIMAL;
+
         msg->result = ETH_PLUGIN_RESULT_OK;
     }
     else
