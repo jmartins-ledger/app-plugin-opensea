@@ -22,28 +22,27 @@ static void copy_address(uint8_t *dst, size_t dst_len, uint8_t *src)
 static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
-        PRINTF("in tranferFrom 'from'\n");
+        PRINTF("in tranferFrom 'from' p1\n");
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 2)
     {
-        PRINTF("in transferFrom 'to' p1, ORDER_SIDE: %d\n", context->booleans & ORDER_SIDE);
+        PRINTF("in transferFrom 'from' p2, 'to' p1, ORDER_SIDE: %d\n", context->booleans & ORDER_SIDE);
         // If it's a buy now, check if 'to' part1 is sender.
         if (!(context->booleans & ORDER_SIDE))
             memcpy(context->beneficiary, &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE], ADDRESS_LENGTH - SELECTOR_SIZE);
     }
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 3)
     {
-        PRINTF("in transferFrom 'to' p2\n");
+        PRINTF("in transferFrom 'to' p2, 'tokenID' p1\n");
         // If it's a 'buy now' checks if 'to' part2 is sender.
         if (!(context->booleans & ORDER_SIDE))
             memcpy(&context->beneficiary[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
-        PRINTF("in tranferFrom 'tokenID' part 1\n");
         memcpy(context->token_id, msg->parameter + SELECTOR_SIZE, PARAMETER_LENGTH - SELECTOR_SIZE);
     }
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 4)
     {
         PRINTF("in tranferFrom 'tokenID' part 2\n");
         memcpy(context->token_id + PARAMETER_LENGTH - SELECTOR_SIZE, msg->parameter, SELECTOR_SIZE);
-        PRINTF("copied 'tokenID' RES:\n");
+        PRINTF("copied 'tokenID':\n");
         print_bytes(context->token_id, PARAMETER_LENGTH);
     }
 }
@@ -86,21 +85,13 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
             context->booleans |= MULTIPLE_NFT_ADDRESSES;
     }
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (7 + context->bundle_size))
-    {
         PRINTF("On atomicize values[] length\n");
-    }
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (8 + context->bundle_size * 2))
-    {
         PRINTF("\033[0;33mOn atomicize calldata_length[] length\033[0m\n");
-    }
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
-    {
         PRINTF("On atomicize CALLDATA LENGTH = %hu\n", msg->parameter); //random selector_  size
-    }
     else
-    {
         PRINTF("ATOMICIZE ELSE\n");
-    }
 }
 
 static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context, uint32_t offset)
@@ -121,10 +112,12 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
             }
         }
     }
-    if (context->calldata_method != ATOMICIZE && context->calldata_method != METHOD_NOT_FOUND)
-        handle_transfer_from_method(msg, context);
-    else if (context->calldata_method == ATOMICIZE)
+    if (context->calldata_method == ATOMICIZE)
         handle_atomicize(msg, context, offset);
+    else if (context->calldata_method != METHOD_NOT_FOUND)
+        handle_transfer_from_method(msg, context);
+    else
+        PRINTF("warning: unknown calldata method id\n");
     // End of calldata
     if (offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
     {
