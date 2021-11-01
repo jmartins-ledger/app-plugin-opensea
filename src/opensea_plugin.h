@@ -30,13 +30,6 @@ typedef enum
 } erc721Selector_t;
 #define NUM_NFT_SELECTORS 7
 
-typedef enum
-{
-    FROM,
-    TO,
-    TOKEN_ID,
-} transfer_from_parameter;
-
 extern const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS];
 extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 
