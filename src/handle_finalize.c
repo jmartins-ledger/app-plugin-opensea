@@ -7,16 +7,11 @@ void handle_finalize(void *parameters)
 
     // set generic screen_array
     context->screen_array |= TX_TYPE_UI;
-    switch (context->selectorIndex)
+    if (context->selectorIndex == ATOMIC_MATCH_ || context->selectorIndex == CANCEL_ORDER_)
     {
-    case ATOMIC_MATCH_:
-    case CANCEL_ORDER_:
         context->screen_array |= NFT_NAME_UI;
         context->screen_array |= TOKEN_ID_OR_BUNDLE_UI;
         context->screen_array |= PRICE_UI;
-        break;
-    default:
-        break;
     }
 
     if (context->valid)
@@ -38,7 +33,7 @@ void handle_finalize(void *parameters)
         case CANCEL_ORDER_:
         case ATOMIC_MATCH_:
             msg->numScreens = 4;
-            // if is a 'buy now', in atomic_match and beneficiary != sender
+            // if is a 'buy now', in atomic_match and beneficiary != sender: raise beneficiary warning
             if (!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH))
             {
                 context->screen_array |= WARNING_BENEFICIARY_UI;

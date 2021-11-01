@@ -23,8 +23,6 @@
 #include "cx.h"
 #include "opensea_plugin.h"
 
-// Define here all the selectors you wish to support.
-
 //OpenSea Contract Methods
 static const uint8_t OPENSEA_APPROVE_PROXY[SELECTOR_SIZE] = {0xdd, 0xd8, 0x1f, 0x82};
 static const uint8_t OPENSEA_CANCEL_ORDER_[SELECTOR_SIZE] = {0xa8, 0xa4, 0x1c, 0x70};
