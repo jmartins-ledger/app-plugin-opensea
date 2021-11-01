@@ -135,14 +135,9 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
 
 static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
-    PRINTF("\033[0;31mPROVIDE PARAMETER - current parameter:\n");
-    print_bytes(msg->parameter, PARAMETER_LENGTH);
-    PRINTF("\033[0m\n");
-    if (context->on_param)
-    {
-        if (context->on_param == ON_CALLDATA)
-            handle_calldata(msg, context, context->calldata_offset);
-    }
+    // Here we are on a calldata
+    if (context->on_param == ON_CALLDATA)
+        handle_calldata(msg, context, context->calldata_offset);
     // Is on calldata_length parameter
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset)
     {
@@ -194,9 +189,7 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in SIDE PARAM\n");
         // This value is either 1 or 0.
         if (msg->parameter[PARAMETER_LENGTH - 1])
-        {
             context->booleans |= ORDER_SIDE;
-        }
         break;
     case SALE_KIND:
     case HOW_TO_CALL:
@@ -218,9 +211,6 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
 
 static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
-    PRINTF("\033[0;31mPROVIDE PARAMETER - current parameter:\n");
-    print_bytes(msg->parameter, PARAMETER_LENGTH);
-    PRINTF("\033[0m\n");
     // Here we are on a calldata
     if (context->on_param)
     {
@@ -361,6 +351,10 @@ void handle_provide_parameter(void *parameters)
     PRINTF("PROVIDE PARAMETER, selector: %d\n", context->selectorIndex);
 
     msg->result = ETH_PLUGIN_RESULT_OK;
+    //Print current parameter
+    PRINTF("\033[0;31mPROVIDE PARAMETER - current parameter:\n");
+    print_bytes(msg->parameter, PARAMETER_LENGTH);
+    PRINTF("\033[0m\n");
 
     switch (context->selectorIndex)
     {
