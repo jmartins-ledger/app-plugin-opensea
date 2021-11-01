@@ -42,7 +42,10 @@ static void set_token_id_or_bundle_ui(ethQueryContractUI_t *msg,
         if (context->calldata_method == METHOD_NOT_FOUND)
         {
             strncpy(msg->title, "Warning:", msg->titleLength);
-            strncpy(msg->msg, "Unknown NFT transfer method!", msg->msgLength);
+            if (context->selectorIndex == ATOMIC_MATCH_)
+                strncpy(msg->msg, "Unknown NFT transfer method!", msg->msgLength);
+            if (context->selectorIndex == CANCEL_ORDER_)
+                strncpy(msg->msg, "Unable to retrieve token ID.", msg->msgLength);
         }
         else if (context->bundle_size)
         {
@@ -130,7 +133,7 @@ static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
 {
     strncpy(msg->title, "Warning:", msg->titleLength);
     if (context->bundle_size)
-        strncpy(msg->msg, "NFT's may not be sent to user!", msg->titleLength);
+        strncpy(msg->msg, "NFT's might not be sent to user!", msg->titleLength);
     else
         strncpy(msg->msg, "NFT will not be sent to user!", msg->titleLength);
 }
@@ -205,7 +208,7 @@ void handle_query_contract_ui(void *parameters)
     case NFT_NAME_UI:
         set_nft_name_ui(msg, context);
         break;
-    case UNKOWN_PAYMENT_TOKEN_UI:
+    case UNKNOWN_PAYMENT_TOKEN_UI:
         set_token_warning_ui(msg, context);
         break;
     case UNKNOWN_TOKEN_ADDRESS_UI:

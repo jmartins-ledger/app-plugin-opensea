@@ -29,7 +29,7 @@ void handle_provide_token(void *parameters)
             PRINTF("NOT FOUND\n");
             context->payment_token_decimals = DEFAULT_DECIMAL;
             strncpy(context->payment_token_ticker, DEFAULT_TICKER, sizeof(context->payment_token_ticker));
-            context->screen_array |= UNKOWN_PAYMENT_TOKEN_UI;
+            context->screen_array |= UNKNOWN_PAYMENT_TOKEN_UI;
             if (context->selectorIndex == ATOMIC_MATCH_)
             {
                 context->screen_array |= UNKNOWN_TOKEN_ADDRESS_UI;

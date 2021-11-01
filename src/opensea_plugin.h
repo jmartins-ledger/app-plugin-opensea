@@ -44,7 +44,7 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define TX_TYPE_UI 1 // Must remain first screen in screen array.
 #define TOKEN_ID_OR_BUNDLE_UI (1 << 1)
 #define NFT_NAME_UI (1 << 2)
-#define UNKOWN_PAYMENT_TOKEN_UI (1 << 3)
+#define UNKNOWN_PAYMENT_TOKEN_UI (1 << 3)
 #define UNKNOWN_TOKEN_ADDRESS_UI (1 << 4)
 #define PRICE_UI (1 << 5)
 #define WARNING_BENEFICIARY_UI (1 << 6)
