@@ -9,7 +9,6 @@ static uint8_t count_screens(uint8_t screen_array)
         if (scout & screen_array)
             total++;
         scout <<= 1;
-        PRINTF("PENZO scout: %d\n", scout);
     }
     return total;
 }
@@ -51,26 +50,18 @@ void handle_finalize(void *parameters)
     {
     case CANCEL_ORDER_:
     case ATOMIC_MATCH_:
-        msg->numScreens = 4;
         // if is a 'buy now', in atomic_match and beneficiary != sender: raise beneficiary warning
         if (!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH))
-        {
             context->screen_array |= WARNING_BENEFICIARY_UI;
-            msg->numScreens++;
-        }
         break;
     case APPROVE_PROXY:
-        msg->numScreens = 1;
-        break;
     default:
         break;
     }
     context->payment_token_decimals = DEFAULT_DECIMAL;
 
-    //count raised screens
-    uint8_t num_screen = count_screens(context->screen_array);
-
-    PRINTF("PENZO num_screen: %d\n", num_screen);
+    // Set numScreens for each raised screens
+    msg->numScreens = count_screens(context->screen_array);
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 }

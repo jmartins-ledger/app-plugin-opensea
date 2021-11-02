@@ -30,13 +30,12 @@ void handle_provide_token(void *parameters)
             context->payment_token_decimals = DEFAULT_DECIMAL;
             strlcpy(context->payment_token_ticker, DEFAULT_TICKER, sizeof(context->payment_token_ticker));
             context->screen_array |= UNKNOWN_PAYMENT_TOKEN_UI;
+            msg->additionalScreens++;
             if (context->selectorIndex == ATOMIC_MATCH_)
             {
                 context->screen_array |= UNKNOWN_TOKEN_ADDRESS_UI;
-                msg->additionalScreens += 2;
-            }
-            else
                 msg->additionalScreens++;
+            }
         }
         // should set payment_token_found to false, but it is false by default
     }

@@ -195,8 +195,6 @@ void handle_query_contract_ui(void *parameters)
 
     get_screen_array(msg, context);
     print_bytes(&context->plugin_screen_index, 1);
-    memset(msg->title, 0, msg->titleLength);
-    memset(msg->msg, 0, msg->msgLength);
     msg->result = ETH_PLUGIN_RESULT_OK;
     switch (context->plugin_screen_index)
     {
