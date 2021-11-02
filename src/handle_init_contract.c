@@ -9,12 +9,10 @@ void handle_init_contract(void *parameters)
     // Make sure we are running a compatible version.
     if (msg->interfaceVersion != ETH_PLUGIN_INTERFACE_VERSION_LATEST)
     {
-        // If not the case, return the `UNAVAILABLE` status.
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
         return;
     }
 
-    // TODO: this could be removed as this can be checked statically?
     if (msg->pluginContextLength < sizeof(opensea_parameters_t))
     {
         PRINTF("Plugin parameters structure is bigger than allowed size\n");
@@ -27,8 +25,6 @@ void handle_init_contract(void *parameters)
 
     // Initialize the context (to 0).
     memset(context, 0, sizeof(*context));
-    // Mark context as valid.
-    context->valid = 1;
 
     // Look for the index of the selectorIndex passed in by `msg`.
     uint8_t i;
@@ -44,7 +40,6 @@ void handle_init_contract(void *parameters)
 
     if (i == NUM_OPENSEA_SELECTORS)
     {
-        context->valid = 0;
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
     }
 

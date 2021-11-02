@@ -206,8 +206,6 @@ typedef struct __attribute__((__packed__)) opensea_parameters_t
     uint8_t booleans;
     uint8_t next_param;
     uint8_t selectorIndex;
-
-    uint8_t valid;
 } opensea_parameters_t;
 
 // Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove
