@@ -30,6 +30,8 @@ void handle_finalize(void *parameters)
             strncpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
             context->booleans |= IS_ETH;
         }
+        if (memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH))
+            msg->tokenLookup2 = context->nft_contract_address;
         msg->uiType = ETH_UI_TYPE_GENERIC;
         // set the first screen to display.
         context->plugin_screen_index = TX_TYPE_UI;
