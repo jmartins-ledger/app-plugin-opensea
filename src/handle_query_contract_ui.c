@@ -174,6 +174,7 @@ static void get_screen_array(ethQueryContractUI_t *msg, opensea_parameters_t *co
     if (msg->screenIndex == context->previous_screen_index)
     {
         context->plugin_screen_index = LAST_UI;
+        // if LAST_UI is up, stop on it.
         if (context->screen_array & LAST_UI)
             return;
     }

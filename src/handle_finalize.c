@@ -1,5 +1,19 @@
 #include "opensea_plugin.h"
 
+static uint8_t count_screens(uint8_t screen_array)
+{
+    uint8_t total = 0;
+    uint8_t scout = 1;
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        if (scout & screen_array)
+            total++;
+        scout <<= 1;
+        PRINTF("PENZO scout: %d\n", scout);
+    }
+    return total;
+}
+
 void handle_finalize(void *parameters)
 {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *)parameters;
@@ -52,6 +66,11 @@ void handle_finalize(void *parameters)
         break;
     }
     context->payment_token_decimals = DEFAULT_DECIMAL;
+
+    //count raised screens
+    uint8_t num_screen = count_screens(context->screen_array);
+
+    PRINTF("PENZO num_screen: %d\n", num_screen);
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 }
