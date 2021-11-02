@@ -10,7 +10,7 @@ var _utils = require("ethers/lib/utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const transactionUploadDelay = 60000;
+const transactionUploadDelay = 120000;
 
 async function waitForAppScreen(sim) {
   await sim.waitUntilScreenIsNot(sim.getMainMenuSnapshot(), transactionUploadDelay);

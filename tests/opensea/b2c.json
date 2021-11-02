@@ -7,14 +7,16 @@
             "selectors": {
                 "0xab834bab": {
                     "erc20OfInterest": [
-                        "addrs.6"
+                        "addrs.6",
+                        "addrs.4"
                     ],
                     "method": "atomicMatch_",
                     "plugin": "OpenSea"
 		        },
                 "0xa8a41c70": {
                     "erc20OfInterest": [
-                        "addrs.6"
+                        "addrs.6",
+                        "addrs.4"
                     ],
                     "method": "cancelOrder_",
                     "plugin": "OpenSea"
