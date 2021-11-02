@@ -27,7 +27,7 @@ void handle_finalize(void *parameters)
         {
             // set default token info, in case of skiped handle_provide_token()
             context->payment_token_decimals = WEI_TO_ETHER;
-            strncpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
+            strlcpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
             context->booleans |= IS_ETH;
         }
         if (memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH))

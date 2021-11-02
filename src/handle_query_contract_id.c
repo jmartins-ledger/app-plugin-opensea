@@ -14,18 +14,18 @@ void handle_query_contract_id(void *parameters)
     print_bytes(context->nft_contract_address, ADDRESS_LENGTH);
 
     // set 'OpenSea' title.
-    strncpy(msg->name, PLUGIN_NAME, msg->nameLength);
+    strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
 
     switch (context->selectorIndex)
     {
     case APPROVE_PROXY:
-        strncpy(msg->version, "Register Proxy", msg->versionLength);
+        strlcpy(msg->version, "Register Proxy", msg->versionLength);
         break;
     case CANCEL_ORDER_:
-        strncpy(msg->version, "Cancel Order", msg->versionLength);
+        strlcpy(msg->version, "Cancel Order", msg->versionLength);
         break;
     case ATOMIC_MATCH_:
-        strncpy(msg->version, "Atomic Match", msg->versionLength);
+        strlcpy(msg->version, "Atomic Match", msg->versionLength);
         break;
     default:
         PRINTF("Selector Index :%d not supported\n", context->selectorIndex);

@@ -5,26 +5,26 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
     switch (context->selectorIndex)
     {
     case APPROVE_PROXY:
-        strncpy(msg->title, "Initialize wallet:", msg->titleLength);
-        strncpy(msg->msg, "Sign to authorize wallet?", msg->msgLength); /// STRING TO BE EDITED
+        strlcpy(msg->title, "Initialize wallet:", msg->titleLength);
+        strlcpy(msg->msg, "Sign to authorize wallet?", msg->msgLength); /// STRING TO BE EDITED
         break;
     case CANCEL_ORDER_:
-        strncpy(msg->title, "Cancel Order:", msg->titleLength);
+        strlcpy(msg->title, "Cancel Order:", msg->titleLength);
         if (context->booleans & ORDER_SIDE)
-            strncpy(msg->msg, "Remove listing?", msg->msgLength);
+            strlcpy(msg->msg, "Remove listing?", msg->msgLength);
         else
-            strncpy(msg->msg, "Withdraw offer?", msg->msgLength);
+            strlcpy(msg->msg, "Withdraw offer?", msg->msgLength);
         break;
     case ATOMIC_MATCH_:
         if (context->booleans & ORDER_SIDE)
         {
-            strncpy(msg->title, "Accept", msg->titleLength);
-            strncpy(msg->msg, "offer:", msg->msgLength);
+            strlcpy(msg->title, "Accept", msg->titleLength);
+            strlcpy(msg->msg, "offer:", msg->msgLength);
         }
         else
         {
-            strncpy(msg->title, "Buy", msg->titleLength);
-            strncpy(msg->msg, "now:", msg->msgLength);
+            strlcpy(msg->title, "Buy", msg->titleLength);
+            strlcpy(msg->msg, "now:", msg->msgLength);
         }
         break;
     default:
@@ -41,20 +41,20 @@ static void set_token_id_or_bundle_ui(ethQueryContractUI_t *msg,
     case ATOMIC_MATCH_:
         if (context->calldata_method == METHOD_NOT_FOUND)
         {
-            strncpy(msg->title, "Warning:", msg->titleLength);
+            strlcpy(msg->title, "Warning:", msg->titleLength);
             if (context->selectorIndex == ATOMIC_MATCH_)
-                strncpy(msg->msg, "Unknown NFT transfer method!", msg->msgLength);
+                strlcpy(msg->msg, "Unknown NFT transfer method!", msg->msgLength);
             if (context->selectorIndex == CANCEL_ORDER_)
-                strncpy(msg->msg, "Unable to retrieve token ID.", msg->msgLength);
+                strlcpy(msg->msg, "Unable to retrieve token ID.", msg->msgLength);
         }
         else if (context->bundle_size)
         {
-            strncpy(msg->title, "Bundle:", msg->titleLength);
+            strlcpy(msg->title, "Bundle:", msg->titleLength);
             snprintf(msg->msg, msg->msgLength, "%d NFT's", context->bundle_size);
         }
         else
         {
-            strncpy(msg->title, "Token ID:", msg->titleLength);
+            strlcpy(msg->title, "Token ID:", msg->titleLength);
             uint256_to_decimal(context->token_id, INT256_LENGTH, msg->msg, 78);
         }
         break;
@@ -71,19 +71,19 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
     case ATOMIC_MATCH_:
         if (context->booleans & MULTIPLE_NFT_ADDRESSES)
         {
-            strncpy(msg->title, "Multiple NFT", msg->titleLength);
-            strncpy(msg->msg, "collections.", msg->msgLength);
+            strlcpy(msg->title, "Multiple NFT", msg->titleLength);
+            strlcpy(msg->msg, "collections.", msg->msgLength);
         }
         else
         {
             if (context->booleans & NFT_NAME_FOUND)
             {
-                strncpy(msg->title, "NFT name:", msg->titleLength);
+                strlcpy(msg->title, "NFT name:", msg->titleLength);
                 snprintf(msg->msg, msg->msgLength, "%s", msg->item2->nft.collectionName);
             }
             else
             {
-                strncpy(msg->title, "Unknown NFT:", msg->titleLength);
+                strlcpy(msg->title, "Unknown NFT:", msg->titleLength);
                 msg->msg[0] = '0';
                 msg->msg[1] = 'x';
                 getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
@@ -102,14 +102,14 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
 static void set_token_warning_ui(ethQueryContractUI_t *msg,
                                  opensea_parameters_t *context __attribute__((unused)))
 {
-    strncpy(msg->title, "Unknown", msg->titleLength);
-    strncpy(msg->msg, "payment token:", msg->titleLength);
+    strlcpy(msg->title, "Unknown", msg->titleLength);
+    strlcpy(msg->msg, "payment token:", msg->titleLength);
 }
 
 static void set_token_address_ui(ethQueryContractUI_t *msg,
                                  opensea_parameters_t *context __attribute__((unused)))
 {
-    strncpy(msg->title, "Token address:", msg->titleLength);
+    strlcpy(msg->title, "Token address:", msg->titleLength);
     msg->msg[0] = '0';
     msg->msg[1] = 'x';
     getEthAddressStringFromBinary((uint8_t *)context->payment_token_address,
@@ -120,7 +120,7 @@ static void set_token_address_ui(ethQueryContractUI_t *msg,
 
 static void set_price_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
 {
-    strncpy(msg->title, "Price:", msg->titleLength);
+    strlcpy(msg->title, "Price:", msg->titleLength);
     amountToString(context->payment_token_amount, sizeof(context->payment_token_amount),
                    context->payment_token_decimals,
                    context->payment_token_ticker,
@@ -131,11 +131,11 @@ static void set_price_ui(ethQueryContractUI_t *msg, opensea_parameters_t *contex
 static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
                                        opensea_parameters_t *context __attribute__((unused)))
 {
-    strncpy(msg->title, "Warning:", msg->titleLength);
+    strlcpy(msg->title, "Warning:", msg->titleLength);
     if (context->bundle_size)
-        strncpy(msg->msg, "NFT's might not be sent to user!", msg->titleLength);
+        strlcpy(msg->msg, "NFT's might not be sent to user!", msg->titleLength);
     else
-        strncpy(msg->msg, "NFT will not be sent to user!", msg->titleLength);
+        strlcpy(msg->msg, "NFT will not be sent to user!", msg->titleLength);
 }
 
 // Not used if last bit in screen array isn't 1
