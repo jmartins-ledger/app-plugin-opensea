@@ -6,7 +6,7 @@ The plugin improves displayed information on Nano screen devices to a human read
 
 ## OpenSea interface
 
-Most transactions emitted by OpenSea on Ethereum come from the [OpenSea contract](https://etherscan.io/address/0x7be8076f4ea4a4ad08075c2508e481d6c946d12b).
+Most transactions emitted on Ethereum by an OpenSea user come from the [OpenSea contract](https://etherscan.io/address/0x7be8076f4ea4a4ad08075c2508e481d6c946d12b).
 
 ### The plugin supports:
 
