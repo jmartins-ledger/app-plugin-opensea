@@ -25,13 +25,16 @@ void handle_finalize(void *parameters)
         context->screen_array |= NFT_NAME_UI;
         context->screen_array |= TOKEN_ID_OR_BUNDLE_UI;
         context->screen_array |= PRICE_UI;
+        // if is a 'buy now', in atomic_match and beneficiary != sender: raise beneficiary warning
+        if (!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH))
+            context->screen_array |= WARNING_BENEFICIARY_UI;
     }
 
     PRINTF("BENEFICIARY:\n");
     print_bytes(context->beneficiary, PARAMETER_LENGTH);
     PRINTF("msg->address:\n");
     print_bytes(msg->address, ADDRESS_LENGTH);
-    // If there is a payment_token_address
+    // Look for payment token info
     if (memcmp(context->payment_token_address, NULL_ADDRESS, ADDRESS_LENGTH))
         msg->tokenLookup1 = context->payment_token_address;
     else
@@ -41,24 +44,13 @@ void handle_finalize(void *parameters)
         strlcpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
         context->booleans |= IS_ETH;
     }
+    // Look foor NFT info
     if (memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH))
         msg->tokenLookup2 = context->nft_contract_address;
-    msg->uiType = ETH_UI_TYPE_GENERIC;
     // set the first screen to display.
     context->plugin_screen_index = TX_TYPE_UI;
-    switch (context->selectorIndex)
-    {
-    case CANCEL_ORDER_:
-    case ATOMIC_MATCH_:
-        // if is a 'buy now', in atomic_match and beneficiary != sender: raise beneficiary warning
-        if (!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH))
-            context->screen_array |= WARNING_BENEFICIARY_UI;
-        break;
-    case APPROVE_PROXY:
-    default:
-        break;
-    }
     context->payment_token_decimals = DEFAULT_DECIMAL;
+    msg->uiType = ETH_UI_TYPE_GENERIC;
 
     // Set numScreens for each raised screens
     msg->numScreens = count_screens(context->screen_array);

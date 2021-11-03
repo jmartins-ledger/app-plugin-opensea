@@ -8,8 +8,14 @@ void handle_provide_token(void *parameters)
     PRINTF("\033[0;31mPAYMENT_TOKEN_ADDRESS\n");
     print_bytes(context->payment_token_address, PARAMETER_LENGTH);
     PRINTF("\033[0m");
+    if (context->booleans & IS_ETH)
+    {
+        PRINTF("payment token is ETH\n");
+        context->payment_token_decimals = WEI_TO_ETHER;
+        strlcpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
+    }
     // Check for payment token.
-    if (msg->item1)
+    else if (msg->item1)
     {
         PRINTF("payment token found\n");
         context->payment_token_decimals = msg->item1->token.decimals;
@@ -18,26 +24,16 @@ void handle_provide_token(void *parameters)
     }
     else
     {
-        if (context->booleans & IS_ETH)
+        PRINTF("warning: payment token not found\n");
+        context->payment_token_decimals = DEFAULT_DECIMAL;
+        strlcpy(context->payment_token_ticker, DEFAULT_TICKER, sizeof(context->payment_token_ticker));
+        context->screen_array |= UNKNOWN_PAYMENT_TOKEN_UI;
+        msg->additionalScreens++;
+        if (context->selectorIndex == ATOMIC_MATCH_)
         {
-            PRINTF("payment token is ETH\n");
-            context->payment_token_decimals = WEI_TO_ETHER;
-            strlcpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
-        }
-        else
-        {
-            PRINTF("warning: payment token not found\n");
-            context->payment_token_decimals = DEFAULT_DECIMAL;
-            strlcpy(context->payment_token_ticker, DEFAULT_TICKER, sizeof(context->payment_token_ticker));
-            context->screen_array |= UNKNOWN_PAYMENT_TOKEN_UI;
+            context->screen_array |= UNKNOWN_TOKEN_ADDRESS_UI;
             msg->additionalScreens++;
-            if (context->selectorIndex == ATOMIC_MATCH_)
-            {
-                context->screen_array |= UNKNOWN_TOKEN_ADDRESS_UI;
-                msg->additionalScreens++;
-            }
         }
-        // should set payment_token_found to false, but it is false by default
     }
     // check for nft info.
     if (msg->item2)
