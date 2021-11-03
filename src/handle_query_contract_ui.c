@@ -4,9 +4,9 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
 {
     switch (context->selectorIndex)
     {
-    case APPROVE_PROXY:
+    case REGISTER_PROXY:
         strlcpy(msg->title, "Initialize wallet:", msg->titleLength);
-        strlcpy(msg->msg, "Sign to authorize wallet?", msg->msgLength); /// STRING TO BE EDITED
+        strlcpy(msg->msg, "Sign to authorize wallet?", msg->msgLength);
         break;
     case CANCEL_ORDER_:
         strlcpy(msg->title, "Cancel Order:", msg->titleLength);
@@ -137,8 +137,6 @@ static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
     else
         strlcpy(msg->msg, "NFT will not be sent to user!", msg->titleLength);
 }
-
-// Not used if last bit in screen array isn't 1
 
 static void skip_right(opensea_parameters_t *context)
 {

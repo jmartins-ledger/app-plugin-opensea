@@ -18,7 +18,7 @@ void handle_query_contract_id(void *parameters)
 
     switch (context->selectorIndex)
     {
-    case APPROVE_PROXY:
+    case REGISTER_PROXY:
         strlcpy(msg->version, "Register Proxy", msg->versionLength);
         break;
     case CANCEL_ORDER_:

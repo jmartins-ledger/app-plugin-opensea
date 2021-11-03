@@ -91,7 +91,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
         PRINTF("On atomicize CALLDATA LENGTH = %hu\n", msg->parameter); //random selector_  size
     else
-        PRINTF("ATOMICIZE ELSE\n");
+        PRINTF("On atomicize else\n");
 }
 
 static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context, uint32_t offset)
@@ -294,14 +294,8 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case SELL_TAKER_RELAYER_FEE:
     case SELL_MAKER_PROTOCOL_FEE:
     case SELL_TAKER_PROTOCOL_FEE:
-        break;
     case SELL_BASE_PRICE:
-        PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in BASE_PRICE PARAM\n");
-        // set context->payment_token_amount
-        copy_parameter(context->payment_token_amount,
-                       sizeof(context->payment_token_amount),
-                       msg->parameter);
-        break;
+        // already catch in BUY order
     case SELL_EXTRA:
     case SELL_LISTING_TIME:
     case SELL_EXPIRATION_TIME:
@@ -351,7 +345,7 @@ void handle_provide_parameter(void *parameters)
 
     switch (context->selectorIndex)
     {
-    case APPROVE_PROXY:
+    case REGISTER_PROXY:
         break;
     case CANCEL_ORDER_:
         handle_cancel_order(msg, context);

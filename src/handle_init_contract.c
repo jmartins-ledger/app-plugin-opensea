@@ -47,7 +47,7 @@ void handle_init_contract(void *parameters)
     PRINTF("INIT_CONTRACT selector: %u\n", context->selectorIndex);
     switch (context->selectorIndex)
     {
-    case APPROVE_PROXY:
+    case REGISTER_PROXY:
         break;
     case CANCEL_ORDER_:
         context->next_param = EXCHANGE_ADDRESS;

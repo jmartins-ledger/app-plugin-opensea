@@ -11,7 +11,7 @@
 // Should follow the array declared in main.c
 typedef enum
 {
-    APPROVE_PROXY,
+    REGISTER_PROXY,
     CANCEL_ORDER_,
     ATOMIC_MATCH_,
 } openseaSelector_t;
@@ -33,7 +33,7 @@ typedef enum
 extern const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS];
 extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 
-// screeen array correspondance
+// screen array correspondance
 #define TX_TYPE_UI 1 // Must remain first screen in screen array and always up.
 #define TOKEN_ID_OR_BUNDLE_UI (1 << 1)
 #define NFT_NAME_UI (1 << 2)
@@ -58,13 +58,12 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define DEFAULT_TICKER "? "
 
 // Booleans
-#define SKIP 1
-#define ORDER_SIDE (1 << 1) // false is buy now, true is accept offer
-#define PAYMENT_TOKEN_FOUND (1 << 2)
-#define IS_ETH (1 << 3)
-#define NFT_ADDRESS_COPIED (1 << 4)
-#define MULTIPLE_NFT_ADDRESSES (1 << 5)
-#define NFT_NAME_FOUND (1 << 6)
+#define ORDER_SIDE 1 // false is buy now, true is accept offer
+#define PAYMENT_TOKEN_FOUND (1 << 1)
+#define IS_ETH (1 << 2)
+#define NFT_ADDRESS_COPIED (1 << 3)
+#define MULTIPLE_NFT_ADDRESSES (1 << 4)
+#define NFT_NAME_FOUND (1 << 5)
 
 // cancelOrder_() parameters
 typedef enum
@@ -210,7 +209,6 @@ typedef struct __attribute__((__packed__)) opensea_parameters_t
 
 // Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove
 // this check.
-// TODO: unify this with the check in ethPluginInitContract.
 _Static_assert(sizeof(opensea_parameters_t) <= 5 * 32, "Structure of parameters too big.");
 
 void handle_provide_parameter(void *parameters);
