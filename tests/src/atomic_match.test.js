@@ -1,13 +1,6 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import { waitForAppScreen, zemu, genericTx, SPECULOS_ADDRESS, RANDOM_ADDRESS, txFromEtherscan } from './test.fixture';
-import { ethers } from "ethers";
-import { parseEther, parseUnits } from "ethers/lib/utils";
-
-const contractAddr = "0x7be8076f4ea4a4ad08075c2508e481d6c946d12b";
-const pluginName = "opensea";
-const abi_path = `../${pluginName}/abis/` + contractAddr + '.json';
-const abi = require(abi_path);
+import { waitForAppScreen, zemu, txFromEtherscan } from './test.fixture';
 
 // from https://etherscan.io/tx/0x0a863562ee39b566d2eac1d11f0bcefab4fac12c26dc300fa8ad0df3a142afad
 // but 'buy-maker' address changed to match ledger address (0x5b1a00402c6aabc799aa30d009fb26ec7980ba0a -> 0xfe984369ce3919aa7bb4f431082d027b4f8ed70c)
