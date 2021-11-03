@@ -41,4 +41,4 @@ The name of the singular tests may be found in `opensea-plugin/tests/src/*.test.
 
 ## Documentation
 
-For more information about how the plugin and tester works visit the [Plugin documentation page](https://hackmd.io/300Ukv5gSbCbVcp3cZuwRQ).
+For more information about how the plugin and tester works visit the [plugin documentation page](https://hackmd.io/300Ukv5gSbCbVcp3cZuwRQ).
