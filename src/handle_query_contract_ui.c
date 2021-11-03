@@ -83,7 +83,10 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
             }
             else
             {
-                strlcpy(msg->title, "Unknown NFT:", msg->titleLength);
+                if (context->bundle_size)
+                    strlcpy(msg->title, "NFT address:", msg->titleLength);
+                else
+                    strlcpy(msg->title, "Unknown NFT:", msg->titleLength);
                 msg->msg[0] = '0';
                 msg->msg[1] = 'x';
                 getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
