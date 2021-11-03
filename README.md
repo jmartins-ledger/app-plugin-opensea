@@ -39,6 +39,8 @@ To run the tests:
 
 `yarn test -t NAME_OF_TEST` where NAME_OF_TEST is the string associated to the singular test name.
 
+The name of the singular tests may be found in `opensea-plugin/tests/src/*.test.js.`
+
 <b>OR</b>
 
 Simply run `yarn test` to run all tests.
