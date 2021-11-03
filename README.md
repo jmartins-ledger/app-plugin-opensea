@@ -10,16 +10,16 @@ Most transactions emitted by OpenSea on Ethereum come from the [OpenSea contract
 
 ### The plugin supports:
 
-* 1- CancelOrder_ method.
-* 2- AtomicMatch_ method.
-* 3- RegisterProxy (method from a different contract: [OpenSea: Registry](https://etherscan.io/address/0xa5409ec958c83c3f309868babaca7c86dcb077c1)).
+- CancelOrder_ method.
+- AtomicMatch_ method.
+- RegisterProxy (method from a different contract: [OpenSea: Registry](https://etherscan.io/address/0xa5409ec958c83c3f309868babaca7c86dcb077c1)).
 
 ### Not supported:
 
-1- SetApprovalForAll (specific to collection method, needed to allow OpenSea to "spend" user's NFT's meaning to transfer them once sale is triggered.).
-2- ProxyAssert (specific to collection method, used to transfer several items from one owner to an other. (Not a sale)).
+- SetApprovalForAll (specific to collection method, needed to allow OpenSea to "spend" user's NFT's meaning to transfer them once sale is triggered.).
+- ProxyAssert (specific to collection method, used to transfer several items from one owner to an other. (Not a sale)).
 
-3- Many interactions on the OpenSea platform require solely a signature from the Ledger device: Creating a collection, placing a bid, putting an item on sale, lowering said sale-price.
+- Many interactions on the OpenSea platform require solely a signature from the Ledger device: Creating a collection, placing a bid, putting an item on sale, lowering said sale-price.
 
 ## Compilation
 
