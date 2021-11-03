@@ -34,8 +34,14 @@ If you need to update the sdk, you will need to do it locally and create a PR on
 The tests consist of screenshots being compared and having to match a set of correct screenshots located in the `opensea-plugin/tests/snapshots` directory.
 
 To run the tests:
+
 `cd opensea-plugin/tests/`
+
 `yarn test -t NAME_OF_TEST` where NAME_OF_TEST is the string associated to the singular test name.
+
+<b>OR</b>
+
+Simply run `yarn test` to run all tests.
 
 The name of the singular tests may be found in opensea-plugin/tests/src/*.test.js.
 
