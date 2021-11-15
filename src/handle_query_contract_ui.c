@@ -123,10 +123,27 @@ static void set_token_address_ui(ethQueryContractUI_t *msg,
 
 static void set_price_ui(ethQueryContractUI_t *msg, opensea_parameters_t *context)
 {
+    char token_ticker[MAX_TICKER_LEN] = {0};
+    uint8_t token_decimals;
     strlcpy(msg->title, "Price:", msg->titleLength);
+    if (context->booleans & IS_ETH)
+    {
+        strlcpy(token_ticker, ETH_TICKER, sizeof(token_ticker));
+        token_decimals = ETH_DECIMAL;
+    }
+    else if (msg->item1)
+    {
+        strlcpy(token_ticker, msg->item1->token.ticker, sizeof(token_ticker));
+        token_decimals = msg->item1->token.decimals;
+    }
+    else
+    {
+        strlcpy(token_ticker, DEFAULT_TICKER, sizeof(token_ticker));
+        token_decimals = DEFAULT_DECIMAL;
+    }
     amountToString(context->payment_token_amount, sizeof(context->payment_token_amount),
-                   context->payment_token_decimals,
-                   context->payment_token_ticker,
+                   token_decimals,
+                   token_ticker,
                    msg->msg,
                    msg->msgLength);
 }

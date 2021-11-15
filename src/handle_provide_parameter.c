@@ -86,8 +86,16 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
     }
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (7 + context->bundle_size))
         PRINTF("On atomicize values[] length\n");
+    // On atomicize calldata_length[] length
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (8 + context->bundle_size * 2))
+    {
         PRINTF("\033[0;33mOn atomicize calldata_length[] length\033[0m\n");
+    }
+    // On atomicize calldata_length[] values
+    else if (msg->parameterOffset > offset + PARAMETER_LENGTH * (8 + context->bundle_size * 2) && msg->parameterOffset < offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
+    {
+        PRINTF("\033[0;33mOn atomicize calldata_length[] values\033[0m\n");
+    }
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
         PRINTF("On atomicize CALLDATA LENGTH = %hu\n", msg->parameter); //random selector_  size
     else

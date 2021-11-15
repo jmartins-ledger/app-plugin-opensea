@@ -53,9 +53,11 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 
 // Number of decimals used when the token wasn't found in the Crypto Asset List.
 #define DEFAULT_DECIMAL WEI_TO_ETHER
+#define ETH_DECIMAL WEI_TO_ETHER
 
 // Ticker used when the token wasn't found in the Crypto Asset List.
 #define DEFAULT_TICKER "? "
+#define ETH_TICKER "ETH "
 
 // Booleans
 #define ORDER_SIDE 1 // false is buy now, true is accept offer
