@@ -40,8 +40,6 @@ void handle_finalize(void *parameters)
     else
     {
         // set default token info, in case of skiped handle_provide_token()
-        context->payment_token_decimals = WEI_TO_ETHER;
-        strlcpy(context->payment_token_ticker, "ETH ", sizeof(context->payment_token_ticker));
         context->booleans |= IS_ETH;
     }
     // Look foor NFT info
