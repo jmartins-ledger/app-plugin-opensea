@@ -66,6 +66,7 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define NFT_ADDRESS_COPIED (1 << 3)
 #define MULTIPLE_NFT_ADDRESSES (1 << 4)
 #define NFT_NAME_FOUND (1 << 5)
+#define COULD_NOT_PARSE (1 << 6)
 
 // cancelOrder_() parameters
 typedef enum
@@ -185,8 +186,14 @@ typedef struct __attribute__((__packed__)) opensea_parameters_t
 {
     // payment_token
     uint8_t payment_token_address[ADDRESS_LENGTH]; // 20
-    char payment_token_ticker[MAX_TICKER_LEN];     // 12
-    uint8_t payment_token_amount[INT256_LENGTH];   // 32
+
+    // char payment_token_ticker[MAX_TICKER_LEN];     // 12
+    uint16_t atomicize_lengths;       //2
+    uint16_t atomicize_length;        //2
+    uint8_t current_atomicize_offset; //2
+    uint8_t atomicize_selector[4];    //4
+
+    uint8_t payment_token_amount[INT256_LENGTH]; // 32
     uint8_t payment_token_decimals;
     // tx data
     uint8_t beneficiary[ADDRESS_LENGTH];          // 20

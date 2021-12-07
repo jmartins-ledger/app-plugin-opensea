@@ -47,11 +47,16 @@ static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opense
     }
 }
 
+static void print_selector(uint8_t parameter[32], uint8_t offset)
+{
+    PRINTF("atomicize calldata selector: %x%x%x%x\n", parameter[offset], parameter[offset + 1], parameter[offset + 2], parameter[offset + 3]);
+}
+
 // add offset parameter
 static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameters_t *context, uint16_t offset)
 {
     // skip all checks if we already found multiple addresses.
-    if (context->booleans & MULTIPLE_NFT_ADDRESSES)
+    if (context->booleans & MULTIPLE_NFT_ADDRESSES || context->booleans & COULD_NOT_PARSE)
         return;
 
     // Here we are on atomicize's calldata length.
@@ -89,21 +94,119 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
     // On atomicize calldata_length[] length
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (8 + context->bundle_size * 2))
     {
+        PRINTF("P123 - Side: %d\n", context->booleans & ORDER_SIDE);
         PRINTF("\033[0;33mOn atomicize calldata_length[] length\033[0m\n");
+        if (U2BE(msg->parameter, 2) == context->bundle_size)
+        {
+        }
+        else
+        {
+            context->booleans |= COULD_NOT_PARSE;
+        }
     }
     // On atomicize calldata_length[] values
     else if (msg->parameterOffset > offset + PARAMETER_LENGTH * (8 + context->bundle_size * 2) && msg->parameterOffset < offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
     {
         PRINTF("\033[0;33mOn atomicize calldata_length[] values\033[0m\n");
+        // Copy first one.
+        if (context->atomicize_lengths == 0)
+        {
+            context->atomicize_lengths = U2BE(msg->parameter, 2);
+        }
+        // memcmp others.
+        else if (context->atomicize_lengths != U2BE(msg->parameter, 2))
+        {
+            context->booleans |= COULD_NOT_PARSE;
+        }
     }
+    // On atomicize on calldata length.
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
-        PRINTF("On atomicize CALLDATA LENGTH = %hu\n", msg->parameter); //random selector_  size
+    {
+        PRINTF("On atomicize CALLDATA LENGTH = %hu\n", msg->parameter); //random selector_ size
+        context->atomicize_length = U2BE(msg->parameter, 2);
+        memcpy(context->atomicize_selector, &msg->parameter[SELECTOR_SIZE], SELECTOR_SIZE);
+        PRINTF("Copying selector: vvv\n");
+        print_bytes(context->atomicize_selector, SELECTOR_SIZE);
+
+        if (context->atomicize_length == context->bundle_size * context->atomicize_lengths)
+        {
+            PRINTF("atomicize lengths == total length\n");
+        }
+        else
+        {
+            PRINTF("atomicize lengths != total length\n");
+            context->booleans |= COULD_NOT_PARSE;
+        }
+        // Handle first loop.
+        context->atomicize_length -= PARAMETER_LENGTH;
+        PRINTF("P123 - atomicize_length = %d\n", context->atomicize_length);
+    }
+    // Loop through atomicize calldata.
+    else if (context->atomicize_length > 0)
+    {
+        PRINTF("\033[0;34m ICI with atomicize->length = %d\033[0m\n", context->atomicize_length);
+        PRINTF("\033[0;34m ICI with atomicize->atomicize_lengths = %d\033[0m\n", context->atomicize_lengths);
+        PRINTF("\033[0;34m ICI with atomicize->current_atomicize_offset = %d\033[0m\n", context->current_atomicize_offset);
+        PRINTF("\033[0;34m ICI with atomicize->length = %d\033[0m\n", context->atomicize_length);
+        if (context->atomicize_length > PARAMETER_LENGTH)
+        {
+            // test is sub-calldata remaining length
+            uint16_t test = (context->atomicize_length - context->current_atomicize_offset) % context->atomicize_lengths;
+            PRINTF("\033[0;31m PENZO ICI NEW test: %d \033[0m\n", test);
+            // handle sub-calldata offset shifting at the end of each sub-calldatas.
+            if (test == 0)
+                context->current_atomicize_offset += SELECTOR_SIZE;
+            if (test == 0 && context->current_atomicize_offset != PARAMETER_LENGTH)
+            {
+                print_selector(msg->parameter, context->current_atomicize_offset);
+                // Cmp methodId.
+                if (memcmp(context->atomicize_selector, &msg->parameter[context->current_atomicize_offset], SELECTOR_SIZE))
+                {
+                    context->booleans |= COULD_NOT_PARSE;
+                    PRINTF("PENZO NOP\n");
+                }
+            }
+            // wrap special case (methodId at the end of parameter)
+            else if (test == context->atomicize_lengths - SELECTOR_SIZE)
+            {
+                print_selector(msg->parameter, context->current_atomicize_offset);
+                if (memcmp(context->atomicize_selector, &msg->parameter[context->current_atomicize_offset], SELECTOR_SIZE))
+                {
+                    context->booleans |= COULD_NOT_PARSE;
+                    PRINTF("PENZO NOP\n");
+                }
+            }
+            else if (context->current_atomicize_offset < ADDRESS_LENGTH - SELECTOR_SIZE)
+            {
+                // THE ADDRESS IS SPLIT ONLY HERE (not on PEDRO2)
+                if (test == context->atomicize_lengths - PARAMETER_LENGTH - SELECTOR_SIZE)
+                    PRINTF("PEDRO1 first\n");
+                else if (test == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
+                    PRINTF("PEDRO1 second\n");
+            }
+            else if (context->current_atomicize_offset >= ADDRESS_LENGTH - SELECTOR_SIZE)
+            {
+                if (test == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
+                    PRINTF("PEDRO2 first\n");
+            }
+            if (context->current_atomicize_offset == PARAMETER_LENGTH)
+                context->current_atomicize_offset = 0;
+            PRINTF("\033[0;34m ICI with current_atomicize_offset = %d\033[0m\n", context->current_atomicize_offset);
+            context->atomicize_length -= PARAMETER_LENGTH;
+        }
+        //useless check
+        else
+        {
+            context->atomicize_length = 0;
+        }
+    }
     else
-        PRINTF("On atomicize else\n");
+        PRINTF("\033[0;33mOn atomicize else\033[0m\n");
 }
 
 static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters_t *context, uint32_t offset)
 {
+    PRINTF("IN CALLDATA offset:%d\n", offset);
     PRINTF("IN CALLDATA target:%d =? current:%d\n", offset + context->next_parameter_length, msg->parameterOffset);
     // Find calldata Method ID.
     if (offset != 0 && msg->parameterOffset == offset + PARAMETER_LENGTH)
@@ -116,6 +219,8 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
             if (memcmp((uint8_t *)PIC(ERC721_SELECTORS[i]), msg->parameter, SELECTOR_SIZE) == 0)
             {
                 PRINTF("CALLDATA METHOD FOUND: %d!\n", context->calldata_method);
+                if (context->calldata_method == ATOMICIZE)
+                    context->current_atomicize_offset = SELECTOR_SIZE;
                 break;
             }
         }
@@ -131,6 +236,9 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
     {
         PRINTF("END OF CALLDATA\n");
         context->on_param = ON_NONE;
+        // Reset in order to parse both sides
+        context->atomicize_lengths = 0;
+        context->atomicize_length = 0;
     }
 }
 
@@ -219,6 +327,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
             handle_calldata(msg, context, context->calldata_offset);
         else if (context->on_param == ON_CALLDATA_SELL)
             handle_calldata(msg, context, context->calldata_sell_offset);
+        return; // PENZO WARNING RETURN ADDED
     }
     // is on first calldata length
     if (context->calldata_offset != 0 && msg->parameterOffset == context->calldata_offset)
@@ -336,6 +445,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     default:
         break;
     }
+    PRINTF("DAUBE:  %d\n", context->next_param);
     context->next_param++;
 }
 
