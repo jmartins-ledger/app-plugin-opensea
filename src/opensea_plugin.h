@@ -67,6 +67,7 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define MULTIPLE_NFT_ADDRESSES (1 << 4)
 #define NFT_NAME_FOUND (1 << 5)
 #define COULD_NOT_PARSE (1 << 6)
+#define BUNDLE_TO_ADDRESS_COPIED (1 << 7)
 
 // cancelOrder_() parameters
 typedef enum

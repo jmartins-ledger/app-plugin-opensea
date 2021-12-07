@@ -180,14 +180,54 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
             {
                 // THE ADDRESS IS SPLIT ONLY HERE (not on PEDRO2)
                 if (test == context->atomicize_lengths - PARAMETER_LENGTH - SELECTOR_SIZE)
+                {
+                    uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; //useless %PARM_L ?
                     PRINTF("PEDRO1 first\n");
+                    if (context->booleans & BUNDLE_TO_ADDRESS_COPIED)
+                    {
+                        // MEMCMP first part
+                        PRINTF("CMP start on offset: %d, length: %d\n",
+                               offset,
+                               PARAMETER_LENGTH - offset);
+                    }
+                    else
+                    {
+                        // MEMCPY first part
+                        PRINTF("CPY start on offset: %d, length: %d\n",
+                               offset,
+                               PARAMETER_LENGTH - offset);
+                    }
+                }
                 else if (test == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
+                {
                     PRINTF("PEDRO1 second\n");
+                    if (context->booleans & BUNDLE_TO_ADDRESS_COPIED)
+                    {
+                        // MEMCMP secon part
+                        PRINTF("CMP start on offset: %d, length: %d\n",
+                               0,
+                               context->current_atomicize_offset + SELECTOR_SIZE);
+                    }
+                    else
+                    {
+                        // MEMCPY secon part
+                        PRINTF("CPY start on offset: %d, length: %d\n",
+                               0,
+                               context->current_atomicize_offset + SELECTOR_SIZE);
+                        context->booleans |= BUNDLE_TO_ADDRESS_COPIED;
+                    }
+                }
             }
             else if (context->current_atomicize_offset >= ADDRESS_LENGTH - SELECTOR_SIZE)
             {
                 if (test == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
-                    PRINTF("PEDRO2 first\n");
+                {
+                    PRINTF("PEDRO2 full\n");
+                    //MEMCMP, it will already be copied
+                    PRINTF("CMP start on offset: %d, length: %d\n",
+                           (context->current_atomicize_offset + 16) % PARAMETER_LENGTH,
+                           ADDRESS_LENGTH);
+                }
             }
             if (context->current_atomicize_offset == PARAMETER_LENGTH)
                 context->current_atomicize_offset = 0;
