@@ -2,21 +2,21 @@
 
 // Copies the whole parameter (32 bytes long) from `src` to `dst`.
 // Useful for numbers, data...
-static void copy_parameter(uint8_t *dst, size_t dst_len, uint8_t *src)
+void copy_parameter(uint8_t *dst, uint8_t *parameter, uint8_t dst_size)
 {
     // Take the minimum between dst_len and parameter_length to make sure we don't overwrite memory.
-    size_t len = MIN(dst_len, PARAMETER_LENGTH);
-    memcpy(dst, src, len);
+    size_t len = MIN(dst_size, PARAMETER_LENGTH);
+    memcpy(dst, parameter, len);
 }
 
 // Copies a 20 byte address (located in a 32 bytes parameter) `from `src` to `dst`.
 // Useful for token addresses, user addresses...
-static void copy_address(uint8_t *dst, size_t dst_len, uint8_t *src)
+void copy_address(uint8_t *dst, uint8_t *parameter, uint8_t dst_size)
 {
     // An address is 20 bytes long: so we need to make sure we skip the first 12 bytes!
     size_t offset = PARAMETER_LENGTH - ADDRESS_LENGTH;
-    size_t len = MIN(dst_len, ADDRESS_LENGTH);
-    memcpy(dst, &src[offset], len);
+    size_t len = MIN(dst_size, ADDRESS_LENGTH);
+    memcpy(dst, &parameter[offset], len);
 }
 
 static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
@@ -149,17 +149,15 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         break;
     case TARGET_ADDRESS:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in TARGET_ADDRESS PARAM\n");
-        copy_address(context->nft_contract_address,
-                     sizeof(context->nft_contract_address),
-                     msg->parameter);
+        copy_address(context->nft_contract_address, msg->parameter,
+                     sizeof(context->nft_contract_address));
         break;
     case STATIC_TARGET_ADDRESS:
         break;
     case PAYMENT_TOKEN_ADDRESS:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in PAYMENT_TOKEN_ADDRESS PARAM\n");
-        copy_address(context->payment_token_address,
-                     sizeof(context->payment_token_address),
-                     msg->parameter);
+        copy_address(context->payment_token_address, msg->parameter,
+                     sizeof(context->payment_token_address));
         break;
     case MAKER_RELAYER_FEE:
     case TAKER_RELAYER_FEE:
@@ -168,9 +166,8 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         break;
     case BASE_PRICE:
         PRINTF("PROVIDE_PARAMETER - handle_cancel_order - in BASE_PRICE PARAM\n");
-        copy_parameter(context->payment_token_amount,
-                       sizeof(context->payment_token_amount),
-                       msg->parameter);
+        copy_parameter(context->payment_token_amount, msg->parameter,
+                       sizeof(context->payment_token_amount));
         break;
     case EXTRA:
     case LISTING_TIME:
@@ -233,7 +230,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     {
     case BUY_EXCHANGE_ADDRESS:
     case BUY_MAKER_ADDRESS:
-        copy_address(context->beneficiary, sizeof(context->beneficiary), msg->parameter);
+        copy_address(context->beneficiary, msg->parameter, sizeof(context->beneficiary));
         break;
     case BUY_TAKER_ADDRESS:
         // use buy_taker_address to determine order_side
@@ -245,18 +242,16 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case BUY_TARGET_ADDRESS:
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in TARGET_ADDRESS PARAM\n");
         // set context->nft_contract_address
-        copy_address(context->nft_contract_address,
-                     sizeof(context->nft_contract_address),
-                     msg->parameter);
+        copy_address(context->nft_contract_address, msg->parameter,
+                     sizeof(context->nft_contract_address));
         break;
     case BUY_STATIC_TARGET_ADDRESS:
         break;
     case BUY_PAYMENT_TOKEN_ADDRESS:
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in PAYMENT_TOKEN_ADDRESS PARAM\n");
         // set context->payment_token_address
-        copy_address(context->payment_token_address,
-                     sizeof(context->payment_token_address),
-                     msg->parameter);
+        copy_address(context->payment_token_address, msg->parameter,
+                     sizeof(context->payment_token_address));
         break;
     case BUY_MAKER_RELAYER_FEE:
     case BUY_TAKER_RELAYER_FEE:
@@ -266,9 +261,8 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case BUY_BASE_PRICE:
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in BASE_PRICE PARAM\n");
         // set context->payment_token_amount
-        copy_parameter(context->payment_token_amount,
-                       sizeof(context->payment_token_amount),
-                       msg->parameter);
+        copy_parameter(context->payment_token_amount, msg->parameter,
+                       sizeof(context->payment_token_amount));
         break;
     case BUY_EXTRA:
     case BUY_LISTING_TIME:
