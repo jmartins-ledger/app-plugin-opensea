@@ -2,7 +2,7 @@
 
 void handle_provide_token(void *parameters)
 {
-    ethPluginProvideToken_t *msg = (ethPluginProvideToken_t *)parameters;
+    ethPluginProvideInfo_t *msg = (ethPluginProvideInfo_t *)parameters;
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 
     PRINTF("\033[0;31mPAYMENT_TOKEN_ADDRESS\n");
