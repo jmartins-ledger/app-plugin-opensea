@@ -19,18 +19,23 @@ static void copy_address(uint8_t *dst, size_t dst_len, uint8_t *src)
     memcpy(dst, &src[offset], len);
 }
 
+static void print_selector(uint8_t parameter[32], uint8_t offset)
+{
+    PRINTF("atomicize calldata selector: %x%x%x%x\n", parameter[offset], parameter[offset + 1], parameter[offset + 2], parameter[offset + 3]);
+}
+
 static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
         PRINTF("in tranferFrom 'from' p1\n");
-    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 2)
+    else if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 2)
     {
         PRINTF("in transferFrom 'from' p2, 'to' p1, ORDER_SIDE: %d\n", context->booleans & ORDER_SIDE);
         // If it's a buy now, check if 'to' part1 is sender.
         if (!(context->booleans & ORDER_SIDE))
             memcpy(context->beneficiary, &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE], ADDRESS_LENGTH - SELECTOR_SIZE);
     }
-    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 3)
+    else if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 3)
     {
         PRINTF("in transferFrom 'to' p2, 'tokenID' p1\n");
         // If it's a 'buy now' checks if 'to' part2 is sender.
@@ -38,18 +43,13 @@ static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opense
             memcpy(&context->beneficiary[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
         memcpy(context->token_id, msg->parameter + SELECTOR_SIZE, PARAMETER_LENGTH - SELECTOR_SIZE);
     }
-    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 4)
+    else if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 4)
     {
         PRINTF("in tranferFrom 'tokenID' part 2\n");
         memcpy(context->token_id + PARAMETER_LENGTH - SELECTOR_SIZE, msg->parameter, SELECTOR_SIZE);
         PRINTF("copied 'tokenID':\n");
         print_bytes(context->token_id, PARAMETER_LENGTH);
     }
-}
-
-static void print_selector(uint8_t parameter[32], uint8_t offset)
-{
-    PRINTF("atomicize calldata selector: %x%x%x%x\n", parameter[offset], parameter[offset + 1], parameter[offset + 2], parameter[offset + 3]);
 }
 
 // add offset parameter
@@ -96,13 +96,8 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
     {
         PRINTF("P123 - Side: %d\n", context->booleans & ORDER_SIDE);
         PRINTF("\033[0;33mOn atomicize calldata_length[] length\033[0m\n");
-        if (U2BE(msg->parameter, 2) == context->bundle_size)
-        {
-        }
-        else
-        {
+        if (U2BE(msg->parameter, 2) != context->bundle_size)
             context->booleans |= COULD_NOT_PARSE;
-        }
     }
     // On atomicize calldata_length[] values
     else if (msg->parameterOffset > offset + PARAMETER_LENGTH * (8 + context->bundle_size * 2) && msg->parameterOffset < offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
@@ -128,11 +123,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         PRINTF("Copying selector: vvv\n");
         print_bytes(context->atomicize_selector, SELECTOR_SIZE);
 
-        if (context->atomicize_length == context->bundle_size * context->atomicize_lengths)
-        {
-            PRINTF("atomicize lengths == total length\n");
-        }
-        else
+        if (context->atomicize_length != context->bundle_size * context->atomicize_lengths)
         {
             PRINTF("atomicize lengths != total length\n");
             context->booleans |= COULD_NOT_PARSE;
@@ -147,6 +138,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
         PRINTF("\033[0;34m ICI with atomicize->length = %d\033[0m\n", context->atomicize_length);
         PRINTF("\033[0;34m ICI with atomicize->atomicize_lengths = %d\033[0m\n", context->atomicize_lengths);
         PRINTF("\033[0;34m ICI with atomicize->current_atomicize_offset = %d\033[0m\n", context->current_atomicize_offset);
+        print_bytes(context->beneficiary, ADDRESS_LENGTH);
         PRINTF("\033[0;34m ICI with atomicize->length = %d\033[0m\n", context->atomicize_length);
         if (context->atomicize_length > PARAMETER_LENGTH)
         {
@@ -176,57 +168,63 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
                     PRINTF("PENZO NOP\n");
                 }
             }
-            else if (context->current_atomicize_offset < ADDRESS_LENGTH - SELECTOR_SIZE)
+            else if (context->on_param == ON_CALLDATA && context->current_atomicize_offset < ADDRESS_LENGTH - SELECTOR_SIZE)
             {
                 // THE ADDRESS IS SPLIT ONLY HERE (not on PEDRO2)
                 if (test == context->atomicize_lengths - PARAMETER_LENGTH - SELECTOR_SIZE)
                 {
                     uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; //useless %PARM_L ?
                     PRINTF("PEDRO1 first\n");
-                    if (context->booleans & BUNDLE_TO_ADDRESS_COPIED)
+                    // if (context->booleans & BUNDLE_TO_ADDRESS_COPIED)
+                    // {
+                    // MEMCMP first part
+                    PRINTF("CMP start on offset: %d, length: %d\n",
+                           offset,
+                           PARAMETER_LENGTH - offset);
+                    // print_selector(msg->parameter, offset);
+                    if (memcmp(context->beneficiary, &msg->parameter[offset], PARAMETER_LENGTH - offset))
                     {
-                        // MEMCMP first part
-                        PRINTF("CMP start on offset: %d, length: %d\n",
-                               offset,
-                               PARAMETER_LENGTH - offset);
-                    }
-                    else
-                    {
-                        // MEMCPY first part
-                        PRINTF("CPY start on offset: %d, length: %d\n",
-                               offset,
-                               PARAMETER_LENGTH - offset);
+                        PRINTF("FHU111\n");
+                        context->screen_array |= WARNING_BENEFICIARY_UI;
                     }
                 }
-                else if (test == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
+                else if (context->on_param == ON_CALLDATA && test == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
                 {
+                    // ????
+                    uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; //useless %PARM_L ?
                     PRINTF("PEDRO1 second\n");
-                    if (context->booleans & BUNDLE_TO_ADDRESS_COPIED)
+                    // if (context->booleans & BUNDLE_TO_ADDRESS_COPIED)
+                    // {
+                    // MEMCMP secon part
+                    PRINTF("CMP start on offset: %d, length: %d\n",
+                           0,
+                           context->current_atomicize_offset + SELECTOR_SIZE);
+                    // print_selector(msg->parameter, 0);
+                    PRINTF("with benef offset: %d\n", PARAMETER_LENGTH - offset);
+                    // THIS, TODO: find offset in beneficiary
+                    if (memcmp(&context->beneficiary[PARAMETER_LENGTH - offset], msg->parameter, PARAMETER_LENGTH - offset))
                     {
-                        // MEMCMP secon part
-                        PRINTF("CMP start on offset: %d, length: %d\n",
-                               0,
-                               context->current_atomicize_offset + SELECTOR_SIZE);
-                    }
-                    else
-                    {
-                        // MEMCPY secon part
-                        PRINTF("CPY start on offset: %d, length: %d\n",
-                               0,
-                               context->current_atomicize_offset + SELECTOR_SIZE);
-                        context->booleans |= BUNDLE_TO_ADDRESS_COPIED;
+                        PRINTF("FHU222\n");
+                        context->screen_array |= WARNING_BENEFICIARY_UI;
                     }
                 }
             }
-            else if (context->current_atomicize_offset >= ADDRESS_LENGTH - SELECTOR_SIZE)
+            else if (context->on_param == ON_CALLDATA && context->current_atomicize_offset >= ADDRESS_LENGTH - SELECTOR_SIZE)
             {
                 if (test == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
                 {
+                    uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; //useless %PARM_L ?
                     PRINTF("PEDRO2 full\n");
                     //MEMCMP, it will already be copied
                     PRINTF("CMP start on offset: %d, length: %d\n",
-                           (context->current_atomicize_offset + 16) % PARAMETER_LENGTH,
+                           offset,
                            ADDRESS_LENGTH);
+                    // print_selector(msg->parameter, offset);
+                    if (memcmp(context->beneficiary, &msg->parameter[offset], ADDRESS_LENGTH))
+                    {
+                        PRINTF("FHU333\n");
+                        context->screen_array |= WARNING_BENEFICIARY_UI;
+                    }
                 }
             }
             if (context->current_atomicize_offset == PARAMETER_LENGTH)
@@ -234,9 +232,9 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
             PRINTF("\033[0;34m ICI with current_atomicize_offset = %d\033[0m\n", context->current_atomicize_offset);
             context->atomicize_length -= PARAMETER_LENGTH;
         }
-        //useless check
         else
         {
+            PRINTF("P1234 atomicize_length reset\n");
             context->atomicize_length = 0;
         }
     }
@@ -252,6 +250,7 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
     if (offset != 0 && msg->parameterOffset == offset + PARAMETER_LENGTH)
     {
         PRINTF("CALLDATA METHOD: %x%x%x%x\n", msg->parameter[0], msg->parameter[1], msg->parameter[2], msg->parameter[3]);
+        PRINTF("on param value: %d\n", context->on_param);
         uint8_t i;
         for (i = 0; i < NUM_NFT_SELECTORS; i++)
         {
@@ -272,10 +271,12 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
     else
         PRINTF("warning: unknown calldata method id\n");
     // End of calldata
+    PRINTF("offset: %d, context->next_parameter_length: %d, msg->parameterOffset: %d\n", offset, context->next_parameter_length, msg->parameterOffset);
     if (offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
     {
         PRINTF("END OF CALLDATA\n");
         context->on_param = ON_NONE;
+        PRINTF("FLAG RESET\n");
         // Reset in order to parse both sides
         context->atomicize_lengths = 0;
         context->atomicize_length = 0;
@@ -294,6 +295,7 @@ static void handle_cancel_order(ethPluginProvideParameter_t *msg, opensea_parame
         context->next_parameter_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
         PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
         context->on_param = ON_CALLDATA;
+        PRINTF("FLAG3\n");
     }
 
     switch ((cancel_order_parameter)context->next_param)
@@ -376,6 +378,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         context->next_parameter_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
         PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
         context->on_param = ON_CALLDATA;
+        PRINTF("FLAG2\n");
     }
     // is on second calldata length
     if (context->calldata_sell_offset != 0 && msg->parameterOffset == context->calldata_sell_offset)
@@ -383,6 +386,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         PRINTF("PROVIDE_PARAMETER - handle_atomic_match - in \033[0;32mCALLDATA_SELL_LENGTH\033[0m PARAM\n");
         context->next_parameter_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
         PRINTF("context->next_parameter_length = %d\n", context->next_parameter_length);
+        PRINTF("FLAG1\n");
         context->on_param = ON_CALLDATA_SELL;
     }
 
@@ -390,6 +394,7 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     {
     case BUY_EXCHANGE_ADDRESS:
     case BUY_MAKER_ADDRESS:
+        PRINTF("DEBUG PENZO, with next_param = %d, enum size = %d\n", context->next_param, sizeof(atomic_match_parameter));
         copy_address(context->beneficiary, sizeof(context->beneficiary), msg->parameter);
         break;
     case BUY_TAKER_ADDRESS:

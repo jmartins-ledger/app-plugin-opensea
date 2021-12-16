@@ -67,7 +67,7 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define MULTIPLE_NFT_ADDRESSES (1 << 4)
 #define NFT_NAME_FOUND (1 << 5)
 #define COULD_NOT_PARSE (1 << 6)
-#define BUNDLE_TO_ADDRESS_COPIED (1 << 7)
+// #define BUNDLE_TO_ADDRESS_COPIED (1 << 7)
 
 // cancelOrder_() parameters
 typedef enum
@@ -170,6 +170,9 @@ typedef enum
     SELL_STATIC_EXTRADATA,
     // Buy sig stuff
     // Sell sig stuff
+
+    // this enforce enum size with 'packed' attribute
+    FORCE_ENUM_SIZE = 259,
 } atomic_match_parameter;
 
 // on_param defines
@@ -213,7 +216,7 @@ typedef struct __attribute__((__packed__)) opensea_parameters_t
     uint8_t plugin_screen_index;
     // plugin utils
     uint8_t booleans;
-    uint8_t next_param;
+    uint16_t next_param;
     uint8_t selectorIndex;
 } opensea_parameters_t;
 
