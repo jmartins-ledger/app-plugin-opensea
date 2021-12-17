@@ -75,7 +75,7 @@ void dispatch_plugin_calls(int message, void *parameters)
         PRINTF("\033[0;32mFINALIZE\n\033[0m");
         handle_finalize(parameters);
         break;
-    case ETH_PLUGIN_PROVIDE_TOKEN:
+    case ETH_PLUGIN_PROVIDE_INFO:
         PRINTF("\033[0;32mPROVIDE TOKEN\n\033[0m");
         handle_provide_token(parameters);
         break;

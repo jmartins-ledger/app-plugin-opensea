@@ -53,9 +53,11 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 
 // Number of decimals used when the token wasn't found in the Crypto Asset List.
 #define DEFAULT_DECIMAL WEI_TO_ETHER
+#define ETH_DECIMAL WEI_TO_ETHER
 
 // Ticker used when the token wasn't found in the Crypto Asset List.
 #define DEFAULT_TICKER "? "
+#define ETH_TICKER "ETH "
 
 // Booleans
 #define ORDER_SIDE 1 // false is buy now, true is accept offer
@@ -64,6 +66,7 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define NFT_ADDRESS_COPIED (1 << 3)
 #define MULTIPLE_NFT_ADDRESSES (1 << 4)
 #define NFT_NAME_FOUND (1 << 5)
+#define COULD_NOT_PARSE (1 << 6)
 
 // cancelOrder_() parameters
 typedef enum
@@ -166,6 +169,9 @@ typedef enum
     SELL_STATIC_EXTRADATA,
     // Buy sig stuff
     // Sell sig stuff
+
+    // this enforce enum size with 'packed' attribute
+    FORCE_ENUM_SIZE = 259,
 } atomic_match_parameter;
 
 // on_param defines
@@ -183,8 +189,14 @@ typedef struct __attribute__((__packed__)) opensea_parameters_t
 {
     // payment_token
     uint8_t payment_token_address[ADDRESS_LENGTH]; // 20
-    char payment_token_ticker[MAX_TICKER_LEN];     // 12
-    uint8_t payment_token_amount[INT256_LENGTH];   // 32
+
+    // char payment_token_ticker[MAX_TICKER_LEN];     // 12
+    uint16_t atomicize_lengths;       //2
+    uint16_t atomicize_length;        //2
+    uint8_t current_atomicize_offset; //2
+    uint8_t atomicize_selector[4];    //4
+
+    uint8_t payment_token_amount[INT256_LENGTH]; // 32
     uint8_t payment_token_decimals;
     // tx data
     uint8_t beneficiary[ADDRESS_LENGTH];          // 20
@@ -203,7 +215,7 @@ typedef struct __attribute__((__packed__)) opensea_parameters_t
     uint8_t plugin_screen_index;
     // plugin utils
     uint8_t booleans;
-    uint8_t next_param;
+    uint16_t next_param;
     uint8_t selectorIndex;
 } opensea_parameters_t;
 
