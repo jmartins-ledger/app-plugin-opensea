@@ -6,7 +6,7 @@ void handle_provide_token(void *parameters)
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 
     PRINTF("\033[0;31mPAYMENT_TOKEN_ADDRESS\n");
-    print_bytes(context->payment_token_address, PARAMETER_LENGTH);
+    print_bytes(context->payment_token_address, ADDRESS_LENGTH);
     PRINTF("\033[0m");
     if (context->booleans & IS_ETH)
     {
