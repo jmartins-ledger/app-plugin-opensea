@@ -18,6 +18,8 @@ void handle_finalize(void *parameters)
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *)parameters;
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 
+    PRINTF("%d: WARNING_BENEFICIARY_UI before\n", context->screen_array & WARNING_BENEFICIARY_UI);
+
     // set generic screen_array
     context->screen_array |= TX_TYPE_UI;
     if (context->selectorIndex == ATOMIC_MATCH_ || context->selectorIndex == CANCEL_ORDER_)
@@ -26,7 +28,7 @@ void handle_finalize(void *parameters)
         context->screen_array |= TOKEN_ID_OR_BUNDLE_UI;
         context->screen_array |= PRICE_UI;
         // if is a 'buy now', in atomic_match and beneficiary != sender and is not bundle: raise beneficiary warning
-        if (!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH) && context->bundle_size || context->booleans & COULD_NOT_PARSE)
+        if ((!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH) && context->bundle_size) || context->booleans & COULD_NOT_PARSE)
         {
             context->screen_array |= WARNING_BENEFICIARY_UI;
             PRINTF("finalize: beneficiary != user\n");
