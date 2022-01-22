@@ -50,7 +50,7 @@ static void set_token_id_or_bundle_ui(ethQueryContractUI_t *msg,
         else if (context->bundle_size)
         {
             strlcpy(msg->title, "Bundle:", msg->titleLength);
-            snprintf(msg->msg, msg->msgLength, "%d NFT's", context->bundle_size);
+            snprintf(msg->msg, msg->msgLength, "%d NFTs", context->bundle_size);
         }
         else
         {
@@ -150,9 +150,9 @@ static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
 {
     strlcpy(msg->title, "Warning:", msg->titleLength);
     if (context->bundle_size)
-        strlcpy(msg->msg, "NFT's might not be sent to user!", msg->titleLength);
+        strlcpy(msg->msg, "NFTs might not be sent to you!", msg->titleLength);
     else
-        strlcpy(msg->msg, "NFT will not be sent to user!", msg->titleLength);
+        strlcpy(msg->msg, "NFT will not be sent to you!", msg->titleLength);
 }
 
 static void skip_right(opensea_parameters_t *context)
