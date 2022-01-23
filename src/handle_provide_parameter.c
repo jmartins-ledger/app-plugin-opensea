@@ -1,24 +1,5 @@
 #include "opensea_plugin.h"
 
-// Copies the whole parameter (32 bytes long) from `src` to `dst`.
-// Useful for numbers, data...
-void copy_parameter(uint8_t *dst, uint8_t *parameter, uint8_t dst_size)
-{
-    // Take the minimum between dst_len and parameter_length to make sure we don't overwrite memory.
-    size_t len = MIN(dst_size, PARAMETER_LENGTH);
-    memcpy(dst, parameter, len);
-}
-
-// Copies a 20 byte address (located in a 32 bytes parameter) `from `src` to `dst`.
-// Useful for token addresses, user addresses...
-void copy_address(uint8_t *dst, uint8_t *parameter, uint8_t dst_size)
-{
-    // An address is 20 bytes long: so we need to make sure we skip the first 12 bytes!
-    size_t offset = PARAMETER_LENGTH - ADDRESS_LENGTH;
-    size_t len = MIN(dst_size, ADDRESS_LENGTH);
-    memcpy(dst, &parameter[offset], len);
-}
-
 static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
@@ -149,14 +130,29 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
                     uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; //useless %PARM_L ?
                     // MEMCMP first part
                     if (memcmp(context->beneficiary, &msg->parameter[offset], PARAMETER_LENGTH - offset))
+                    {
                         context->screen_array |= WARNING_BENEFICIARY_UI;
+                        PRINTF("PENZO ICI111\n");
+                    }
                 }
                 else if (context->on_param == ON_CALLDATA && subcalldata_remaining_length == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
                 {
                     uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; //useless %PARM_L ?
+                    uint8_t remaining_address_length = ADDRESS_LENGTH - (PARAMETER_LENGTH - offset);
+                    PRINTF("PENZO ICI444: %d\n", memcmp(&context->beneficiary[PARAMETER_LENGTH - offset], msg->parameter, remaining_address_length));
+                    print_bytes(&context->beneficiary[PARAMETER_LENGTH - offset], remaining_address_length);
+                    print_bytes(msg->parameter, remaining_address_length);
                     // MEMCMP second part
-                    if (memcmp(&context->beneficiary[PARAMETER_LENGTH - offset], msg->parameter, PARAMETER_LENGTH - offset))
+                    // if (memcmp(&context->beneficiary[PARAMETER_LENGTH - offset], msg->parameter, PARAMETER_LENGTH - offset))
+                    if (memcmp(&context->beneficiary[PARAMETER_LENGTH - offset], msg->parameter, remaining_address_length))
+                    {
                         context->screen_array |= WARNING_BENEFICIARY_UI;
+                        PRINTF("PENZO ICI222 with offset = %d\n", offset);
+                        PRINTF("PENZO %d\n", memcmp(&context->beneficiary[PARAMETER_LENGTH - offset], msg->parameter, remaining_address_length));
+                        print_bytes(&context->beneficiary[PARAMETER_LENGTH - offset], PARAMETER_LENGTH - offset);
+                        // print_bytes(msg->parameter, PARAMETER_LENGTH - offset);
+                        print_bytes(msg->parameter, remaining_address_length);
+                    }
                 }
             }
             else if (context->on_param == ON_CALLDATA && context->current_atomicize_offset >= ADDRESS_LENGTH - SELECTOR_SIZE)
@@ -167,7 +163,10 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
                     uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH;
                     //MEMCMP, it will already be copied
                     if (memcmp(context->beneficiary, &msg->parameter[offset], ADDRESS_LENGTH))
+                    {
                         context->screen_array |= WARNING_BENEFICIARY_UI;
+                        PRINTF("PENZO ICI333\n");
+                    }
                 }
             }
             if (context->current_atomicize_offset == PARAMETER_LENGTH)
