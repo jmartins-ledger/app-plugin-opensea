@@ -1,24 +1,5 @@
 #include "opensea_plugin.h"
 
-// Copies the whole parameter (32 bytes long) from `src` to `dst`.
-// Useful for numbers, data...
-// void copy_parameter(uint8_t *dst, uint8_t *parameter, uint8_t dst_size)
-// {
-//     // Take the minimum between dst_len and parameter_length to make sure we don't overwrite memory.
-//     size_t len = MIN(dst_size, PARAMETER_LENGTH);
-//     memcpy(dst, parameter, len);
-// }
-
-// Copies a 20 byte address (located in a 32 bytes parameter) `from `src` to `dst`.
-// Useful for token addresses, user addresses...
-// void copy_address(uint8_t *dst, uint8_t *parameter, uint8_t dst_size)
-// {
-//     // An address is 20 bytes long: so we need to make sure we skip the first 12 bytes!
-//     size_t offset = PARAMETER_LENGTH - ADDRESS_LENGTH;
-//     size_t len = MIN(dst_size, ADDRESS_LENGTH);
-//     memcpy(dst, &parameter[offset], len);
-// }
-
 static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
