@@ -15,11 +15,9 @@ void handle_init_contract(void *parameters)
 
     if (msg->pluginContextLength < sizeof(opensea_parameters_t))
     {
-        PRINTF("Plugin parameters structure is bigger than allowed size\n");
         msg->result = ETH_PLUGIN_RESULT_ERROR;
         return;
     }
-    PRINTF("sizeof(opensea_parameter_t): %d\n", sizeof(opensea_parameters_t));
 
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 
@@ -30,7 +28,6 @@ void handle_init_contract(void *parameters)
     uint8_t i;
     for (i = 0; i < NUM_OPENSEA_SELECTORS; i++)
     {
-        PRINTF("\033[0;31mLOOKING for selector %d\n\033[0m", i);
         if (memcmp((uint8_t *)PIC(OPENSEA_SELECTORS[i]), msg->selector, SELECTOR_SIZE) == 0)
         {
             context->selectorIndex = i;
@@ -44,7 +41,6 @@ void handle_init_contract(void *parameters)
     }
 
     // Set `next_param` to be the first field we expect to parse.
-    PRINTF("INIT_CONTRACT selector: %u\n", context->selectorIndex);
     switch (context->selectorIndex)
     {
     case REGISTER_PROXY:
@@ -56,7 +52,6 @@ void handle_init_contract(void *parameters)
         context->next_param = BUY_EXCHANGE_ADDRESS;
         break;
     default:
-        PRINTF("Missing selectorIndex\n");
         msg->result = ETH_PLUGIN_RESULT_ERROR;
         return;
     }

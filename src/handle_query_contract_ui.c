@@ -209,7 +209,6 @@ void handle_query_contract_ui(void *parameters)
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 
     get_screen_array(msg, context);
-    print_bytes(&context->plugin_screen_index, 1);
     msg->result = ETH_PLUGIN_RESULT_OK;
     switch (context->plugin_screen_index)
     {
@@ -235,7 +234,6 @@ void handle_query_contract_ui(void *parameters)
         set_beneficiary_warning_ui(msg, context);
         break;
     default:
-        PRINTF("Error in handle_query_contract_ui()\n");
         msg->result = ETH_PLUGIN_RESULT_ERROR;
         break;
     }
