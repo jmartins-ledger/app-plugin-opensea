@@ -7,7 +7,6 @@ src/glyphs.c
 src/glyphs.h
 opensea_registry.sol
 opensea_code.sol
-test/node_modules
-.DS_Store/
+DS_Store/
 **/.DS_Store
 **.swp
