@@ -12,7 +12,7 @@
                     ],
                     "method": "atomicMatch_",
                     "plugin": "OpenSea"
-		        },
+                },
                 "0xa8a41c70": {
                     "erc20OfInterest": [
                         "addrs.6",
@@ -21,8 +21,8 @@
                     "method": "cancelOrder_",
                     "plugin": "OpenSea"
                 }
-	        }
-	    },
+            }
+        },
         {
             "address": "0xa5409ec958c83c3f309868babaca7c86dcb077c1",
             "contractName": "OpenSeaRegistry",
