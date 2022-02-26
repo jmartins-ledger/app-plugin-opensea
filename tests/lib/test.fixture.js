@@ -49,7 +49,17 @@ let genericTx = {
   to: RANDOM_ADDRESS,
   data: null
 };
-const TIMEOUT = 1000000; // Generates a serializedTransaction from a rawHexTransaction copy pasted from etherscan.
+const TIMEOUT = 1000000;
+const resolutionConfig = {
+  externalPlugins: true,
+  nft: false,
+  erc20: true
+};
+const loadConfig = {
+  nftExplorerBaseURL: "https://nft.api.live.ledger.com/v1/ethereum",
+  pluginBaseURL: "https://cdn.live.ledger.com",
+  extraPlugins: boilerplateJSON
+}; // Generates a serializedTransaction from a rawHexTransaction copy pasted from etherscan.
 
 function txFromEtherscan(rawTx) {
   // Remove 0x prefix
@@ -104,11 +114,14 @@ function zemu(device, func) {
     try {
       await sim.start(sim_options);
       const transport = await sim.getTransport();
-      const eth = new _hwAppEth.default(transport);
-      eth.setPluginsLoadConfig({
-        baseURL: null,
-        extraPlugins: boilerplateJSON
-      });
+      const eth = new _hwAppEth.default(transport); // eth.setLoadConfig({
+      //     // baseURL: null,
+      //     extraPlugins: boilerplateJSON,
+      //     // nftExplorerBaseURL: "https://nft.api.live.ledger.com/v1/ethereum",
+      //     // pluginBaseURL: null,
+      // })
+
+      eth.setLoadConfig(resolutionConfig);
       await func(sim, eth);
     } finally {
       await sim.close();
@@ -122,5 +135,7 @@ module.exports = {
   genericTx,
   SPECULOS_ADDRESS,
   RANDOM_ADDRESS,
-  txFromEtherscan
+  txFromEtherscan,
+  resolutionConfig,
+  loadConfig
 };
