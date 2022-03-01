@@ -26,9 +26,10 @@ typedef enum
     TRANSFER,
     ATOMICIZE,
     SAFE_TRANSFER_FROM_DATA_1155,
+    MATCH_ERC721_USING_CRITERIA,
     METHOD_NOT_FOUND, //  Must remain last
 } erc721Selector_t;
-#define NUM_NFT_SELECTORS 7
+#define NUM_NFT_SELECTORS 8
 
 extern const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS];
 extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
