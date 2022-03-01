@@ -1,5 +1,31 @@
 #include "opensea_plugin.h"
 
+static void handle_match_erc721(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
+{
+    if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
+        return;
+    else if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 2)
+    {
+        // If it's a buy now, check if 'to' part1 is sender.
+        if (!(context->booleans & ORDER_SIDE))
+            memcpy(context->beneficiary, &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE], ADDRESS_LENGTH - SELECTOR_SIZE);
+    }
+    else if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 3)
+    {
+        // If it's a 'buy now' checks if 'to' part2 is sender.
+        if (!(context->booleans & ORDER_SIDE))
+            memcpy(&context->beneficiary[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
+    }
+    else if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 4)
+    {
+        memcpy(context->token_id, msg->parameter + SELECTOR_SIZE, PARAMETER_LENGTH - SELECTOR_SIZE);
+    }
+    else if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 5)
+    {
+        memcpy(context->token_id + PARAMETER_LENGTH - SELECTOR_SIZE, msg->parameter, SELECTOR_SIZE);
+    }
+}
+
 static void handle_transfer_from_method(ethPluginProvideParameter_t *msg, opensea_parameters_t *context)
 {
     if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH)
@@ -175,6 +201,8 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
     }
     if (context->calldata_method == ATOMICIZE)
         handle_atomicize(msg, context, offset);
+    else if (context->calldata_method == MATCH_ERC721_USING_CRITERIA)
+        handle_match_erc721(msg, context);
     else if (context->calldata_method != METHOD_NOT_FOUND)
         handle_transfer_from_method(msg, context);
     // End of calldata
