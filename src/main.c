@@ -44,6 +44,8 @@ static const uint8_t _TRANSFER[SELECTOR_SIZE] = {0x30, 0xe0, 0x78, 0x9e};
 static const uint8_t _ATOMICIZE[SELECTOR_SIZE] = {0x68, 0xf0, 0xbc, 0xaa};
 static const uint8_t _SAFE_TRANSFER_FROM_DATA_1155[SELECTOR_SIZE] = {0xf2, 0x42, 0x43, 0x2a};
 static const uint8_t _MATCH_ERC721_USING_CRITERIA[SELECTOR_SIZE] = {0xfb, 0x16, 0xa5, 0x95};
+static const uint8_t _MATCH_ERC721_WITH_SAFE_TRANSFER_USING_CRITERIA[SELECTOR_SIZE] = {0xc5, 0xa0, 0x23, 0x6e};
+static const uint8_t _MATCH_ERC1155_USING_CRITERIA[SELECTOR_SIZE] = {0x96, 0x80, 0x9f, 0x0d};
 static const uint8_t _METHOD_NOT_FOUND[SELECTOR_SIZE] = {0x00, 0x00, 0x00, 0x00};
 
 // Array of all the different ERC721 selectors. Make sure this follows the same order as the
@@ -56,6 +58,8 @@ const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS] = {
     _ATOMICIZE,
     _SAFE_TRANSFER_FROM_DATA_1155,
     _MATCH_ERC721_USING_CRITERIA,
+    _MATCH_ERC721_WITH_SAFE_TRANSFER_USING_CRITERIA,
+    _MATCH_ERC1155_USING_CRITERIA,
     _METHOD_NOT_FOUND,
 };
 
