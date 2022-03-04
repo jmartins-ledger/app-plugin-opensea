@@ -44,6 +44,7 @@ void handle_init_contract(void *parameters)
     switch (context->selectorIndex)
     {
     case REGISTER_PROXY:
+    case INCREMENT_NONCE:
         break;
     case CANCEL_ORDER_:
         context->next_param = EXCHANGE_ADDRESS;

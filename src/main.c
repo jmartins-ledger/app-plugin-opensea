@@ -27,6 +27,7 @@
 static const uint8_t OPENSEA_REGISTER_PROXY[SELECTOR_SIZE] = {0xdd, 0xd8, 0x1f, 0x82};
 static const uint8_t OPENSEA_CANCEL_ORDER_[SELECTOR_SIZE] = {0xa8, 0xa4, 0x1c, 0x70};
 static const uint8_t OPENSEA_ATOMIC_MATCH_[SELECTOR_SIZE] = {0xab, 0x83, 0x4b, 0xab};
+static const uint8_t OPENSEA_INCREMENT_NONCE[SELECTOR_SIZE] = {0x62, 0x7c, 0xdc, 0xb9};
 
 // Array of all the different opensea selectors. Make sure this follows the same order as the
 // enum defined in `opensea_plugin.h`
@@ -34,9 +35,10 @@ const uint8_t *const OPENSEA_SELECTORS[NUM_OPENSEA_SELECTORS] = {
     OPENSEA_REGISTER_PROXY,
     OPENSEA_CANCEL_ORDER_,
     OPENSEA_ATOMIC_MATCH_,
+    OPENSEA_INCREMENT_NONCE,
 };
 
-// ERC721 Standards Methods
+// ERC721 and ERC1155 Standards Methods + V2 OpenWyvern transfer methods.
 static const uint8_t _TRANSFER_FROM[SELECTOR_SIZE] = {0x23, 0xb8, 0x72, 0xdd};
 static const uint8_t _SAFE_TRANSFER_FROM[SELECTOR_SIZE] = {0x42, 0x84, 0x2e, 0x0e};
 static const uint8_t _SAFE_TRANSFER_FROM_DATA_721[SELECTOR_SIZE] = {0xb8, 0x8d, 0x4f, 0xde};

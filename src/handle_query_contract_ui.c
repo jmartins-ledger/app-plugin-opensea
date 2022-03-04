@@ -27,6 +27,10 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
             strlcpy(msg->msg, "now:", msg->msgLength);
         }
         break;
+    case INCREMENT_NONCE:
+        strlcpy(msg->title, "Cancel Listings:", msg->titleLength);
+        strlcpy(msg->msg, "Do you wish to cancel all listings and offers?", msg->msgLength);
+        break;
     default:
         break;
     }

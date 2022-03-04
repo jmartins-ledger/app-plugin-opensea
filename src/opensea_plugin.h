@@ -14,9 +14,10 @@ typedef enum
     REGISTER_PROXY,
     CANCEL_ORDER_,
     ATOMIC_MATCH_,
+    INCREMENT_NONCE,
 } openseaSelector_t;
 // Number of selectors defined in this plugin.
-#define NUM_OPENSEA_SELECTORS 3
+#define NUM_OPENSEA_SELECTORS 4
 
 typedef enum
 {

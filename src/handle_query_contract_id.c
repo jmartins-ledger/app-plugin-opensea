@@ -19,6 +19,9 @@ void handle_query_contract_id(void *parameters)
     case ATOMIC_MATCH_:
         strlcpy(msg->version, "Atomic Match", msg->versionLength);
         break;
+    case INCREMENT_NONCE:
+        strlcpy(msg->version, "Increment Nonce", msg->versionLength);
+        break;
     default:
         msg->result = ETH_PLUGIN_RESULT_ERROR;
         return;
