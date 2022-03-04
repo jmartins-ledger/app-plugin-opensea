@@ -42,6 +42,11 @@
                     ],
                     "method": "cancelOrder_",
                     "plugin": "OpenSea"
+                },
+                "0x627cdcb9": {
+                    "erc20OfInterest": [],
+                    "method": "incrementNonce",
+                    "plugin": "OpenSea"
                 }
             }
         },
