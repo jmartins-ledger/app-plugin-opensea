@@ -5,12 +5,9 @@ void handle_provide_token(void *parameters)
     ethPluginProvideInfo_t *msg = (ethPluginProvideInfo_t *)parameters;
     opensea_parameters_t *context = (opensea_parameters_t *)msg->pluginContext;
 
-    // Check for payment token.
-    if (context->booleans ^ IS_ETH && msg->item1)
-    {
+    if (!(context->booleans & IS_ETH) && msg->item1)
         context->booleans |= PAYMENT_TOKEN_FOUND;
-    }
-    else
+    else if (!(context->booleans & IS_ETH))
     {
         context->screen_array |= UNKNOWN_PAYMENT_TOKEN_UI;
         msg->additionalScreens++;

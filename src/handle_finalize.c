@@ -35,11 +35,9 @@ void handle_finalize(void *parameters)
     // Look for payment token info
     if (memcmp(context->payment_token_address, NULL_ADDRESS, ADDRESS_LENGTH))
         msg->tokenLookup1 = context->payment_token_address;
+    // set default token info, in case of skiped handle_provide_token()
     else
-    {
-        // set default token info, in case of skiped handle_provide_token()
         context->booleans |= IS_ETH;
-    }
     // Look foor NFT info
     if (memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH))
         msg->tokenLookup2 = context->nft_contract_address;
