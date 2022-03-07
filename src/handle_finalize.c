@@ -26,7 +26,7 @@ void handle_finalize(void *parameters)
         context->screen_array |= TOKEN_ID_OR_BUNDLE_UI;
         context->screen_array |= PRICE_UI;
         // if is a 'buy now', in atomic_match and beneficiary != sender: raise beneficiary warning
-        if ((!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH)) || context->booleans & COULD_NOT_PARSE)
+        if ((!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH)) || (context->booleans & COULD_NOT_PARSE && context->selectorIndex == ATOMIC_MATCH_))
         {
             context->screen_array |= WARNING_BENEFICIARY_UI;
         }
