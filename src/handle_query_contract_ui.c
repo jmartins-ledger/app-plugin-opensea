@@ -86,7 +86,7 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
                 strlcpy(msg->title, "NFT name:", msg->titleLength);
                 snprintf(msg->msg, msg->msgLength, "%s", msg->item2->nft.collectionName);
             }
-            else if (!memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH))
+            else if (!memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH) || !(memcmp(PROXY_ADDRESS, context->nft_contract_address, ADDRESS_LENGTH)))
             {
                 strlcpy(msg->title, "penzo", msg->titleLength);
                 strlcpy(msg->msg, "can't get this", msg->msgLength);

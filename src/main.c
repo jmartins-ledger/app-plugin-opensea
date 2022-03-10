@@ -23,7 +23,7 @@
 #include "cx.h"
 #include "opensea_plugin.h"
 
-//OpenSea Contract Methods
+// OpenSea Contract Methods
 static const uint8_t OPENSEA_REGISTER_PROXY[SELECTOR_SIZE] = {0xdd, 0xd8, 0x1f, 0x82};
 static const uint8_t OPENSEA_CANCEL_ORDER_[SELECTOR_SIZE] = {0xa8, 0xa4, 0x1c, 0x70};
 static const uint8_t OPENSEA_ATOMIC_MATCH_[SELECTOR_SIZE] = {0xab, 0x83, 0x4b, 0xab};
@@ -49,6 +49,7 @@ static const uint8_t _MATCH_ERC721_USING_CRITERIA[SELECTOR_SIZE] = {0xfb, 0x16, 
 static const uint8_t _MATCH_ERC721_WITH_SAFE_TRANSFER_USING_CRITERIA[SELECTOR_SIZE] = {0xc5, 0xa0, 0x23, 0x6e};
 static const uint8_t _MATCH_ERC1155_USING_CRITERIA[SELECTOR_SIZE] = {0x96, 0x80, 0x9f, 0x90};
 static const uint8_t _METHOD_NOT_FOUND[SELECTOR_SIZE] = {0x00, 0x00, 0x00, 0x00};
+const uint8_t PROXY_ADDRESS[ADDRESS_LENGTH] = {0xba, 0xf2, 0x12, 0x7b, 0x49, 0xfc, 0x93, 0xcb, 0xca, 0x62, 0x69, 0xfa, 0xde, 0x0f, 0x7f, 0x31, 0xdf, 0x4c, 0x88, 0xa7};
 
 // Array of all the different ERC721 selectors. Make sure this follows the same order as the
 // enum defined in `opensea_plugin.h`
