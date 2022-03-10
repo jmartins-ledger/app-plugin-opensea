@@ -51,10 +51,8 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define LEFT_SCROLL 0
 
 #define NULL_ADDRESS "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
-// #define PROXY_ADDRESS "\0ba\0f2\012\07b\049\0fc\093\0cb\0ca\062\069\0fa\0de\00f\07f\031\0df\04c\088\0a7"
 extern const uint8_t PROXY_ADDRESS[20];
-// const uint8_t PROXY_ADDRESS[20] = {0xba, 0xf2, 0x12, 0x7b, 0x49, 0xfc, 0x93, 0xcb, 0xca, 0x62, 0x69, 0xfa, 0xde, 0x0f, 0x7f, 0x31, 0xdf, 0x4c, 0x88, 0xa7};
-// 0xbaf2127b49fc93cbca6269fade0f7f31df4c88a7
+extern const uint8_t ATOMICIZE_ADDRESS[20];
 
 #define WETH_TICKER "WETH"
 #define WETH_DECIMALS WEI_TO_ETHER
