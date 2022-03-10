@@ -5,7 +5,7 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
     switch (context->selectorIndex)
     {
     case REGISTER_PROXY:
-        strlcpy(msg->title, "Initialize wallet:", msg->titleLength);
+        strlcpy(msg->title, "Initialize wallet", msg->titleLength);
         strlcpy(msg->msg, "Sign to authorize wallet?", msg->msgLength);
         break;
     case CANCEL_ORDER_:
@@ -19,12 +19,12 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
         if (context->booleans & ORDER_SIDE)
         {
             strlcpy(msg->title, "Accept", msg->titleLength);
-            strlcpy(msg->msg, "offer:", msg->msgLength);
+            strlcpy(msg->msg, "Offer", msg->msgLength);
         }
         else
         {
             strlcpy(msg->title, "Buy", msg->titleLength);
-            strlcpy(msg->msg, "now:", msg->msgLength);
+            strlcpy(msg->msg, "Now", msg->msgLength);
         }
         break;
     case INCREMENT_NONCE:
@@ -43,12 +43,11 @@ static void set_token_id_or_bundle_ui(ethQueryContractUI_t *msg,
     {
     case CANCEL_ORDER_:
     case ATOMIC_MATCH_:
-        PRINTF("PENZO UI method calldata: %d\n", context->calldata_method);
         if (context->calldata_method == METHOD_NOT_FOUND)
         {
             strlcpy(msg->title, "Warning:", msg->titleLength);
             if (context->selectorIndex == ATOMIC_MATCH_)
-                strlcpy(msg->msg, "Unknown NFT transfer method!", msg->msgLength);
+                strlcpy(msg->msg, "Unknown NFT transfer method.", msg->msgLength);
             if (context->selectorIndex == CANCEL_ORDER_)
                 strlcpy(msg->msg, "Unable to retrieve token ID.", msg->msgLength);
         }
@@ -88,8 +87,8 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
             }
             else if (!memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH) || !(memcmp(PROXY_ADDRESS, context->nft_contract_address, ADDRESS_LENGTH)))
             {
-                strlcpy(msg->title, "penzo", msg->titleLength);
-                strlcpy(msg->msg, "can't get this", msg->msgLength);
+                strlcpy(msg->title, "Error:", msg->titleLength);
+                strlcpy(msg->msg, "Unable to retrieve NFT address.", msg->msgLength);
             }
             else
             {
@@ -113,7 +112,7 @@ static void set_token_warning_ui(ethQueryContractUI_t *msg,
                                  opensea_parameters_t *context __attribute__((unused)))
 {
     strlcpy(msg->title, "Unknown", msg->titleLength);
-    strlcpy(msg->msg, "payment token:", msg->titleLength);
+    strlcpy(msg->msg, "payment token.", msg->titleLength);
 }
 
 static void set_token_address_ui(ethQueryContractUI_t *msg,
