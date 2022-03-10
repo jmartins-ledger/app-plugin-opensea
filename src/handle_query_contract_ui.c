@@ -43,6 +43,7 @@ static void set_token_id_or_bundle_ui(ethQueryContractUI_t *msg,
     {
     case CANCEL_ORDER_:
     case ATOMIC_MATCH_:
+        PRINTF("PENZO UI method calldata: %d\n", context->calldata_method);
         if (context->calldata_method == METHOD_NOT_FOUND)
         {
             strlcpy(msg->title, "Warning:", msg->titleLength);
@@ -84,6 +85,11 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
             {
                 strlcpy(msg->title, "NFT name:", msg->titleLength);
                 snprintf(msg->msg, msg->msgLength, "%s", msg->item2->nft.collectionName);
+            }
+            else if (!memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH))
+            {
+                strlcpy(msg->title, "penzo", msg->titleLength);
+                strlcpy(msg->msg, "can't get this", msg->msgLength);
             }
             else
             {

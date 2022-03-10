@@ -203,6 +203,7 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
             }
         }
     }
+    PRINTF("PENZO METHOD: %d\n", context->calldata_method);
     if (context->calldata_method == ATOMICIZE)
         handle_atomicize(msg, context, offset);
     else if ((context->calldata_method == MATCH_ERC721_USING_CRITERIA) || (context->calldata_method == MATCH_ERC1155_USING_CRITERIA) || (context->calldata_method == MATCH_ERC721_WITH_SAFE_TRANSFER_USING_CRITERIA))
@@ -323,8 +324,8 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         break;
     case BUY_TARGET_ADDRESS:
         // set context->nft_contract_address
-        copy_address(context->nft_contract_address, msg->parameter,
-                     sizeof(context->nft_contract_address));
+        // copy_address(context->nft_contract_address, msg->parameter,
+        //              sizeof(context->nft_contract_address));
         break;
     case BUY_STATIC_TARGET_ADDRESS:
         break;
