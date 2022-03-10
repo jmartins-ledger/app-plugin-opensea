@@ -107,7 +107,7 @@ test('[Nano S] nanos_cancelOrder_bundle_unknownTransferMethod_eth', zemu("nanos"
     resolution
   );
   await waitForAppScreen(sim);
-  await sim.navigateAndCompareSnapshots('.', 'nanos_cancelOrder_bundle_unknownTransferMethod_eth', [13, 0]);
+  await sim.navigateAndCompareSnapshots('.', 'nanos_cancelOrder_bundle_unknownTransferMethod_eth', [10, 0]);
   await tx;
 }));
 
