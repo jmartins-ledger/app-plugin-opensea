@@ -19,12 +19,12 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
         if (context->booleans & ORDER_SIDE)
         {
             strlcpy(msg->title, "Accept", msg->titleLength);
-            strlcpy(msg->msg, "offer:", msg->msgLength);
+            strlcpy(msg->msg, "Offer", msg->msgLength);
         }
         else
         {
             strlcpy(msg->title, "Buy", msg->titleLength);
-            strlcpy(msg->msg, "now:", msg->msgLength);
+            strlcpy(msg->msg, "Now", msg->msgLength);
         }
         break;
     case INCREMENT_NONCE:
@@ -47,7 +47,7 @@ static void set_token_id_or_bundle_ui(ethQueryContractUI_t *msg,
         {
             strlcpy(msg->title, "Warning:", msg->titleLength);
             if (context->selectorIndex == ATOMIC_MATCH_)
-                strlcpy(msg->msg, "Unknown NFT transfer method!", msg->msgLength);
+                strlcpy(msg->msg, "Unknown NFT transfer method.", msg->msgLength);
             if (context->selectorIndex == CANCEL_ORDER_)
                 strlcpy(msg->msg, "Unable to retrieve token ID.", msg->msgLength);
         }
@@ -85,6 +85,11 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
                 strlcpy(msg->title, "NFT name:", msg->titleLength);
                 snprintf(msg->msg, msg->msgLength, "%s", msg->item2->nft.collectionName);
             }
+            else if (!memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH) || !(memcmp(PROXY_ADDRESS, context->nft_contract_address, ADDRESS_LENGTH)) || !(memcmp(ATOMICIZE_ADDRESS, context->nft_contract_address, ADDRESS_LENGTH)))
+            {
+                strlcpy(msg->title, "Error:", msg->titleLength);
+                strlcpy(msg->msg, "Unable to retrieve NFT address.", msg->msgLength);
+            }
             else
             {
                 strlcpy(msg->title, "NFT address:", msg->titleLength);
@@ -107,7 +112,7 @@ static void set_token_warning_ui(ethQueryContractUI_t *msg,
                                  opensea_parameters_t *context __attribute__((unused)))
 {
     strlcpy(msg->title, "Unknown", msg->titleLength);
-    strlcpy(msg->msg, "payment token:", msg->titleLength);
+    strlcpy(msg->msg, "payment token.", msg->titleLength);
 }
 
 static void set_token_address_ui(ethQueryContractUI_t *msg,
@@ -153,7 +158,7 @@ static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
                                        opensea_parameters_t *context __attribute__((unused)))
 {
     strlcpy(msg->title, "Warning:", msg->titleLength);
-    if (context->bundle_size)
+    if (context->bundle_size || !memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH))
         strlcpy(msg->msg, "NFTs might not be sent to you!", msg->titleLength);
     else
         strlcpy(msg->msg, "NFT will not be sent to you!", msg->titleLength);

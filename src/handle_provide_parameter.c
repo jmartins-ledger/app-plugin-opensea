@@ -14,11 +14,15 @@ static void handle_match_erc721(ethPluginProvideParameter_t *msg, opensea_parame
     {
         // If it's a 'buy now' checks if 'to' part2 is sender.
         if (!(context->booleans & ORDER_SIDE))
+        {
             memcpy(&context->beneficiary[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
+        }
+        memcpy(context->nft_contract_address, &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE], ADDRESS_LENGTH - SELECTOR_SIZE);
     }
     else if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 4)
     {
         memcpy(context->token_id, msg->parameter + SELECTOR_SIZE, PARAMETER_LENGTH - SELECTOR_SIZE);
+        memcpy(&context->nft_contract_address[ADDRESS_LENGTH - SELECTOR_SIZE], msg->parameter, SELECTOR_SIZE);
     }
     else if (msg->parameterOffset == context->calldata_offset + PARAMETER_LENGTH * 5)
     {
@@ -140,7 +144,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
                 // THE ADDRESS IS SPLIT ONLY HERE
                 if (subcalldata_remaining_length == context->atomicize_lengths - PARAMETER_LENGTH - SELECTOR_SIZE)
                 {
-                    uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; //useless %PARM_L ?
+                    uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; // useless %PARM_L ?
                     // MEMCMP first part
                     if (memcmp(context->beneficiary, &msg->parameter[offset], PARAMETER_LENGTH - offset))
                     {
@@ -149,7 +153,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
                 }
                 else if (context->on_param == ON_CALLDATA && subcalldata_remaining_length == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
                 {
-                    uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; //useless %PARM_L ?
+                    uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; // useless %PARM_L ?
                     uint8_t remaining_address_length = ADDRESS_LENGTH - (PARAMETER_LENGTH - offset);
                     // MEMCMP second part
                     if (memcmp(&context->beneficiary[PARAMETER_LENGTH - offset], msg->parameter, remaining_address_length))
@@ -164,7 +168,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
                 if (subcalldata_remaining_length == context->atomicize_lengths - (PARAMETER_LENGTH * 2) - SELECTOR_SIZE)
                 {
                     uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH;
-                    //MEMCMP, it will already be copied
+                    // MEMCMP, it will already be copied
                     if (memcmp(context->beneficiary, &msg->parameter[offset], ADDRESS_LENGTH))
                     {
                         context->screen_array |= WARNING_BENEFICIARY_UI;
@@ -319,8 +323,8 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
         break;
     case BUY_TARGET_ADDRESS:
         // set context->nft_contract_address
-        copy_address(context->nft_contract_address, msg->parameter,
-                     sizeof(context->nft_contract_address));
+        // copy_address(context->nft_contract_address, msg->parameter,
+        //              sizeof(context->nft_contract_address));
         break;
     case BUY_STATIC_TARGET_ADDRESS:
         break;

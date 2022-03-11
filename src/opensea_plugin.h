@@ -51,6 +51,8 @@ extern const uint8_t *const ERC721_SELECTORS[NUM_NFT_SELECTORS];
 #define LEFT_SCROLL 0
 
 #define NULL_ADDRESS "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+extern const uint8_t PROXY_ADDRESS[20];
+extern const uint8_t ATOMICIZE_ADDRESS[20];
 
 #define WETH_TICKER "WETH"
 #define WETH_DECIMALS WEI_TO_ETHER
@@ -195,10 +197,10 @@ typedef struct __attribute__((__packed__)) opensea_parameters_t
     uint8_t payment_token_address[ADDRESS_LENGTH]; // 20
 
     // char payment_token_ticker[MAX_TICKER_LEN];     // 12
-    uint16_t atomicize_lengths;       //2
-    uint16_t atomicize_length;        //2
-    uint8_t current_atomicize_offset; //2
-    uint8_t atomicize_selector[4];    //4
+    uint16_t atomicize_lengths;       // 2
+    uint16_t atomicize_length;        // 2
+    uint8_t current_atomicize_offset; // 2
+    uint8_t atomicize_selector[4];    // 4
 
     uint8_t payment_token_amount[INT256_LENGTH]; // 32
     uint8_t payment_token_decimals;
