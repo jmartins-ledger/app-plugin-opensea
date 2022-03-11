@@ -5,7 +5,7 @@ static void set_tx_type_ui(ethQueryContractUI_t *msg, opensea_parameters_t *cont
     switch (context->selectorIndex)
     {
     case REGISTER_PROXY:
-        strlcpy(msg->title, "Initialize wallet", msg->titleLength);
+        strlcpy(msg->title, "Initialize wallet:", msg->titleLength);
         strlcpy(msg->msg, "Sign to authorize wallet?", msg->msgLength);
         break;
     case CANCEL_ORDER_:
