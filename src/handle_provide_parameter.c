@@ -203,7 +203,6 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
             }
         }
     }
-    PRINTF("PENZO METHOD: %d\n", context->calldata_method);
     if (context->calldata_method == ATOMICIZE)
         handle_atomicize(msg, context, offset);
     else if ((context->calldata_method == MATCH_ERC721_USING_CRITERIA) || (context->calldata_method == MATCH_ERC1155_USING_CRITERIA) || (context->calldata_method == MATCH_ERC721_WITH_SAFE_TRANSFER_USING_CRITERIA))
