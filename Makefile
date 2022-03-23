@@ -73,7 +73,7 @@ endif
 
 
 # Enabling debug PRINTF
-DEBUG:= 10
+DEBUG:= 0
 ifneq ($(DEBUG),0)
         DEFINES += HAVE_STACK_OVERFLOW_CHECK
         SDK_SOURCE_PATH  += lib_stusb lib_stusb_impl lib_u2f
