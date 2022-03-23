@@ -96,7 +96,7 @@ static void set_nft_name_ui(ethQueryContractUI_t *msg, opensea_parameters_t *con
                 msg->msg[0] = '0';
                 msg->msg[1] = 'x';
                 getEthAddressStringFromBinary((uint8_t *)context->nft_contract_address,
-                                              (uint8_t *)msg->msg + 2,
+                                              msg->msg + 2,
                                               msg->pluginSharedRW->sha3,
                                               0);
             }
@@ -122,7 +122,7 @@ static void set_token_address_ui(ethQueryContractUI_t *msg,
     msg->msg[0] = '0';
     msg->msg[1] = 'x';
     getEthAddressStringFromBinary((uint8_t *)context->payment_token_address,
-                                  (uint8_t *)msg->msg + 2,
+                                  msg->msg + 2,
                                   msg->pluginSharedRW->sha3,
                                   0);
 }
