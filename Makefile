@@ -73,7 +73,7 @@ endif
 
 
 # Enabling debug PRINTF
-DEBUG:= 10
+DEBUG:= 0
 ifneq ($(DEBUG),0)
         DEFINES += HAVE_STACK_OVERFLOW_CHECK
         SDK_SOURCE_PATH  += lib_stusb lib_stusb_impl lib_u2f
@@ -128,6 +128,9 @@ include $(BOLOS_SDK)/Makefile.glyphs
 ### variables processed by the common makefile.rules of the SDK to grab source files and include dirs
 APP_SOURCE_PATH  += src ethereum-plugin-sdk
 SDK_SOURCE_PATH  += lib_ux
+ifeq ($(TARGET_NAME),TARGET_NANOX)
+SDK_SOURCE_PATH  += lib_blewbxx lib_blewbxx_impl
+endif
 
 # remove UX warnings from SDK even though the plugin doesn't use it
 DEFINES		     += HAVE_UX_FLOW
@@ -152,4 +155,4 @@ include $(BOLOS_SDK)/Makefile.rules
 dep/%.d: %.c Makefile
 
 listvariants:
-	@echo VARIANTS NONE opensea 
+	@echo VARIANTS NONE opensea
