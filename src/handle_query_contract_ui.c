@@ -158,7 +158,7 @@ static void set_beneficiary_warning_ui(ethQueryContractUI_t *msg,
                                        opensea_parameters_t *context __attribute__((unused)))
 {
     strlcpy(msg->title, "Warning:", msg->titleLength);
-    if (context->bundle_size || !memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH))
+    if (context->calldata_method == METHOD_NOT_FOUND)
         strlcpy(msg->msg, "NFTs might not be sent to you!", msg->titleLength);
     else
         strlcpy(msg->msg, "NFT will not be sent to you!", msg->titleLength);
