@@ -171,6 +171,6 @@ test('[Nano S] PENZO', zemu("nanos", async (sim, eth) => {
     resolution
   );
   await waitForAppScreen(sim);
-  await sim.navigateAndCompareSnapshots('.', 'nanos_atomicMatch_buyNow_bundle_unknownTransferMethod_NFTaddress_eth', [13, 0]);
+  await sim.navigateAndCompareSnapshots('.', 'PENZO', [13, 0]);
   await tx;
 }));
