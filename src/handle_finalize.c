@@ -25,10 +25,14 @@ void handle_finalize(void *parameters)
         context->screen_array |= NFT_NAME_UI;
         context->screen_array |= TOKEN_ID_OR_BUNDLE_UI;
         context->screen_array |= PRICE_UI;
+        // TRUE !!!
+        PRINTF("PENZO is nft_address null ? %d\n", (!memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH)));
+        PRINTF("PENZO is COULD_NOT_PARSE && ATOMIC ? %d\n", (context->booleans & COULD_NOT_PARSE && context->selectorIndex == ATOMIC_MATCH_));
         // if is a 'buy now', in atomic_match and beneficiary != sender: raise beneficiary warning
         if ((!(context->booleans & ORDER_SIDE) && context->selectorIndex == ATOMIC_MATCH_ && memcmp(context->beneficiary, msg->address, ADDRESS_LENGTH)) || (context->booleans & COULD_NOT_PARSE && context->selectorIndex == ATOMIC_MATCH_) || (!memcmp(context->nft_contract_address, NULL_ADDRESS, ADDRESS_LENGTH)))
         {
             context->screen_array |= WARNING_BENEFICIARY_UI;
+            PRINTF("PENZO 4\n");
         }
     }
 
