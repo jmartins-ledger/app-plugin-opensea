@@ -92,7 +92,9 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (8 + context->bundle_size * 2))
     {
         if (U2BE(msg->parameter, 2) != context->bundle_size)
+        {
             context->booleans |= COULD_NOT_PARSE;
+        }
     }
     // On atomicize calldata_length[] values
     else if (msg->parameterOffset > offset + PARAMETER_LENGTH * (8 + context->bundle_size * 2) && msg->parameterOffset < offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
@@ -102,7 +104,9 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
             context->atomicize_lengths = U2BE(msg->parameter, 2);
         // memcmp others.
         else if (context->atomicize_lengths != U2BE(msg->parameter, 2))
+        {
             context->booleans |= COULD_NOT_PARSE;
+        }
     }
     // On atomicize on calldata length.
     else if (msg->parameterOffset == offset + PARAMETER_LENGTH * (9 + context->bundle_size * 3))
@@ -131,13 +135,17 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
             {
                 // Cmp methodId.
                 if (memcmp(context->atomicize_selector, &msg->parameter[context->current_atomicize_offset], SELECTOR_SIZE))
+                {
                     context->booleans |= COULD_NOT_PARSE;
+                }
             }
             // wrap special case (methodId at the end of parameter)
             else if (subcalldata_remaining_length == context->atomicize_lengths - SELECTOR_SIZE)
             {
                 if (memcmp(context->atomicize_selector, &msg->parameter[context->current_atomicize_offset], SELECTOR_SIZE))
+                {
                     context->booleans |= COULD_NOT_PARSE;
+                }
             }
             else if (context->on_param == ON_CALLDATA && context->current_atomicize_offset < ADDRESS_LENGTH - SELECTOR_SIZE)
             {
@@ -146,7 +154,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
                 {
                     uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; // useless %PARM_L ?
                     // MEMCMP first part
-                    if (memcmp(context->beneficiary, &msg->parameter[offset], PARAMETER_LENGTH - offset))
+                    if (memcmp(context->beneficiary, &msg->parameter[offset], PARAMETER_LENGTH - offset) && context->selectorIndex == ATOMIC_MATCH_)
                     {
                         context->screen_array |= WARNING_BENEFICIARY_UI;
                     }
@@ -156,7 +164,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
                     uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH; // useless %PARM_L ?
                     uint8_t remaining_address_length = ADDRESS_LENGTH - (PARAMETER_LENGTH - offset);
                     // MEMCMP second part
-                    if (memcmp(&context->beneficiary[PARAMETER_LENGTH - offset], msg->parameter, remaining_address_length))
+                    if (memcmp(&context->beneficiary[PARAMETER_LENGTH - offset], msg->parameter, remaining_address_length) && context->selectorIndex == ATOMIC_MATCH_)
                     {
                         context->screen_array |= WARNING_BENEFICIARY_UI;
                     }
@@ -169,7 +177,7 @@ static void handle_atomicize(ethPluginProvideParameter_t *msg, opensea_parameter
                 {
                     uint8_t offset = (context->current_atomicize_offset + 16) % PARAMETER_LENGTH;
                     // MEMCMP, it will already be copied
-                    if (memcmp(context->beneficiary, &msg->parameter[offset], ADDRESS_LENGTH))
+                    if (memcmp(context->beneficiary, &msg->parameter[offset], ADDRESS_LENGTH) && context->selectorIndex == ATOMIC_MATCH_)
                     {
                         context->screen_array |= WARNING_BENEFICIARY_UI;
                     }
@@ -209,6 +217,8 @@ static void handle_calldata(ethPluginProvideParameter_t *msg, opensea_parameters
         handle_match_erc721(msg, context);
     else if (context->calldata_method != METHOD_NOT_FOUND)
         handle_transfer_from_method(msg, context);
+    else if (context->selectorIndex == ATOMIC_MATCH_ && context->calldata_method == METHOD_NOT_FOUND)
+        context->screen_array |= WARNING_BENEFICIARY_UI;
     // End of calldata
     if (offset + context->next_parameter_length + PARAMETER_LENGTH - SELECTOR_SIZE == msg->parameterOffset)
     {
@@ -322,9 +332,10 @@ static void handle_atomic_match(ethPluginProvideParameter_t *msg, opensea_parame
     case BUY_FEE_RECIPIENT_ADDRESS:
         break;
     case BUY_TARGET_ADDRESS:
-        // set context->nft_contract_address
-        // copy_address(context->nft_contract_address, msg->parameter,
-        //              sizeof(context->nft_contract_address));
+        // set context->nft_contract_address, but skip if it's the proxy address
+        if (memcmp(&msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH], PROXY_ADDRESS, ADDRESS_LENGTH))
+            copy_address(context->nft_contract_address, msg->parameter,
+                         sizeof(context->nft_contract_address));
         break;
     case BUY_STATIC_TARGET_ADDRESS:
         break;
