@@ -116,9 +116,6 @@ jobs:
       - name: Clone
         uses: actions/checkout@v2
 
-      - name: Install APT dependencies
-        run: sudo apt-get update -y && sudo apt-get install -y libusb-1.0.0 libudev-dev
-
       - name: Install node
         uses: actions/setup-node@v2
         with:
